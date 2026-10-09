@@ -74,7 +74,8 @@
 
       // ===== 0 生物還是非生物 =====
       const P0 = g(root);
-      text(P0, 600, 92, '哪些是生物？', { 'font-size': 40, 'font-weight': 700, 'text-anchor': 'middle' });
+      text(P0, 600, 84, '哪些是生物？', { 'font-size': 40, 'font-weight': 700, 'text-anchor': 'middle' });
+      text(P0, 600, 126, '先猜猜看！答案在第 6 步', { 'font-size': 22, fill: C.mute, 'text-anchor': 'middle' });
       const cards = ICONS.map(([name, draw], i) => {
         const x = 180 + i * 280, c = g(P0);
         el('rect', { x: x - 120, y: 150, width: 240, height: 330, rx: 22, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, c);
@@ -82,14 +83,16 @@
         text(c, x, 450, name, { 'font-size': 32, 'font-weight': 700, 'text-anchor': 'middle' });
         return c;
       });
+      // 判斷的依據：四類生命現象放在另一個框裡，不和上面的四張卡片一一對齊（避免誤以為四個都是生物）
       const four = g(P0, { opacity: 0 });
-      [['代謝', '#ffb35c'], ['生長與發育', OK], ['感應與運動', '#62a8ff'], ['生殖', '#ff8fb1']].forEach(([n, col], i) => S.pill(four, 210 + i * 260, 570, n, { size: 30, color: col, edge: col }));
-      text(four, 600, 650, '常見的四類生命現象', { 'font-size': 24, fill: C.mute, 'text-anchor': 'middle' });
+      el('rect', { x: 80, y: 512, width: 1040, height: 168, rx: 18, fill: '#0f1c26', stroke: '#3a5566', 'stroke-width': 2, 'stroke-dasharray': '10 7' }, four);
+      text(four, 600, 556, '判斷的依據：生物會表現這些「生命現象」', { 'font-size': 26, 'font-weight': 700, 'text-anchor': 'middle' });
+      const fourP = [['代謝', '#ffb35c', 300], ['生長與發育', OK, 500], ['感應與運動', '#62a8ff', 720], ['生殖', '#ff8fb1', 910]].map(([n, col, x]) => { const pg = g(four); S.pill(pg, x, 624, n, { size: 30, color: col, edge: col }); return pg; });
 
       tl.addLabel('s0');
       tl.fromTo(cards, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.15 }, 's0');
       S.show(tl, four, 's0+=1', 0.4);
-      tl.fromTo(four.children, { opacity: 0, scale: 0.6, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.35, stagger: 0.15, ease: 'back.out(2)' }, 's0+=1');
+      tl.fromTo(fourP, { opacity: 0, scale: 0.6, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.35, stagger: 0.15, ease: 'back.out(2)' }, 's0+=1.2');
 
       // ===== 1 代謝 =====
       const P1 = g(root, { opacity: 0 });
@@ -158,10 +161,10 @@
       // ===== 3 感應與運動 =====
       const P3 = g(root, { opacity: 0 });
       panel(P3, 40, 110, 560, 520, '含羞草：被碰就合起來', '#62a8ff');
-      el('path', { d: 'M 110,360 L 520,360', stroke: '#5aa04d', 'stroke-width': 8, 'stroke-linecap': 'round' }, P3);
+      el('path', { d: 'M 110,360 L 472,360', stroke: '#5aa04d', 'stroke-width': 8, 'stroke-linecap': 'round' }, P3);
       el('path', { d: 'M 110,360 C 100,450 120,520 130,590', stroke: '#5aa04d', 'stroke-width': 10, fill: 'none' }, P3);
       const leaflets = [];
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i < 8; i++) {
         const x = 150 + i * 42;
         [-1, 1].forEach((sd) => {
           const o = S.place(g(P3), { x, y: 360 });
@@ -170,11 +173,12 @@
           leaflets.push({ lf, sd, i });
         });
       }
-      const hand = at(P3, 600, 300);
-      el('path', { d: 'M 0,0 L -60,-8 Q -70,-8 -70,2 Q -70,10 -60,10 L -10,12 L 30,30 L 60,30 L 60,-20 L 20,-20 Z', fill: '#f2c9a0', stroke: '#c99a70', 'stroke-width': 2 }, hand);
+      // 手指碰到葉軸的尖端；整隻手都在左邊的框內
+      const hand = at(P3, 543, 300);
+      el('path', { d: 'M 0,0 L -60,-8 Q -70,-8 -70,2 Q -70,10 -60,10 L -10,12 L 25,28 L 50,28 L 50,-18 L 20,-18 Z', fill: '#f2c9a0', stroke: '#c99a70', 'stroke-width': 2 }, hand);
       panel(P3, 640, 110, 520, 520, '植物向著光生長', C.hi);
-      const sun = g(P3); el('circle', { cx: 1090, cy: 210, r: 40, fill: C.hi }, sun);
-      for (let k = 0; k < 8; k++) { const a = (k / 8) * 6.283; el('line', { x1: 1090 + Math.cos(a) * 52, y1: 210 + Math.sin(a) * 52, x2: 1090 + Math.cos(a) * 70, y2: 210 + Math.sin(a) * 70, stroke: C.hi, 'stroke-width': 4 }, sun); }
+      const sun = g(P3); el('circle', { cx: 1068, cy: 212, r: 40, fill: C.hi }, sun);
+      for (let k = 0; k < 8; k++) { const a = (k / 8) * 6.283; el('line', { x1: 1068 + Math.cos(a) * 52, y1: 212 + Math.sin(a) * 52, x2: 1068 + Math.cos(a) * 70, y2: 212 + Math.sin(a) * 70, stroke: C.hi, 'stroke-width': 4 }, sun); }
       el('path', { d: 'M 790,540 L 900,540 L 885,600 L 805,600 Z', fill: '#b0703c' }, P3);
       const stemA = 'M 845,540 C 845,480 845,420 845,330', stemB = 'M 845,540 C 845,470 880,400 960,350';
       const stem = el('path', { d: stemA, stroke: '#6fce62', 'stroke-width': 9, fill: 'none', 'stroke-linecap': 'round' }, P3);
@@ -187,10 +191,10 @@
       tl.addLabel('s3');
       S.hide(tl, P2, 's3', 0.4);
       S.show(tl, P3, 's3+=0.3', 0.5);
-      tl.fromTo(hand, { x: 160, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 's3+=0.8');
+      tl.fromTo(hand, { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 's3+=0.8');
       // 從碰觸點往回一對一對合起來
       // 小葉以葉軸上的點為軸心轉動：上方小葉轉底端、下方小葉轉頂端
-      leaflets.forEach(({ lf, sd, i }) => tl.fromTo(lf, { rotation: 0, transformOrigin: sd < 0 ? '50% 100%' : '50% 0%' }, { rotation: sd * -62, duration: 0.25, ease: 'power2.in' }, `s3+=${1.7 + (8 - i) * 0.08}`));
+      leaflets.forEach(({ lf, sd, i }) => tl.fromTo(lf, { rotation: 0, transformOrigin: sd < 0 ? '50% 100%' : '50% 0%' }, { rotation: sd * -62, duration: 0.25, ease: 'power2.in' }, `s3+=${1.7 + (7 - i) * 0.08}`));
       S.drive(tl, (u) => {
         const P = A3.map((a, k) => S.lerp(a, B3[k], u));
         stem.setAttribute('d', `M ${P[0]},${P[1]} C ${P[2]},${P[3]} ${P[4]},${P[5]} ${P[6]},${P[7]}`);
@@ -302,7 +306,7 @@
           '＊補充：生物都由細胞構成；火會燃燒、消耗氧並產生二氧化碳，但不是生物。',
           '＊示意：生物圈的厚度放大畫了。地球半徑約 6400 km，生物圈約 20 km 厚，只有半徑的 0.3%。如果地球縮成一顆籃球，生物圈只有約 0.4 mm 厚。'],
         steps: [
-          '生物和非生物怎麼分？要看有沒有<b>生命現象</b>。常見的生命現象分成四類：代謝、生長與發育、感應與運動、生殖。',
+          '生物和非生物怎麼分？要看有沒有<b>生命現象</b>。常見的生命現象分成四類：代謝、生長與發育、感應與運動、生殖。先猜猜看上面四個哪些是生物，第 6 步揭曉。',
           '<b>代謝</b>：生物體內進行的各種化學反應。例如把養分分解、放出能量（呼吸作用），或把小分子合成身體需要的物質。',
           '<b>生長與發育</b>：細胞分裂讓數目變多、細胞再長大，個體就長大；發育是形態構造和功能逐漸改變、變得成熟，例如蝌蚪變成青蛙。',
           '<b>感應與運動</b>：生物能接受刺激並做出反應。例如含羞草被碰觸，葉子會合起來；植物會朝著光的方向生長。',

@@ -27,7 +27,7 @@
           const c = document.createElement('section');
           c.className = 'card sumCard';
           const links = S.itemsOf(sec).map((it) => `<button class="ctl small" type="button" data-id="${it.id}">${it.kind === 'lab' ? '互動' : '動畫'}：${it.title}</button>`).join('');
-          c.innerHTML = `<h2><span class="n">${sec}</span>${name}</h2><ul>${pts.map((p) => `<li>${p}</li>`).join('')}</ul><p class="trap"><b>易錯：</b>${trap}</p><div class="btn-row">${links}</div>`;
+          c.innerHTML = `<h2><span class="n">${S.secLabel(sec)}</span>${name}</h2><ul>${pts.map((p) => `<li>${p}</li>`).join('')}</ul><p class="trap"><b>易錯：</b>${trap}</p><div class="btn-row">${links}</div>`;
           map.appendChild(c);
         });
         map.querySelectorAll('[data-id]').forEach((b) => b.addEventListener('click', () => S.openById(b.dataset.id)));

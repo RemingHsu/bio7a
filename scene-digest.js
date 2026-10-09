@@ -173,10 +173,10 @@
       // 內壁：皺褶上有絨毛
       const wall = fr[1];
       let wd = 'M 345,520 ';
-      for (let i = 0; i <= 4; i++) { const x = 352 + i * 64; wd += `L ${x},430 C ${x},300 ${x + 52},300 ${x + 52},430 `; }
-      wd += 'L 620,520 Z';
+      for (let i = 0; i <= 3; i++) { const x = 352 + i * 64; wd += `L ${x},430 C ${x},300 ${x + 52},300 ${x + 52},430 `; } // 4 個皺褶，不超出框（框右緣 x=620）
+      wd += 'L 606,430 L 606,520 Z';
       el('path', { d: wd, fill: '#b5596b', stroke: '#ffb3c1', 'stroke-width': 2 }, wall);
-      for (let i = 0; i <= 4; i++) for (let k = 0; k < 7; k++) {
+      for (let i = 0; i <= 3; i++) for (let k = 0; k < 7; k++) {
         const x = 352 + i * 64, a = Math.PI * (k / 6), cx = x + 26 - Math.cos(a) * 26, cy = 410 - Math.sin(a) * 92;
         el('path', { d: `M ${cx - 4},${cy + 6} L ${cx - 4},${cy - 8} C ${cx - 4},${cy - 16} ${cx + 4},${cy - 16} ${cx + 4},${cy - 8} L ${cx + 4},${cy + 6} Z`, fill: '#e58a9a', transform: `rotate(${(a * 180) / Math.PI - 90} ${cx} ${cy})` }, wall);
       }

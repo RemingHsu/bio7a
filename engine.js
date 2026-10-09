@@ -153,12 +153,11 @@
   let labIdx = -1, labInst = null, playerEl, labEl;
 
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let stage, capEl, capNoteEl, stepNoEl, playBtn, progEl, segs = [];
-  let idx = -1, ctx = null, step = 0, cur = null, timer = null, auto = !reduce, done = false;
+  let stage, capEl, capNoteEl, stepNoEl, playBtn, nextBtn, progEl, segs = [];
+  // 不自動播放：每一步播完就停，由學生按「下一步」；「再放一次」重播這一步
+  let idx = -1, ctx = null, step = 0, cur = null, timer = null, done = false;
 
-  const ICON_PLAY = '<svg viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z"/></svg>';
-  const ICON_PAUSE = '<svg viewBox="0 0 16 16"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/></svg>';
-  const ICON_AGAIN = '<svg viewBox="0 0 16 16"><path d="M8 2.5a5.5 5.5 0 1 0 5.4 6.5h-1.9A3.7 3.7 0 1 1 8 4.3V6.5l3.2-2.9L8 .7z"/></svg>';
+    const ICON_AGAIN = '<svg viewBox="0 0 16 16"><path d="M8 2.5a5.5 5.5 0 1 0 5.4 6.5h-1.9A3.7 3.7 0 1 1 8 4.3V6.5l3.2-2.9L8 .7z"/></svg>';
 
   function bounds(i) {
     const s = ctx.tl.labels['s' + i];
@@ -185,13 +184,10 @@
   }
 
   function updatePlayBtn() {
-    const last = step === ctx.steps.length - 1 && done;
-    playBtn.innerHTML = last ? ICON_AGAIN + '重播' : auto ? ICON_PAUSE + '暫停' : ICON_PLAY + '自動播放';
-  }
-
-  function holdTime(i) {
-    const len = ctx.steps[i].replace(/<[^>]+>/g, '').length;
-    return Math.min(7000, 1600 + len * 110);
+    const last = step === ctx.steps.length - 1;
+    playBtn.innerHTML = ICON_AGAIN + '<span class="lbl">再放一次</span>';
+    nextBtn.disabled = last;
+    nextBtn.classList.toggle('ready', done && !last); // 這一步播完：提示可以按下一步
   }
 
   function go(i) {
@@ -211,8 +207,6 @@
   function finish() {
     done = true;
     paintProgress();
-    if (auto && step < ctx.steps.length - 1) timer = setTimeout(() => go(step + 1), holdTime(step));
-    else if (step === ctx.steps.length - 1) auto = false;
     updatePlayBtn();
   }
 
@@ -241,17 +235,27 @@
   }
 
   // ---------- 兩層導覽：小節 → 該小節的動畫／互動 ----------
-  // 章 → 小節。小節代號依芬姐國中生物的 CH1、CH2 編號
-  const CHAPTERS = [['1', '第一章', '生物的構造'], ['2', '第二章', '生物體的養分'], ['3', '第三章', '生物體的運輸'], ['4', '第四章', '生物體的協調'], ['5', '第五章', '生物體的恆定']];
+  // 章 → 小節。七上的小節代號依芬姐國中生物的 CH1、CH2 編號；七下接著七上編成第六～十一章（小節依課本 7下自然的順序）。
+  // 七下的內部代號寫成「下1-1」（＝課本 1-1），畫面上顯示成「6-1」（S.secLabel）
+  const CHAPTERS = [['1', '第一章', '生物的構造', '七上'], ['2', '第二章', '生物體的養分', '七上'], ['3', '第三章', '生物體的運輸', '七上'], ['4', '第四章', '生物體的協調', '七上'], ['5', '第五章', '生物體的恆定', '七上'],
+    ['下1', '第六章', '生殖', '七下'], ['下2', '第七章', '遺傳', '七下'], ['下3', '第八章', '演化與分類', '七下'], ['下4', '第九章', '形形色色的生物', '七下'], ['下5', '第十章', '生物與環境', '七下'], ['下6', '第十一章', '環境保護與生態平衡', '七下']];
   const SECTIONS = [['1-1', '生命現象', '1'], ['1-2', '細胞', '1'], ['1-3', '擴散與滲透', '1'], ['1-4', '組成層次', '1'], ['1-5', '顯微鏡', '1'], ['1-6', '科學方法', '1'], ['總', '總整理', '1'],
     ['2-1', '食物中的養分', '2'], ['2-2', '酵素', '2'], ['2-3', '光合作用', '2'], ['2-4', '消化與吸收', '2'], ['總2', '總整理', '2'],
     ['3-1', '植物的運輸構造', '3'], ['3-2', '植物體內的運輸', '3'], ['3-3', '心臟血管與血液', '3'], ['3-4', '血液循環與淋巴', '3'], ['總3', '總整理', '3'],
     ['4-1', '神經系統', '4'], ['4-2', '內分泌系統', '4'], ['4-3', '行為與感應', '4'], ['總4', '總整理', '4'],
-    ['5-1', '呼吸與氣體恆定', '5'], ['5-2', '排泄與水分恆定', '5'], ['5-3', '體溫與血糖恆定', '5'], ['總5', '總整理', '5']];
+    ['5-1', '呼吸與氣體恆定', '5'], ['5-2', '排泄與水分恆定', '5'], ['5-3', '體溫與血糖恆定', '5'], ['總5', '總整理', '5'],
+    ['下1-1', '細胞的分裂', '下1'], ['下1-2', '無性生殖', '下1'], ['下1-3', '有性生殖', '下1'], ['下總1', '總整理', '下1'],
+    ['下2-1', '遺傳與基因', '下2'], ['下2-2', '人類的遺傳', '下2'], ['下2-3', '突變與遺傳疾病', '下2'], ['下2-4', '生物技術', '下2'], ['下總2', '總整理', '下2'],
+    ['下3-1', '化石', '下3'], ['下3-2', '生物的演化', '下3'], ['下3-3', '生物的分類', '下3'], ['下總3', '總整理', '下3'],
+    ['下4-1', '原核、原生與菌物界', '下4'], ['下4-2', '植物界', '下4'], ['下4-3', '動物界', '下4'], ['下總4', '總整理', '下4'],
+    ['下5-1', '族群、群集與演替', '下5'], ['下5-2', '生物間的互動', '下5'], ['下5-3', '生態系', '下5'], ['下5-4', '生態系的類型', '下5'], ['下總5', '總整理', '下5'],
+    ['下6-1', '生物多樣性', '下6'], ['下6-2', '人類對環境的衝擊', '下6'], ['下6-3', '保育與永續', '下6'], ['下總6', '總整理', '下6']];
+  const isSum = (k) => k.includes('總');
+  S.secLabel = (k) => (isSum(k) ? '總' : k.replace(/^下(\d+)/, (m, n) => String(+n + 5)));
   const chapOf = (sec) => (SECTIONS.find(([k]) => k === sec) || [])[2];
   const OLD_HASH = { s1: 'scale', s2: 'cell', s3: 'transport', s4: 'levels', a1: 'lab-scale', a2: 'lab-transport' };
   let items = [], curSec = null, curChap = null;
-  const open = (it) => (it.kind === 'scene' ? (auto = !reduce, load(scenes.indexOf(it))) : loadLab(labs.indexOf(it)));
+  const open = (it) => (it.kind === 'scene' ? load(scenes.indexOf(it)) : loadLab(labs.indexOf(it)));
   // 手機上分頁列是橫向捲動：把選中的項目捲進可見範圍（只捲分頁列，不捲整頁）
   const reveal = (bar, t) => {
     if (t && bar.scrollWidth > bar.clientWidth && (t.offsetLeft < bar.scrollLeft || t.offsetLeft + t.offsetWidth > bar.scrollLeft + bar.clientWidth)) bar.scrollLeft = t.offsetLeft - 8;
@@ -264,26 +268,29 @@
       if (!first) return;
       const b = document.createElement('button');
       b.className = 'sec'; b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.sec = k;
-      b.innerHTML = `<span class="n">${k.startsWith('總') ? '總' : k}</span>${name}`;
+      b.innerHTML = `<span class="n">${S.secLabel(k)}</span>${name}`;
       b.addEventListener('click', () => { if (curSec !== k) open(first); });
       secBar.appendChild(b);
     });
-    const [, no, title] = CHAPTERS.find(([k]) => k === chap);
-    document.getElementById('chapTitle').innerHTML = `<span class="chap-no">${no}</span>${title}`;
+    const [, no, title, grade] = CHAPTERS.find(([k]) => k === chap);
+    document.getElementById('chapTitle').innerHTML = `<span class="chap-no">${grade} ${no}</span>${title}`;
     document.querySelectorAll('#chapMenu button').forEach((b) => b.setAttribute('aria-checked', b.dataset.ch === chap));
   }
   // 選章節：按鈕打開清單（每章顯示標題和小節），點選後跳到那一章的第一項
   function setupChapterMenu() {
     const btn = document.getElementById('chapBtn'), menu = document.getElementById('chapMenu');
-    CHAPTERS.forEach(([k, no, title]) => {
+    // 依年級分組（七上／七下），寬螢幕時兩組並排
+    const cols = {};
+    CHAPTERS.forEach(([k, no, title, grade]) => {
       const first = items.find((x) => chapOf(x.section) === k);
       if (!first) return;
-      const secs = SECTIONS.filter((x) => x[2] === k && !x[0].startsWith('總')).map((x) => x[1]).join('・');
+      if (!cols[grade]) { cols[grade] = document.createElement('div'); cols[grade].className = 'grp'; cols[grade].setAttribute('role', 'group'); cols[grade].setAttribute('aria-label', grade); cols[grade].innerHTML = `<div class="grp-h" aria-hidden="true">${grade}</div>`; menu.appendChild(cols[grade]); }
+      const secs = SECTIONS.filter((x) => x[2] === k && !isSum(x[0])).map((x) => x[1]).join('・');
       const b = document.createElement('button');
       b.type = 'button'; b.dataset.ch = k; b.setAttribute('role', 'menuitemradio'); b.setAttribute('aria-checked', 'false');
       b.innerHTML = `<span class="no">${no}</span><span class="t">${title}</span><span class="s">${secs}</span>`;
       b.addEventListener('click', () => { close(); if (curChap !== k) open(first); });
-      menu.appendChild(b);
+      cols[grade].appendChild(b);
     });
     const items_ = () => [...menu.querySelectorAll('button')];
     const show = () => { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); (menu.querySelector('[aria-checked="true"]') || items_()[0]).focus(); };
@@ -482,6 +489,7 @@
     capNoteEl = document.getElementById('capnote');
     stepNoEl = document.getElementById('stepNo');
     playBtn = document.getElementById('play');
+    nextBtn = document.getElementById('next');
     progEl = document.getElementById('progress');
     playerEl = document.querySelector('.player');
     labEl = document.getElementById('lab');
@@ -497,13 +505,13 @@
     setupChapterMenu();
     document.getElementById('prev').addEventListener('click', () => go(step - 1));
     document.getElementById('next').addEventListener('click', () => go(step + 1));
-    playBtn.addEventListener('click', togglePlay);
+    playBtn.addEventListener('click', replay);
     document.addEventListener('keydown', (e) => {
       if (e.target.closest && e.target.closest('input,textarea,select')) return;
       if (labIdx >= 0) return;
       if (e.key === 'ArrowRight') { go(step + 1); e.preventDefault(); }
       else if (e.key === 'ArrowLeft') { go(step - 1); e.preventDefault(); }
-      else if (e.key === ' ') { togglePlay(); e.preventDefault(); }
+      else if (e.key === ' ') { replay(); e.preventDefault(); }
       else if (/^[1-9]$/.test(e.key)) { const secs = SECTIONS.filter((x) => x[2] === curChap), sec = secs[+e.key - 1] && secs[+e.key - 1][0], first = sec && items.find((x) => x.section === sec); if (first && sec !== curSec) open(first); }
     });
     const h = location.hash.slice(1), id = OLD_HASH[h] || h;
@@ -517,17 +525,12 @@
   // 檢查用：直接跳到某一步的結尾畫面
   S.jump = (i, scene) => {
     if (scene != null) load(typeof scene === 'string' ? scenes.findIndex((x) => x.id === scene) : scene);
-    auto = false; go(i);
+    go(i);
     if (cur) cur.kill();
     ctx.tl.seek(bounds(step)[1] - 1e-3, false);
     finish();
   };
 
-  function togglePlay() {
-    if (step === ctx.steps.length - 1 && done) { auto = !reduce; go(0); return; }
-    auto = !auto;
-    if (auto && done) go(step + 1);
-    else if (!auto) clearTimeout(timer);
-    updatePlayBtn();
-  }
+  // 再放一次：從這一步的開頭重播
+  function replay() { go(step); }
 })();
