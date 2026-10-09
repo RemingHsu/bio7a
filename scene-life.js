@@ -20,8 +20,8 @@
     el('path', { d: 'M -46,30 L 46,30 L 36,84 L -36,84 Z', fill: '#b0703c' }, s);
     el('rect', { x: -50, y: 22, width: 100, height: 14, rx: 4, fill: '#8a5530' }, s);
     el('path', { d: 'M 0,26 C 0,-10 -4,-40 2,-70', stroke: '#6fce62', 'stroke-width': 8, fill: 'none', 'stroke-linecap': 'round' }, s);
-    el('ellipse', { cx: -26, cy: -72, rx: 28, ry: 13, fill: '#6fce62', transform: 'rotate(-25 -26 -72)' }, s);
-    el('ellipse', { cx: 30, cy: -76, rx: 28, ry: 13, fill: '#58b84e', transform: 'rotate(25 30 -76)' }, s);
+    el('ellipse', { cx: -26, cy: -72, rx: 28, ry: 13, fill: '#6fce62', transform: 'rotate(25 -26 -72)' }, s);
+    el('ellipse', { cx: 30, cy: -76, rx: 28, ry: 13, fill: '#58b84e', transform: 'rotate(-25 30 -76)' }, s);
     return s;
   }
   function robot(p) {
@@ -127,7 +127,7 @@
         el('path', { d: `M ${x - 38},${base} L ${x + 38},${base} L ${x + 30},${base + 56} L ${x - 30},${base + 56} Z`, fill: '#b0703c' }, P2);
         const st = g(P2);
         el('line', { x1: x, y1: base, x2: x, y2: base - h, stroke: '#cfe8a8', 'stroke-width': 7, 'stroke-linecap': 'round' }, st);
-        if (d > 0) { el('ellipse', { cx: x - 14, cy: base - h, rx: 16, ry: 8, fill: '#6fce62', transform: `rotate(-30 ${x - 14} ${base - h})` }, st); el('ellipse', { cx: x + 14, cy: base - h, rx: 16, ry: 8, fill: '#58b84e', transform: `rotate(30 ${x + 14} ${base - h})` }, st); }
+        if (d > 0) { el('ellipse', { cx: x - 14, cy: base - h, rx: 16, ry: 8, fill: '#6fce62', transform: `rotate(30 ${x - 14} ${base - h})` }, st); el('ellipse', { cx: x + 14, cy: base - h, rx: 16, ry: 8, fill: '#58b84e', transform: `rotate(-30 ${x + 14} ${base - h})` }, st); }
         else el('ellipse', { cx: x, cy: base - 6, rx: 12, ry: 9, fill: '#7cc46a' }, st);
         text(P2, x, base + 86, `第 ${d * 2 + 1} 天`, { 'font-size': 22, fill: C.mute, 'text-anchor': 'middle' });
         stems.push(st);
@@ -178,7 +178,9 @@
       el('path', { d: 'M 790,540 L 900,540 L 885,600 L 805,600 Z', fill: '#b0703c' }, P3);
       const stemA = 'M 845,540 C 845,480 845,420 845,330', stemB = 'M 845,540 C 845,470 880,400 960,350';
       const stem = el('path', { d: stemA, stroke: '#6fce62', 'stroke-width': 9, fill: 'none', 'stroke-linecap': 'round' }, P3);
-      const head = el('ellipse', { cx: 845, cy: 330, rx: 26, ry: 12, fill: '#58b84e' }, P3);
+      // 莖頂的兩片葉子：跟著莖尖的方向，張開成 V 字
+      const head = g(P3, { transform: 'translate(845,330) rotate(-90)' });
+      [-1, 1].forEach((sd) => el('ellipse', { cx: 18, cy: 0, rx: 18, ry: 8, fill: sd < 0 ? '#6fce62' : '#58b84e', transform: `rotate(${sd * 40})` }, head));
       const nums = (d) => d.match(/-?\d+(\.\d+)?/g).map(Number);
       const A3 = nums(stemA), B3 = nums(stemB);
 
@@ -192,7 +194,8 @@
       S.drive(tl, (u) => {
         const P = A3.map((a, k) => S.lerp(a, B3[k], u));
         stem.setAttribute('d', `M ${P[0]},${P[1]} C ${P[2]},${P[3]} ${P[4]},${P[5]} ${P[6]},${P[7]}`);
-        head.setAttribute('cx', P[6]); head.setAttribute('cy', P[7]);
+        const ang = (Math.atan2(P[7] - P[5], P[6] - P[4]) * 180) / Math.PI;
+        head.setAttribute('transform', `translate(${P[6]},${P[7]}) rotate(${ang.toFixed(1)})`);
       }, 2.2, 's3+=1.2', 'power1.inOut');
 
       // ===== 4 生殖 =====

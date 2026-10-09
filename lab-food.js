@@ -61,7 +61,7 @@
   .labT .table-wrap { overflow-x: auto; }
   .labT .tbl { min-width: 26rem; }
   @media (max-width: 900px) {
-    .labT { display: flex; flex-direction: column; }
+    .labT { display: flex; flex-direction: column; align-items: stretch; }
     .labT .col { display: contents; }
     .labT .c-stage { order: 1; } .labT .c-mis { order: 2; } .labT .c-table { order: 3; } .labT .c-ctl { order: 4; }
   }

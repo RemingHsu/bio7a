@@ -45,7 +45,7 @@
   .labP .table-wrap { overflow-x: auto; }
   .labP .tbl { min-width: 20rem; }
   @media (max-width: 900px) {
-    .labP { display: flex; flex-direction: column; }
+    .labP { display: flex; flex-direction: column; align-items: stretch; }
     .labP .col { display: contents; }
     .labP .c-stage { order: 1; } .labP .c-mis { order: 2; } .labP .c-data { order: 3; } .labP .c-ctl { order: 4; }
   }

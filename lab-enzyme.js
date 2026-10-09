@@ -52,7 +52,7 @@
   .labE .table-wrap { overflow-x: auto; }
   .labE .tbl { min-width: 24rem; }
   @media (max-width: 900px) {
-    .labE { display: flex; flex-direction: column; }
+    .labE { display: flex; flex-direction: column; align-items: stretch; }
     .labE .col { display: contents; }
     .labE .c-stage { order: 1; } .labE .c-mis { order: 2; } .labE .c-table { order: 3; } .labE .c-ctl { order: 4; }
   }

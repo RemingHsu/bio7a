@@ -33,7 +33,7 @@
   .labC .table-wrap { overflow-x: auto; }
   .labC .tbl { min-width: 22rem; }
   @media (max-width: 900px) {
-    .labC { display: flex; flex-direction: column; }
+    .labC { display: flex; flex-direction: column; align-items: stretch; }
     .labC .col { display: contents; }
     .labC .c-stage { order: 1; } .labC .c-mis { order: 2; } .labC .c-table { order: 3; } .labC .c-ctl { order: 4; }
   }

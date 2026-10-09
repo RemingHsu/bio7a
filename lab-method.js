@@ -49,10 +49,10 @@
       const gp = g(p);
       el('path', { d: `M ${x - 90},400 L ${x + 90},400 L ${x + 74},470 L ${x - 74},470 Z`, fill: '#b0703c' }, gp);
       const stems = [-50, -18, 18, 50].map((dx) => el('line', { x1: x + dx, y1: 400, x2: x + dx, y2: 400, stroke: '#9be58c', 'stroke-width': 6, 'stroke-linecap': 'round' }, gp));
-      const leaves = [-50, -18, 18, 50].map((dx) => el('ellipse', { cx: x + dx, cy: 400, rx: 12, ry: 6, fill: '#6fce62' }, gp));
+      const leaves = [-50, -18, 18, 50].map((dx) => { const lg = g(gp, { transform: `translate(${x + dx},400)` }); [-1, 1].forEach((s) => el('ellipse', { cx: s * 10, cy: -5, rx: 11, ry: 5, fill: '#6fce62', transform: `rotate(${-s * 30} ${s * 10} -5)` }, lg)); return lg; });
       return (v, f) => {
         const pale = f.light; // 放在暗處：黃白色
-        stems.forEach((s, i) => { const h = Math.max(0, v * 24 + (i % 2 ? 6 : -4)); s.setAttribute('y2', 400 - h); s.setAttribute('stroke', pale ? '#e8e2a0' : '#9be58c'); leaves[i].setAttribute('cy', 400 - h); leaves[i].setAttribute('fill', pale ? '#f2e58a' : '#6fce62'); });
+        stems.forEach((s, i) => { const h = Math.max(0, v * 24 + (i % 2 ? 6 : -4)); s.setAttribute('y2', 400 - h); s.setAttribute('stroke', pale ? '#e8e2a0' : '#9be58c'); leaves[i].setAttribute('transform', `translate(${x + [-50, -18, 18, 50][i]},${400 - h})`); leaves[i].querySelectorAll('ellipse').forEach((e) => e.setAttribute('fill', pale ? '#f2e58a' : '#6fce62')); });
       };
     },
     bread(p, x) {

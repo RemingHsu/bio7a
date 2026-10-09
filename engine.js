@@ -225,6 +225,7 @@
 
   function loadLab(j) {
     if (j === labIdx) return;
+    if (bigEl) setBig(bigEl, false);
     clearTimeout(timer);
     if (cur) cur.kill();
     if (ctx) { ctx.tl.kill(); ctx.cleanup && ctx.cleanup(); ctx = null; }
@@ -234,15 +235,19 @@
     playerEl.hidden = true;
     labEl.hidden = false; labEl.innerHTML = '';
     labInst = labs[j].mount(labEl) || null;
+    addLabBigButtons(labEl);
     markNav(labs[j]);
     try { history.replaceState(null, '', '#' + labs[j].id); } catch (e) {}
   }
 
   // ---------- 兩層導覽：小節 → 該小節的動畫／互動 ----------
   // 章 → 小節。小節代號依芬姐國中生物的 CH1、CH2 編號
-  const CHAPTERS = [['1', '第一章', '生物的構造'], ['2', '第二章', '生物體的養分']];
+  const CHAPTERS = [['1', '第一章', '生物的構造'], ['2', '第二章', '生物體的養分'], ['3', '第三章', '生物體的運輸'], ['4', '第四章', '生物體的協調'], ['5', '第五章', '生物體的恆定']];
   const SECTIONS = [['1-1', '生命現象', '1'], ['1-2', '細胞', '1'], ['1-3', '擴散與滲透', '1'], ['1-4', '組成層次', '1'], ['1-5', '顯微鏡', '1'], ['1-6', '科學方法', '1'], ['總', '總整理', '1'],
-    ['2-1', '食物中的養分', '2'], ['2-2', '酵素', '2'], ['2-3', '光合作用', '2'], ['2-4', '消化與吸收', '2'], ['總2', '總整理', '2']];
+    ['2-1', '食物中的養分', '2'], ['2-2', '酵素', '2'], ['2-3', '光合作用', '2'], ['2-4', '消化與吸收', '2'], ['總2', '總整理', '2'],
+    ['3-1', '植物的運輸構造', '3'], ['3-2', '植物體內的運輸', '3'], ['3-3', '心臟血管與血液', '3'], ['3-4', '血液循環與淋巴', '3'], ['總3', '總整理', '3'],
+    ['4-1', '神經系統', '4'], ['4-2', '內分泌系統', '4'], ['4-3', '行為與感應', '4'], ['總4', '總整理', '4'],
+    ['5-1', '呼吸與氣體恆定', '5'], ['5-2', '排泄與水分恆定', '5'], ['5-3', '體溫與血糖恆定', '5'], ['總5', '總整理', '5']];
   const chapOf = (sec) => (SECTIONS.find(([k]) => k === sec) || [])[2];
   const OLD_HASH = { s1: 'scale', s2: 'cell', s3: 'transport', s4: 'levels', a1: 'lab-scale', a2: 'lab-transport' };
   let items = [], curSec = null, curChap = null;
@@ -264,9 +269,34 @@
       secBar.appendChild(b);
     });
     const [, no, title] = CHAPTERS.find(([k]) => k === chap);
-    document.getElementById('chapTitle').textContent = title;
-    document.querySelectorAll('#chapters button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.ch === chap));
-    void no;
+    document.getElementById('chapTitle').innerHTML = `<span class="chap-no">${no}</span>${title}`;
+    document.querySelectorAll('#chapMenu button').forEach((b) => b.setAttribute('aria-checked', b.dataset.ch === chap));
+  }
+  // 選章節：按鈕打開清單（每章顯示標題和小節），點選後跳到那一章的第一項
+  function setupChapterMenu() {
+    const btn = document.getElementById('chapBtn'), menu = document.getElementById('chapMenu');
+    CHAPTERS.forEach(([k, no, title]) => {
+      const first = items.find((x) => chapOf(x.section) === k);
+      if (!first) return;
+      const secs = SECTIONS.filter((x) => x[2] === k && !x[0].startsWith('總')).map((x) => x[1]).join('・');
+      const b = document.createElement('button');
+      b.type = 'button'; b.dataset.ch = k; b.setAttribute('role', 'menuitemradio'); b.setAttribute('aria-checked', 'false');
+      b.innerHTML = `<span class="no">${no}</span><span class="t">${title}</span><span class="s">${secs}</span>`;
+      b.addEventListener('click', () => { close(); if (curChap !== k) open(first); });
+      menu.appendChild(b);
+    });
+    const items_ = () => [...menu.querySelectorAll('button')];
+    const show = () => { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); (menu.querySelector('[aria-checked="true"]') || items_()[0]).focus(); };
+    const close = (focusBtn) => { if (menu.hidden) return; menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); if (focusBtn) btn.focus(); };
+    btn.addEventListener('click', () => (menu.hidden ? show() : close()));
+    document.addEventListener('pointerdown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) close(); });
+    menu.addEventListener('keydown', (e) => {
+      const list = items_(), i = list.indexOf(document.activeElement);
+      if (e.key === 'Escape') { close(true); e.preventDefault(); }
+      else if (e.key === 'ArrowDown') { list[(i + 1) % list.length].focus(); e.preventDefault(); }
+      else if (e.key === 'ArrowUp') { list[(i - 1 + list.length) % list.length].focus(); e.preventDefault(); }
+      e.stopPropagation(); // 選單裡的按鍵不要觸發播放器的快捷鍵
+    });
   }
   function markNav(it) {
     const secBar = document.getElementById('sections'), tabBar = document.getElementById('tabs');
@@ -309,7 +339,7 @@
     capBar.style.minHeight = mx + 'px';
   }
   function fit() {
-    if (!playerEl || playerEl.hidden || document.fullscreenElement || document.webkitFullscreenElement) return;
+    if (!playerEl || playerEl.hidden || playerEl.classList.contains('big')) return;
     const full = playerEl.parentElement.clientWidth;
     const rootPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     const vh = window.innerHeight, pad = rootPx * 0.6;
@@ -347,33 +377,79 @@
   const fitSoon = () => { cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(fit); };
   S.fit = fit;
 
-  // ---------- 全螢幕（支援的瀏覽器才顯示按鈕） ----------
-  function setupFullscreen() {
+  // ---------- 放大檢視：畫面填滿整個螢幕；手機直拿時自動轉 90°，變成橫向（字約大兩倍） ----------
+  // 有支援就順便進入瀏覽器全螢幕（隱藏網址列）；iPhone 不支援，也照樣用 CSS 填滿畫面
+  const fsReq = () => {
+    const el = document.documentElement, f = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (!f || !(document.fullscreenEnabled || document.webkitFullscreenEnabled)) return;
+    try { const p = f.call(el); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+  };
+  const fsExit = () => {
+    if (!(document.fullscreenElement || document.webkitFullscreenElement)) return;
+    try { const p = (document.exitFullscreen || document.webkitExitFullscreen).call(document); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+  };
+  let bigEl = null;
+  function sizeBig() {
+    if (!bigEl) return;
+    const vw = window.innerWidth, vh = window.innerHeight, rot = vh > vw * 1.05;
+    const W = rot ? vh : vw, H = rot ? vw : vh;
+    bigEl.classList.toggle('rot', rot);
+    bigEl.style.setProperty('--bw', W + 'px');
+    bigEl.style.setProperty('--bh', H + 'px');
+    if (bigEl === playerEl) {
+      const rootPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      const side = Math.max(W - (H * 5) / 3, Math.min(W * 0.27, 16 * rootPx), 170);
+      bigEl.style.setProperty('--bside', Math.round(side) + 'px');
+    }
+  }
+  function setBig(el, on) {
+    if (on) {
+      if (bigEl && bigEl !== el) setBig(bigEl, false);
+      bigEl = el;
+      el.classList.remove('side');
+      el.classList.add('big');
+      document.body.classList.add('big-on');
+      sizeBig();
+      fsReq();
+    } else {
+      el.classList.remove('big', 'rot');
+      if (bigEl === el) bigEl = null;
+      document.body.classList.remove('big-on');
+      fsExit();
+      if (el === playerEl) fitSoon();
+    }
+    if (el === playerEl) {
+      const b = document.getElementById('fs');
+      b.querySelector('.lbl').textContent = on ? '縮小' : '放大';
+      b.setAttribute('aria-label', on ? '縮小畫面' : '放大畫面');
+    }
+    const eb = el.querySelector(':scope > .big-btn');
+    if (eb) { eb.textContent = on ? '✕ 縮小' : '⤢ 放大'; eb.setAttribute('aria-label', on ? '縮小畫面' : '放大畫面'); }
+  }
+  S.setBig = setBig;
+  function setupBigView() {
     const btn = document.getElementById('fs');
-    const req = playerEl.requestFullscreen || playerEl.webkitRequestFullscreen;
-    const ok = !!req && (document.fullscreenEnabled || document.webkitFullscreenEnabled);
-    btn.hidden = !ok;
-    document.querySelector('.rotate-hint').textContent = ok ? '手機橫放，或按全螢幕按鈕，畫面和字會大一些。' : '手機橫放，畫面和字會大一些。';
-    if (!ok) return;
-    btn.addEventListener('click', () => {
-      const cur = document.fullscreenElement || document.webkitFullscreenElement;
-      try {
-        const p = cur ? (document.exitFullscreen || document.webkitExitFullscreen).call(document) : req.call(playerEl);
-        if (p && p.catch) p.catch(() => {});
-      } catch (e) {}
+    btn.hidden = false;
+    btn.addEventListener('click', () => setBig(playerEl, !playerEl.classList.contains('big')));
+    window.addEventListener('resize', sizeBig);
+    const onFs = () => { if (!(document.fullscreenElement || document.webkitFullscreenElement) && bigEl) setBig(bigEl, false); };
+    document.addEventListener('fullscreenchange', onFs);
+    document.addEventListener('webkitfullscreenchange', onFs);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bigEl) setBig(bigEl, false); });
+  }
+  // 互動的舞台右上角也放一個「放大」按鈕
+  function addLabBigButtons(box) {
+    box.querySelectorAll('.lab-stage').forEach((st) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'big-btn'; b.textContent = '⤢ 放大'; b.setAttribute('aria-label', '放大畫面');
+      b.addEventListener('click', () => setBig(st, !st.classList.contains('big')));
+      st.appendChild(b);
     });
-    const onChange = () => {
-      const on = !!(document.fullscreenElement || document.webkitFullscreenElement);
-      btn.querySelector('.lbl').textContent = on ? '離開全螢幕' : '全螢幕';
-      btn.setAttribute('aria-label', on ? '離開全螢幕' : '全螢幕');
-      if (!on) fitSoon();
-    };
-    document.addEventListener('fullscreenchange', onChange);
-    document.addEventListener('webkitfullscreenchange', onChange);
   }
 
   function load(i) {
     if (i === idx) return;
+    if (bigEl) setBig(bigEl, false);
     if (labIdx >= 0) closeLab();
     clearTimeout(timer);
     if (cur) cur.kill();
@@ -411,22 +487,14 @@
     labEl = document.getElementById('lab');
     capBar = document.querySelector('.caption-bar');
     ctlBar = document.querySelector('.controls');
-    setupFullscreen();
+    setupBigView();
     window.addEventListener('resize', fitSoon);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitSoon);
     scenes.forEach((x) => { x.kind = 'scene'; });
     labs.forEach((x) => { x.kind = 'lab'; });
     const order = (x) => SECTIONS.findIndex(([k]) => k === x.section);
     items = [...scenes, ...labs].map((x, n) => ({ x, n })).sort((a, b) => order(a.x) - order(b.x) || a.n - b.n).map((o) => o.x);
-    const chBar = document.getElementById('chapters');
-    CHAPTERS.forEach(([k, no, title]) => {
-      const first = items.find((x) => chapOf(x.section) === k);
-      if (!first) return;
-      const b = document.createElement('button');
-      b.type = 'button'; b.dataset.ch = k; b.innerHTML = `${no}<span class="ct"> ${title}</span>`; b.setAttribute("aria-label", `${no} ${title}`); // 窄螢幕只留「第一章」
-      b.addEventListener('click', () => { if (curChap !== k) open(first); });
-      chBar.appendChild(b);
-    });
+    setupChapterMenu();
     document.getElementById('prev').addEventListener('click', () => go(step - 1));
     document.getElementById('next').addEventListener('click', () => go(step + 1));
     playBtn.addEventListener('click', togglePlay);

@@ -50,7 +50,7 @@
       const pl = frames[0];
       el('path', { d: 'M 120,440 L 210,440 L 200,490 L 130,490 Z', fill: '#b0703c' }, pl);
       el('path', { d: 'M 165,440 C 160,360 172,280 166,190', fill: 'none', stroke: '#6fae4a', 'stroke-width': 7, 'stroke-linecap': 'round' }, pl);
-      [[140, 390, 70, 30, -20], [196, 350, 74, 32, 22], [138, 300, 68, 28, -26], [198, 256, 72, 30, 18], [150, 214, 60, 26, -30], [184, 190, 54, 24, 30]]
+      [[140, 390, 70, 30, 20], [196, 350, 74, 32, -22], [138, 300, 68, 28, 26], [198, 256, 72, 30, -18], [150, 214, 60, 26, 30], [184, 190, 54, 24, -30]]
         .forEach(([x, y, w, h, r]) => leaf(pl, x, y, w, h, { r, veins: false }));
       // 葉
       const lf = frames[1];
@@ -227,8 +227,8 @@
       el('rect', { x: CX(0) - 80, y: 110, width: 160, height: 180, rx: 8, fill: '#060b10', stroke: '#4a6272', 'stroke-width': 2 }, cards[0]);
       el('path', { d: `M ${CX(0) - 30},280 L ${CX(0) + 30},280 L ${CX(0) + 24},250 L ${CX(0) - 24},250 Z`, fill: '#6b4a2c' }, cards[0]);
       el('line', { x1: CX(0), y1: 250, x2: CX(0), y2: 170, stroke: '#3f6e3a', 'stroke-width': 4 }, cards[0]);
-      leaf(cards[0], CX(0) - 24, 200, 50, 24, { r: -25, fill: '#2f5a2e', veins: false });
-      leaf(cards[0], CX(0) + 24, 180, 50, 24, { r: 25, fill: '#2f5a2e', veins: false });
+      leaf(cards[0], CX(0) - 24, 200, 50, 24, { r: 25, fill: '#2f5a2e', veins: false });
+      leaf(cards[0], CX(0) + 24, 180, 50, 24, { r: -25, fill: '#2f5a2e', veins: false });
       el('path', { d: `M ${CX(0) + 50},124 a 16,16 0 1,0 12,26 a 13,13 0 1,1 -12,-26 Z`, fill: '#ffe9a8' }, cards[0]);
       // ②
       el('circle', { cx: CX(1) - 70, cy: 112, r: 18, fill: C.hi }, cards[1]);

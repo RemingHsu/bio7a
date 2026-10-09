@@ -133,7 +133,7 @@
         el('path', { d, stroke: '#c8a27a', 'stroke-width': 6, fill: 'none', 'stroke-linecap': 'round' }, plant));
       el('path', { d: 'M 480,520 C 475,420 490,320 480,200', stroke: '#5aa04d', 'stroke-width': 12, fill: 'none', 'stroke-linecap': 'round' }, plant);
       el('path', { d: 'M 482,335 C 540,320 590,322 606,350', stroke: '#5aa04d', 'stroke-width': 7, fill: 'none' }, plant);
-      [[436, 430, -30], [528, 395, 30], [438, 300, -30], [522, 255, 28]].forEach(([x, y, r]) => {
+      [[436, 430, 30], [528, 395, -30], [438, 300, 30], [522, 255, -28]].forEach(([x, y, r]) => {
         const l = g(plant, { transform: `translate(${x},${y}) rotate(${r})` });
         el('ellipse', { cx: 0, cy: 0, rx: 50, ry: 19, fill: '#4fae4a' }, l);
         el('line', { x1: -44, y1: 0, x2: 44, y2: 0, stroke: '#2f7a2a', 'stroke-width': 3 }, l);
