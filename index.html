@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>國中生物七上</title>
+<meta name="description" content="國中生物七上動畫與互動模型：第一章生物的構造、第二章生物體的養分">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: fixed-dark 5:3 stage (microscope field) that fits one screen; caption + controls below it, or beside it on wide screens. */
+:root {
+  --bg: #eaf0ee;
+  --surface: #ffffff;
+  --ink: #13232b;
+  --muted: #566a73;
+  --line: #cfdcd9;
+  --accent: #0b7a68;
+  --accent-ink: #ffffff;
+  --stage: #0d1822;
+  --stage-edge: #1d2f3c;
+  --good: #17804a;
+  --bad: #c0392b;
+  --series-l: #2a78d6;
+  --series-r: #eb6834;
+  --grid: #dde5e3;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-label: "LXGW WenKai TC", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #091015; --surface: #111b22; --ink: #dbe6e9; --muted: #8fa3ac; --line: #22333d;
+    --accent: #46c8ae; --accent-ink: #052019; --stage: #0b151e; --stage-edge: #22384a;
+    --good: #4cc77a; --bad: #ff7a66; --series-l: #3987e5; --series-r: #d95926; --grid: #22333d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #091015; --surface: #111b22; --ink: #dbe6e9; --muted: #8fa3ac; --line: #22333d;
+  --accent: #46c8ae; --accent-ink: #052019; --stage: #0b151e; --stage-edge: #22384a;
+  --good: #4cc77a; --bad: #ff7a66; --series-l: #3987e5; --series-r: #d95926; --grid: #22333d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+/* 隱藏一律優先（避免寬螢幕版面的 display: grid 把被隱藏的播放器又顯示出來） */
+[hidden] { display: none !important; }
+/* 自適應：根字級隨視窗寬度連續縮放（手機約 14px、筆電約 16px、投影機約 19–22px），其他尺寸都用 rem/em */
+html { font-size: clamp(14px, 0.42vw + 10.5px, 22px); }
+html, body { background: var(--bg); color: var(--ink); }
+body { font-family: var(--font-body); font-size: 1rem; line-height: 1.6; padding-inline: 16px; padding-block: 0.9rem 1.2rem; }
+.app { max-width: 110rem; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.8rem; }
+
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 0.6rem 1.5rem; }
+header > * { min-width: 0; max-width: 100%; }
+.title-block { min-width: 0; }
+.eyebrow { font-size: 0.8rem; letter-spacing: .12em; color: var(--muted); }
+.chapters { margin-bottom: 0.35rem; }
+.seg-ctl.chapters { flex-wrap: nowrap; }
+.chapters button { font-size: 0.8rem; padding: 0.3em 0.75em; white-space: nowrap; }
+@media (max-width: 900px), (max-height: 520px) { .chapters .ct { display: none; } }
+h1 { margin: 0.1rem 0 0; font-family: var(--font-label); font-weight: 700; font-size: 1.9rem; line-height: 1.2; text-wrap: balance; }
+
+.nav { display: grid; gap: 0.45rem; min-width: 0; justify-items: end; }
+.sections, .tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; min-width: 0; max-width: 100%; justify-content: flex-end; }
+.sec { font: inherit; font-size: 0.95rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); white-space: nowrap;
+  padding: 0.3em 0.85em 0.3em 0.35em; border-radius: 999px; cursor: pointer; display: inline-flex; gap: 0.45em; align-items: center; }
+.sec .n { font-family: var(--font-mono); font-size: 0.78em; padding: 0.15em 0.5em; border-radius: 999px; background: var(--bg); color: var(--muted); }
+.sec[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.sec[aria-selected="true"] .n { background: var(--accent-ink); color: var(--accent); }
+.sec:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tab .kind { font-size: 0.75em; padding: 0.1em 0.5em; border-radius: 4px; border: 1px solid currentColor; opacity: 0.85; }
+.tab { font: inherit; font-size: 0.9rem; border: 1px dashed var(--line); background: transparent; color: var(--ink); white-space: nowrap;
+  padding: 0.35em 0.9em 0.35em 0.6em; border-radius: 999px; cursor: pointer; display: inline-flex; gap: 0.5em; align-items: center; }
+.tab .n { font-family: var(--font-mono); font-size: 0.8em; width: 1.75em; height: 1.75em; border-radius: 50%;
+  display: inline-grid; place-items: center; background: var(--bg); color: var(--muted); }
+.tab[aria-selected="true"] { border-style: solid; border-color: var(--accent); color: var(--accent); font-weight: 700; }
+.tab:focus-visible, .ctl:focus-visible, .seg:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 播放器寬度由 engine.js 依視窗高度計算（--fit-w），讓舞台＋說明＋按鈕剛好放進一個畫面 */
+.player { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; width: 100%; max-width: var(--fit-w, 100%); margin-inline: auto; }
+.stage-wrap { background: var(--stage); border-bottom: 1px solid var(--stage-edge); position: relative; }
+#stage { display: block; width: 100%; height: auto; aspect-ratio: 5 / 3; max-width: 100%; }
+#stage text { font-family: var(--font-label); }
+#stage .mono { font-family: var(--font-mono); }
+/* 寬螢幕版面：說明與按鈕放在舞台右側 */
+.player.side { display: grid; grid-template-columns: minmax(0, 1fr) var(--side-w, 20rem); grid-template-rows: minmax(0, 1fr) auto; height: var(--side-h, auto); }
+.player.side .stage-wrap { grid-row: 1 / span 2; border-bottom: 0; border-right: 1px solid var(--stage-edge); display: flex; align-items: center; }
+.player.side .caption-bar { grid-column: 2; grid-template-columns: 1fr; align-content: start; gap: 0.4rem; padding: 1.25rem 1.25rem 0.5rem; min-height: 0; overflow-y: auto; }
+.player.side #caption { font-size: clamp(1rem, 2.6vh, 1.4rem); }
+.player.side .controls { grid-column: 2; padding: 0.5rem 1.25rem 1.25rem; }
+.player.side .progress { flex-basis: 100%; order: -1; }
+.player.side .controls .ctl { flex: 1 1 40%; justify-content: center; min-width: 0; }
+.player.side .rotate-hint { display: none; }
+.player:fullscreen { max-width: none; width: 100vw; height: 100vh; border: 0; border-radius: 0; display: flex; flex-direction: column; }
+.player:fullscreen .stage-wrap { flex: 1; min-height: 0; }
+.player:fullscreen #stage { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; }
+.player.side:fullscreen { display: grid; height: 100vh; }
+
+.caption-bar { display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; padding: 0.9rem 1.25rem 0.3rem; }
+.step-no { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); padding-top: 0.4em; white-space: nowrap; font-variant-numeric: tabular-nums; }
+#caption { margin: 0; font-family: var(--font-label); font-size: 1.4rem; line-height: 1.55; min-width: 0; }
+#caption b { color: var(--accent); font-weight: 700; }
+.cap-col { min-width: 0; }
+/* 備註：以「＊」開頭，懸掛縮排讓星號對齊 */
+.footnote { margin: 0.5rem 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--muted); padding-left: 1.1em; text-indent: -1.1em; }
+#caption.enter { animation: capIn .35s ease-out; }
+@keyframes capIn { from { transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { #caption.enter { animation: none; } }
+
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; padding: 0.5rem 1.25rem 1rem; }
+.ctl { font: inherit; font-size: 0.95rem; border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+  border-radius: 0.6rem; padding: 0.5em 0.9em; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4em; }
+.ctl:hover { border-color: var(--accent); }
+.ctl.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); min-width: 7.5em; justify-content: center; }
+.ctl svg { width: 1em; height: 1em; fill: currentColor; }
+.ctl[hidden] { display: none; }
+.progress { flex: 1 1 16rem; display: flex; gap: 0.25rem; min-width: 0; }
+.seg { flex: 1; height: 0.6rem; border-radius: 0.3rem; background: var(--line); border: 0; padding: 0; cursor: pointer; position: relative; overflow: hidden; }
+.seg i { position: absolute; inset: 0; width: 0; background: var(--accent); border-radius: inherit; }
+.rotate-hint { display: none; margin: 0; padding: 0 1.25rem 0.9rem; font-size: 0.85rem; color: var(--muted); }
+.hint { font-size: 0.8rem; color: var(--muted); margin: 0; }
+.hint kbd { font-family: var(--font-mono); font-size: 0.75rem; border: 1px solid var(--line); border-radius: 4px; padding: 0 0.3em; background: var(--surface); }
+@media (hover: none) and (pointer: coarse) { .kbd-hint { display: none; } }
+
+/* 檢查用：只顯示舞台（S.stageOnly(true)） */
+body.stage-only header, body.stage-only .hint, body.stage-only .caption-bar, body.stage-only .controls, body.stage-only .rotate-hint { display: none !important; }
+body.stage-only { padding: 0; }
+body.stage-only .player { position: fixed; inset: 0; max-width: none; border: 0; border-radius: 0; display: flex; align-items: center; justify-content: center; background: var(--stage); }
+body.stage-only .stage-wrap { width: min(100vw, calc(100vh * 5 / 3)); border: 0; }
+
+/* 互動模型 */
+
+.lab { display: grid; gap: 0.9rem; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; }
+/* 互動：任務卡上的大按鈕（一次只做一件事）＋ 收起來的「自由探索」設定 */
+.acts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
+.acts .ctl { flex: 1 1 9em; justify-content: center; font-size: 1.05rem; padding: 0.65em 1em; }
+.acts .ctl[aria-pressed="true"] { border-color: var(--good); color: var(--good); }
+.free > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; color: var(--muted); }
+.free > summary::-webkit-details-marker { display: none; }
+.free > summary::before { content: '▸'; display: inline-block; transition: transform 0.2s; }
+.free[open] > summary::before { transform: rotate(90deg); }
+.free[open] > summary { margin-bottom: 0.8rem; color: var(--ink); }
+/* 舞台高度不超過視窗的一定比例，寬度依比例算出、置中 */
+.lab-stage { background: var(--stage); border-bottom: 1px solid var(--stage-edge); position: relative; display: flex; justify-content: center; }
+.lab-stage svg, .lab-stage canvas { display: block; height: auto; max-width: 100%; touch-action: none; }
+.lab-stage svg { width: min(100%, calc(58vh * 5 / 3)); width: min(100%, calc(58dvh * 5 / 3)); }
+.lab-stage canvas { width: min(100%, calc(62vh * 16 / 9)); width: min(100%, calc(62dvh * 16 / 9)); }
+.lab-stage:focus-within { outline: 3px solid var(--accent); outline-offset: -3px; }
+.lab-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; }
+.lab-row > * { padding: 1rem 1.25rem; min-width: 0; }
+.lab-row > * + * { border-left: 1px solid var(--line); }
+.lab h2 { font-family: var(--font-label); font-size: 1.35rem; margin: 0 0 0.6rem; }
+.lab h3 { font-size: 0.9rem; margin: 0 0 0.5rem; color: var(--muted); font-weight: 500; letter-spacing: .04em; }
+.field { display: grid; gap: 0.4rem; margin-bottom: 0.9rem; }
+.field-head { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.95rem; }
+.field-head output { font-family: var(--font-mono); font-size: 0.85rem; font-variant-numeric: tabular-nums; text-align: right; }
+.ticks { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.seg-ctl { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.2rem; background: var(--bg); border: 1px solid var(--line); border-radius: 0.6rem; max-width: 100%; }
+.seg-ctl button { font: inherit; font-size: 0.875rem; border: 0; background: transparent; color: var(--ink); padding: 0.4em 0.8em; border-radius: 0.5rem; cursor: pointer; }
+.seg-ctl button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ctl.small { font-size: 0.875rem; padding: 0.4em 0.8em; }
+.readout { display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 0.9rem; margin: 0; font-size: 0.95rem; }
+.readout dt { color: var(--muted); }
+.readout dd { margin: 0; font-weight: 500; font-variant-numeric: tabular-nums; min-width: 0; }
+.readout .big { font-family: var(--font-mono); font-size: 1.35rem; }
+.tool-chip { display: inline-block; padding: 0.05em 0.7em; border-radius: 999px; border: 1.5px solid currentColor; font-size: 0.875rem; }
+.mission-top { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.dots { display: flex; gap: 0.3rem; }
+.dots i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--line); }
+.dots i.on { background: var(--accent); }
+.dots i.ok { background: var(--good); }
+.dots i.miss { background: var(--bad); }
+.m-text { font-family: var(--font-label); font-size: 1.2rem; line-height: 1.55; margin: 0 0 0.6rem; }
+.m-text b { color: var(--accent); }
+.m-hint { font-size: 0.875rem; color: var(--muted); margin: 0 0 0.6rem; }
+.opts { display: grid; gap: 0.5rem; margin: 0.5rem 0; }
+.opt { font: inherit; font-size: 1rem; text-align: left; padding: 0.55em 0.9em; border-radius: 0.6rem; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.opt:hover { border-color: var(--accent); }
+.opt[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.opt.right { border-color: var(--good); color: var(--good); }
+.opt.wrong { border-color: var(--bad); color: var(--bad); }
+.fb { border-radius: 0.6rem; padding: 0.6rem 0.9rem; margin: 0.5rem 0; font-size: 0.95rem; line-height: 1.6; border: 1.5px solid; }
+.fb.ok { border-color: var(--good); }
+.fb.bad { border-color: var(--bad); }
+.fb strong { display: block; font-size: 1rem; }
+.fb.ok strong { color: var(--good); }
+.fb.bad strong { color: var(--bad); }
+.status-line { font-size: 0.95rem; line-height: 1.6; margin: 0.4rem 0 0; min-height: 3.2em; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: 0.8rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 0.9rem; height: 3px; border-radius: 2px; margin-right: 0.4rem; vertical-align: middle; background: var(--c); }
+.charts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; }
+.charts > figure { margin: 0; padding: 0.75rem 1rem; min-width: 0; position: relative; }
+.charts > figure + figure { border-left: 1px solid var(--line); }
+.charts figcaption { font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem; display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { fill: var(--muted); font-size: 0.75rem; font-family: var(--font-mono); }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.4rem 0.6rem; font-size: 0.8rem; line-height: 1.5; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
+.tip b { font-family: var(--font-mono); }
+.tip i { display: inline-block; width: 0.6rem; height: 3px; border-radius: 2px; margin-right: 0.4rem; vertical-align: middle; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+.tbl th, .tbl td { text-align: left; padding: 0.25rem 0.4rem; border-bottom: 1px solid var(--line); }
+.tbl th { color: var(--muted); font-weight: 500; }
+@media (max-width: 760px) {
+  .lab-row, .charts { grid-template-columns: 1fr; }
+  .lab-row > * + *, .charts > figure + figure { border-left: 0; border-top: 1px solid var(--line); }
+}
+
+/* 手機：分頁改成橫向捲動，按鈕只留圖示，直放時提示橫放 */
+@media (max-width: 600px) {
+  h1 { font-size: 1.6rem; }
+  .nav { justify-items: stretch; width: 100%; }
+  .sections, .tabs { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; width: 100%; -webkit-mask-image: linear-gradient(to right, transparent, #000 10px, #000 calc(100% - 18px), transparent); mask-image: linear-gradient(to right, transparent, #000 10px, #000 calc(100% - 18px), transparent); }
+  .sections::-webkit-scrollbar, .tabs::-webkit-scrollbar { display: none; }
+  .caption-bar { grid-template-columns: 1fr; gap: 0.1rem; padding-inline: 0.9rem; }
+  #caption { font-size: 1.2rem; }
+  .controls { padding-inline: 0.9rem; }
+  .ctl.primary { min-width: 0; }
+  .ctl .lbl { display: none; }
+  .lab-row > * { padding: 0.9rem; }
+}
+@media (max-width: 600px) and (orientation: portrait) { .rotate-hint { display: block; } }
+/* 矮螢幕（手機橫放）：標題列精簡成一行，把高度留給舞台 */
+@media (max-height: 520px) {
+  body { padding-block: 0.4rem 0.6rem; }
+  .app { gap: 0.4rem; }
+  .eyebrow { display: none; }
+  .title-block { display: flex; align-items: center; gap: 0.5rem; flex: 0 0 auto; }
+  .chapters { margin: 0; }
+  header { flex-wrap: nowrap; align-items: center; }
+  h1 { font-size: 1.15rem; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .nav { gap: 0.3rem; flex: 1 1 auto; min-width: 0; }
+  .sections, .tabs { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(to right, transparent, #000 10px, #000 calc(100% - 18px), transparent); mask-image: linear-gradient(to right, transparent, #000 10px, #000 calc(100% - 18px), transparent); }
+  .sections::-webkit-scrollbar, .tabs::-webkit-scrollbar { display: none; }
+  .tab, .sec { font-size: 0.85rem; }
+  .player.side .caption-bar { padding: 0.7rem 0.9rem 0.3rem; }
+  .player.side .controls { padding: 0.4rem 0.9rem 0.7rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="title-block">
+      <div class="seg-ctl chapters" id="chapters" role="group" aria-label="選擇章"></div>
+      <h1 id="chapTitle">生物的構造</h1>
+    </div>
+    <nav class="nav" aria-label="章節導覽">
+      <div class="sections" id="sections" role="tablist" aria-label="小節"></div>
+      <div class="tabs" id="tabs" role="tablist" aria-label="這一節的動畫與互動"></div>
+    </nav>
+  </header>
+
+  <section class="player" aria-label="動畫播放器">
+    <div class="stage-wrap">
+      <svg id="stage" viewBox="0 0 1200 720" role="img" aria-labelledby="caption" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="caption-bar">
+      <div class="step-no" id="stepNo">1 / 1</div>
+      <div class="cap-col"><p id="caption" aria-live="polite"></p><p id="capnote" class="footnote" hidden></p></div>
+    </div>
+    <div class="controls">
+      <button class="ctl" id="prev" type="button" aria-label="上一步"><svg viewBox="0 0 16 16"><path d="M10.5 2 4.5 8l6 6 1.4-1.4L7.3 8l4.6-4.6z"/></svg><span class="lbl">上一步</span></button>
+      <button class="ctl primary" id="play" type="button"></button>
+      <button class="ctl" id="next" type="button" aria-label="下一步"><span class="lbl">下一步</span><svg viewBox="0 0 16 16"><path d="M5.5 2 4.1 3.4 8.7 8l-4.6 4.6L5.5 14l6-6z"/></svg></button>
+      <div class="progress" id="progress" aria-label="步驟"></div>
+      <button class="ctl" id="fs" type="button" aria-label="全螢幕" hidden><svg viewBox="0 0 16 16"><path d="M2 2h5v2H4v3H2zm7 0h5v5h-2V4H9zM2 9h2v3h3v2H2zm10 0h2v5H9v-2h3z"/></svg><span class="lbl">全螢幕</span></button>
+    </div>
+    <p class="rotate-hint">手機橫放，或按右下角的全螢幕按鈕，畫面和字會大一些。</p>
+  </section>
+
+  <section class="lab" id="lab" hidden aria-live="polite"></section>
+
+  <p class="hint"><span class="kbd-hint">鍵盤：<kbd>←</kbd> <kbd>→</kbd> 上／下一步，<kbd>空白鍵</kbd> 自動播放／暫停，數字鍵切換小節。</span>標「互動」的是可以自己操作的模型。</p>
+</div>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="engine.js"></script>
+<script src="shapes.js"></script>
+<script src="scale-world.js"></script>
+<script src="scene-life.js"></script>
+<script src="scene-discovery.js"></script>
+<script src="scene2-cell.js"></script>
+<script src="scene3-transport.js"></script>
+<script src="scene4-levels.js"></script>
+<script src="scene-matter.js"></script>
+<script src="scene1-scale.js"></script>
+<script src="scene-microscope.js"></script>
+<script src="scene-method.js"></script>
+<script src="lab-transport.js"></script>
+<script src="lab-scale.js"></script>
+<script src="lab-microscope.js"></script>
+<script src="lab-method.js"></script>
+<script src="summary.js"></script>
+<script src="summary-ch1.js"></script>
+<script src="scene-nutrients.js"></script>
+<script src="scene-enzyme.js"></script>
+<script src="lab-food.js"></script>
+<script src="lab-calorie.js"></script>
+<script src="lab-enzyme.js"></script>
+<script src="scene-photo.js"></script>
+<script src="lab-photo.js"></script>
+<script src="scene-digest.js"></script>
+<script src="lab-digest.js"></script>
+<script src="summary-ch2.js"></script>
+<script>S.start();</script>
+
+</body>
+</html>
