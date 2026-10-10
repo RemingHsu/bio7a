@@ -47,7 +47,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-food', section: '2-1', title: '養分檢測實驗室',
+    id: 'lab-food', section: '3-1', title: '養分檢測實驗室',
     mount(box) {
       box.innerHTML = `
 <style>

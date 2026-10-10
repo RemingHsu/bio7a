@@ -21,7 +21,7 @@
     : el('circle', { cx: 0, cy: 0, r: 16, fill: ['#ff8f8f', '#ffb0b0', '#e86a6a', '#ffc9c9'][(unit.n = ((unit.n || 0) + 1) % 4)], stroke: '#fff', 'stroke-width': 2 }, p));
 
   S.register({
-    id: 'nutrients', section: '2-1', title: '六大類養分',
+    id: 'nutrients', section: '3-1', title: '六大類養分',
     build(root) {
       const tl = gsap.timeline({ paused: true });
       const rnd = S.rng(8);

@@ -24,7 +24,7 @@
   };
 
   S.registerLab({
-    id: 'lab-scale', section: '1-4', title: '尺度縮放',
+    id: 'lab-scale', section: '2-3', title: '尺度縮放',
     mount(box) {
       box.innerHTML = `
 <div class="card">

@@ -40,7 +40,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-enzyme', section: '2-2', title: '唾液酵素實驗',
+    id: 'lab-enzyme', section: '3-2', title: '唾液酵素實驗',
     mount(box) {
       box.innerHTML = `
 <style>

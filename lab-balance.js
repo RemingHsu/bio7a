@@ -29,7 +29,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-balance', section: '5-3', title: '保持平衡',
+    id: 'lab-balance', section: '6-3', title: '保持平衡',
     mount(box) {
       box.innerHTML = `
 <style>

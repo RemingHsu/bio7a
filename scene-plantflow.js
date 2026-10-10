@@ -47,7 +47,7 @@
   const moon = (p, x, y, r = 20) => { const m = g(p); el('path', { d: `M ${x},${y - r} A ${r},${r} 0 0,0 ${x},${y + r} A ${r * 1.3},${r * 1.3} 0 0,1 ${x},${y - r} Z`, fill: '#ffe9a8' }, m); return m; };
 
   S.register({
-    id: 'plantflow', section: '3-2', title: '植物體內的運輸',
+    id: 'plantflow', section: '4-2', title: '植物體內的運輸',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

@@ -1,16 +1,16 @@
-/* 1-4 組成物質與細胞分工：原子 → 分子 → 細胞（跨尺度）、生物體的組成物質（水最多）、細胞分裂與分化 → 組織 */
+/* 1-4 組成物質與細胞分工：原子 → 分子 → 細胞（跨尺度）、生物體的組成物質（水最多；無機物與有機物）、細胞分裂與分化 → 組織 */
 (() => {
   const { el, g, text, C } = S;
   const FRAME = { fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 };
   const ATOM = { O: '#ff6b6b', H: '#e8f0f2', C: '#5a6670', N: '#62a8ff' };
-  // 人體的組成物質（質量百分比，約略值＊）
-  const COMP = [['水', 60, '#5fb8ff'], ['蛋白質', 17, '#ff8f8f'], ['脂質', 15, '#ffb35c'], ['礦物質', 6, '#c9d6dc'], ['醣類等', 2, '#ffcf5c']];
+  // 人體的組成物質（質量百分比，約略值＊）：前兩項是無機物，後三項是有機物
+  const COMP = [['水', 60, '#5fb8ff'], ['礦物質', 6, '#c9d6dc'], ['蛋白質', 17, '#ff8f8f'], ['脂質', 15, '#ffb35c'], ['醣類等', 2, '#ffcf5c']];
 
   const atom = (p, x, y, k, r = 14) => { el('circle', { cx: x, cy: y, r, fill: ATOM[k], stroke: '#0d1822', 'stroke-width': 2 }, p); if (r >= 12) text(p, x, y + 6, k, { 'font-size': 16, 'text-anchor': 'middle', fill: '#0d1822', 'font-weight': 700 }); };
   const water = (p, x, y, s = 1) => { const w = S.place(g(p), { x, y, s }); el('line', { x1: -20, y1: 14, x2: 0, y2: 0, stroke: '#cfd8dc', 'stroke-width': 4 }, w); el('line', { x1: 20, y1: 14, x2: 0, y2: 0, stroke: '#cfd8dc', 'stroke-width': 4 }, w); atom(w, 0, 0, 'O', 16); atom(w, -22, 16, 'H', 11); atom(w, 22, 16, 'H', 11); return w; };
 
   S.register({
-    id: 'matter', section: '1-4', title: '組成物質與細胞分工',
+    id: 'matter', section: '2-3', title: '組成物質與細胞分工',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 
@@ -72,15 +72,26 @@
         else { const ly = BY + BH + 40 + (i % 2) * 52; el('line', { x1: cx, y1: BY + BH, x2: cx, y2: ly - 22, stroke: C.ink2, 'stroke-width': 2 }, lab1); text(lab1, cx, ly, `${n} 約 ${v}%`, { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink }); }
         acc += v;
       });
+      // 上方的括號：無機物（水、礦物質）／有機物（蛋白質、脂質、醣類）
+      const kinds = g(P1, { opacity: 0 });
+      const brace = (x0, x1, y, label, sub, col) => {
+        const m = (x0 + x1) / 2;
+        el('path', { d: `M ${x0 + 2},${y + 14} Q ${x0 + 2},${y} ${x0 + 16},${y} L ${m - 12},${y} Q ${m},${y} ${m},${y - 12} Q ${m},${y} ${m + 12},${y} L ${x1 - 16},${y} Q ${x1 - 2},${y} ${x1 - 2},${y + 14}`, fill: 'none', stroke: col, 'stroke-width': 3 }, kinds);
+        text(kinds, m, y - 22, label, { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700, fill: col });
+        if (sub) text(kinds, m + 76, y - 22, sub, { 'font-size': 20, fill: C.mute });
+      };
+      brace(BX, BX + 0.66 * BW, BY - 14, '無機物', '', '#9fd8ff');
+      brace(BX + 0.66 * BW, BX + BW, BY - 14, '有機物', '（大多含碳）', '#ffb3a0');
       const facts1 = g(P1, { opacity: 0 });
       S.pill(facts1, 600, 480, '含量最多的是水', { size: 30, color: '#5fb8ff', edge: '#5fb8ff' });
-      text(facts1, 600, 560, '細胞裡還有 DNA 等物質；這些物質大多要從食物中獲得（第二章）', { 'font-size': 24, 'text-anchor': 'middle', fill: C.mute });
+      text(facts1, 600, 560, '細胞裡還有 DNA 等物質；這些物質大多要從食物中獲得（第三章）', { 'font-size': 24, 'text-anchor': 'middle', fill: C.mute });
       tl.addLabel('s1');
       S.hide(tl, P0, 's1', 0.4);
       S.show(tl, P1, 's1+=0.3', 0.3);
       segs.forEach(({ r, w }, i) => tl.fromTo(r, { attr: { width: 0 } }, { attr: { width: w }, duration: 0.5, ease: 'power2.out', immediateRender: false }, `s1+=${0.6 + i * 0.35}`));
       S.show(tl, lab1, 's1+=2.4', 0.5);
-      S.show(tl, facts1, 's1+=3.2', 0.5);
+      S.show(tl, kinds, 's1+=3', 0.5);
+      S.show(tl, facts1, 's1+=3.6', 0.5);
 
       // ===== 2 細胞分裂與分化 =====
       const P2 = g(root, { opacity: 0 });
@@ -124,12 +135,12 @@
         tl,
         notes: [
           '＊大小為約略值。原子、分子太小，光學顯微鏡看不到。',
-          '＊約略值：水約占 60～70%，會因年齡、體型而不同（脂質差異最大）；這裡把含量很少的物質併入「醣類等」。',
+          '＊約略值：水約占 60～70%，會因年齡、體型而不同（脂質差異最大）；這裡把含量很少的物質併入「醣類等」。有機物大多含碳，但二氧化碳等雖含碳，仍屬於無機物（1-2「生命的起源與生物圈」有說明）。',
           '＊示意：細胞的大小、形狀和數目都簡化了。細胞變得形態和功能不同的過程，稱為「細胞分化」（補充）；細胞分裂在七下會詳細學到。',
         ],
         steps: [
           '物質由<b>原子</b>組成，原子結合成<b>分子</b>；許多分子再組成細胞的各種構造。從原子到細胞，大小差了約十萬倍以上。',
-          '生物體的組成物質包括<b>水</b>、<b>蛋白質</b>、<b>脂質</b>、<b>醣類</b>、<b>礦物質</b>等，其中含量最多的是<b>水</b>。',
+          '生物體的組成物質包括<b>水</b>、<b>蛋白質</b>、<b>脂質</b>、<b>醣類</b>、<b>礦物質</b>等，其中含量最多的是<b>水</b>。水和礦物質是<b>無機物</b>；蛋白質、脂質、醣類是<b>有機物</b>。',
           '多細胞生物的細胞有<b>分工</b>：一個細胞經細胞分裂，數目變多；細胞再逐漸變得<b>形態和功能不同</b>，各自負責特定的工作，再組成組織。',
         ],
       };

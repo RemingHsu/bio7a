@@ -1,4 +1,4 @@
-/* 1-1 生命現象：代謝、生長與發育、感應與運動、生殖；生物 vs 非生物；生存條件與生物圈 */
+/* 1-1 生命現象：代謝、生長與發育、感應與運動、生殖；生物 vs 非生物（生存條件與生物圈在 scene-origin.js） */
 (() => {
   const { el, g, text, C } = S;
   const OK = '#6fce62', NO = '#ff7a66';
@@ -260,51 +260,10 @@
       S.show(tl, legend5, 's5+=3', 0.4);
       S.show(tl, verdict, 's5+=3.4', 0.4);
 
-      // ===== 6 生存條件與生物圈 =====
-      const P6 = g(root, { opacity: 0 });
-      const conds = [['陽光', C.hi], ['空氣', '#bfe3ff'], ['水', C.water], ['養分', '#d9a66b'], ['適當溫度', '#ff8f8f']];
-      conds.forEach(([n, col], i) => S.pill(P6, 170 + i * 215, 80, n, { size: 28, color: col, edge: col }));
-      // 地球與放大的剖面
-      el('circle', { cx: 300, cy: 420, r: 200, fill: '#1d4f7a' }, P6);
-      el('path', { d: 'M 170,300 C 220,260 300,300 280,350 C 260,400 200,380 170,420 C 150,380 140,330 170,300 Z M 330,430 C 380,400 450,440 440,500 C 420,560 350,560 330,520 Z', fill: '#4f8a46' }, P6);
-      const shell = el('circle', { cx: 300, cy: 420, r: 205, fill: 'none', stroke: '#7fe0a0', 'stroke-width': 10, opacity: 0.85 }, P6);
-      el('circle', { cx: 455, cy: 290, r: 34, fill: 'none', stroke: C.hi, 'stroke-width': 3 }, P6);
-      el('path', { d: 'M 488,282 L 640,170 M 488,300 L 640,600', stroke: C.hi, 'stroke-width': 2, 'stroke-dasharray': '6 6' }, P6);
-      const col = g(P6);
-      const cx0 = 640, cw = 480, top = 160, mid = 385, bot = 610;
-      el('rect', { x: cx0, y: top, width: cw, height: mid - top, fill: '#1f3e5c' }, col);
-      el('rect', { x: cx0, y: top, width: cw, height: 60, fill: '#16263a' }, col);
-      el('path', { d: `M ${cx0},${mid} L ${cx0},${mid - 40} L ${cx0 + 90},${mid - 180} L ${cx0 + 150},${mid - 110} L ${cx0 + 200},${mid - 60} L ${cx0 + 230},${mid} Z`, fill: '#6b7f5a' }, col);
-      el('rect', { x: cx0 + 230, y: mid, width: cw - 230, height: bot - mid, fill: '#1d4f7a' }, col);
-      el('rect', { x: cx0, y: mid, width: 230, height: bot - mid, fill: '#5a4a38' }, col);
-      el('line', { x1: cx0, y1: mid, x2: cx0 + cw, y2: mid, stroke: C.ink, 'stroke-width': 2, 'stroke-dasharray': '8 6' }, col);
-      el('rect', { x: cx0, y: top, width: cw, height: bot - top, fill: 'none', stroke: '#7fe0a0', 'stroke-width': 3 }, col);
-      // 生物圖示：鳥、樹、魚、深海魚
-      el('path', { d: `M ${cx0 + 330},${top + 90} q 14,-12 28,0 q 14,-12 28,0`, stroke: C.ink, 'stroke-width': 4, fill: 'none' }, col);
-      el('path', { d: `M ${cx0 + 175},${mid - 70} l 0,-30`, stroke: '#8a6a40', 'stroke-width': 6 }, col);
-      el('circle', { cx: cx0 + 175, cy: mid - 108, r: 20, fill: '#4f9a42' }, col);
-      el('path', { d: `M ${cx0 + 330},${mid + 60} q 30,-22 60,0 q -30,22 -60,0 Z M ${cx0 + 390},${mid + 60} l 18,-12 v 24 Z`, fill: '#ffcf5c' }, col);
-      el('path', { d: `M ${cx0 + 300},${bot - 40} q 24,-16 48,0 q -24,16 -48,0 Z`, fill: '#9fb3c1' }, col);
-      el('circle', { cx: cx0 + 318, cy: bot - 50, r: 3, fill: C.hi }, col);
-      text(col, cx0 + cw - 10, top + 30, '約 +10 km', { 'font-size': 22, fill: C.ink, 'text-anchor': 'end', class: 'mono' });
-      text(col, cx0 + cw - 10, mid - 10, '海平面', { 'font-size': 22, fill: C.ink, 'text-anchor': 'end' });
-      text(col, cx0 + cw - 10, bot - 12, '約 −10 km', { 'font-size': 22, fill: C.ink, 'text-anchor': 'end', class: 'mono' });
-      const bioLabel = S.pill(g(P6, { opacity: 0 }), 300, 660, '生物圈：海平面上下各約 10 km', { size: 26, color: '#7fe0a0', edge: '#7fe0a0' });
-      text(P6, 1184, 150, '＊示意', { 'font-size': 22, fill: C.mute, 'text-anchor': 'end' });
-
-      tl.addLabel('s6');
-      S.hide(tl, P5, 's6', 0.4);
-      S.show(tl, P6, 's6+=0.3', 0.5);
-      tl.fromTo([...P6.children].slice(0, 5), { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.12 }, 's6+=0.5');
-      tl.fromTo(shell, { opacity: 0 }, { opacity: 0.85, duration: 0.3, repeat: 4, yoyo: true }, 's6+=1.3');
-      tl.fromTo(col, { opacity: 0, scale: 0.4, transformOrigin: '0% 30%' }, { opacity: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, 's6+=1.8');
-      S.show(tl, bioLabel.parentNode, 's6+=2.6', 0.4);
-
       return {
         tl,
         notes: [null, null, null, null, null,
-          '＊補充：生物都由細胞構成；火會燃燒、消耗氧並產生二氧化碳，但不是生物。',
-          '＊示意：生物圈的厚度放大畫了。地球半徑約 6400 km，生物圈約 20 km 厚，只有半徑的 0.3%。如果地球縮成一顆籃球，生物圈只有約 0.4 mm 厚。'],
+          '＊補充：生物都由細胞構成；火會燃燒、消耗氧並產生二氧化碳，但不是生物。'],
         steps: [
           '生物和非生物怎麼分？要看有沒有<b>生命現象</b>。常見的生命現象分成四類：代謝、生長與發育、感應與運動、生殖。先猜猜看上面四個哪些是生物，第 6 步揭曉。',
           '<b>代謝</b>：生物體內進行的各種化學反應。例如把養分分解、放出能量（呼吸作用），或把小分子合成身體需要的物質。',
@@ -312,7 +271,6 @@
           '<b>感應與運動</b>：生物能接受刺激並做出反應。例如含羞草被碰觸，葉子會合起來；植物會朝著光的方向生長。',
           '<b>生殖</b>：生物能產生下一代，讓生命延續。例如草履蟲一分為二，植物開花、結出種子。',
           '生物由<b>細胞</b>構成，並表現這些<b>生命現象</b>；只有其中一項很像，不代表是生物。鐘乳石會變長，是礦物一層層堆積，不是生長；機器人有感應器、會動，但不會代謝、也不會生殖。',
-          '大多數生物生存需要<b>陽光、空氣、水、養分和適當的溫度</b>。地球上有生物生存的範圍叫<b>生物圈</b>，大約是海平面上下各 10 km。',
         ],
       };
     },

@@ -382,7 +382,7 @@
 
   // 拆成三個短的互動：每個只做 2～3 個任務，設定由任務自動完成
   const makeLab = (L) => S.registerLab({
-    id: L.id, section: '1-3', title: L.title,
+    id: L.id, section: '2-2', title: L.title,
     mount(box) {
       const MISSIONS = L.keys.map((k) => ALL.find((m) => m.key === k));
       box.innerHTML = `

@@ -31,7 +31,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-photo', section: '2-3', title: '水蘊草實驗',
+    id: 'lab-photo', section: '3-3', title: '水蘊草實驗',
     mount(box) {
       box.innerHTML = `
 <style>

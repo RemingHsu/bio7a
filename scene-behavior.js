@@ -32,7 +32,7 @@
   };
 
   S.register({
-    id: 'behavior', section: '4-3', title: '行為與感應',
+    id: 'behavior', section: '5-3', title: '行為與感應',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

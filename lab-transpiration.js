@@ -37,7 +37,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-transpiration', section: '3-2', title: '蒸散作用實驗',
+    id: 'lab-transpiration', section: '4-2', title: '蒸散作用實驗',
     mount(box) {
       const seg = (side, k, label, opts) => `<div class="field"><div class="field-head"><span>${label}</span></div><div class="seg-ctl" role="group" aria-label="${side} 組的${label}" data-side="${side}" data-k="${k}">${opts.map(([v, t]) => `<button type="button" data-v="${v}">${t}</button>`).join('')}</div></div>`;
       box.innerHTML = `

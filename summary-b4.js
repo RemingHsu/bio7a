@@ -1,4 +1,4 @@
-/* 第九章（七下 4）形形色色的生物 總整理：資料（版面在 summary.js） */
+/* 第十章（七下 4）形形色色的生物 總整理：資料（版面在 summary.js） */
 (() => {
   const MAP = [
     ['下4-1', '原核、原生與菌物界', ['原核生物界：細菌、藍綠菌。遺傳物質沒有核膜包住，沒有細胞核；細菌依形狀分成球菌、桿菌、螺旋菌', '細菌有的是分解者，有的幫助植物（根瘤菌）或用來製作食品（乳酸菌），也有的會致病（例如結核桿菌）', '藍綠菌有葉綠素，能行光合作用，但沒有葉綠體', '原生生物界：有細胞核，大多是單細胞；包括原生動物（草履蟲、變形蟲）、藻類（矽藻、海帶、紫菜）、原生菌類（黏菌）', '菌物界：有細胞核和細胞壁，沒有葉綠體，從外界吸收養分；酵母菌是單細胞，黴菌和蕈類由菌絲組成、用孢子繁殖', '病毒沒有細胞構造，只能在活細胞內繁殖，不屬於五界'], '藍綠菌沒有細胞核，不是藻類；海帶、紫菜是藻類，屬於原生生物界，不是植物；香菇、木耳屬於菌物界，不是植物'],
@@ -22,5 +22,64 @@
     ['哪一類動物的卵沒有卵殼，必須產在水中？', ['爬蟲類', '鳥類', '兩生類', '哺乳類'], 2, '兩生類的卵沒有卵殼，容易失水，要產在水中；爬蟲類、鳥類的卵有卵殼。', 'animals'],
   ];
 
-  S.summaryLab({ id: 'summary-b4', section: '下總4', title: '知識地圖與自我檢測', heading: '第九章 知識地圖', done: '第九章的重點都掌握了。', MAP, QUIZ });
+  const K = (s, c) => `<b style="color:${c}">${s}</b>`;
+  // 只在詞語之間換行（表格窄時不會把一個詞拆成兩行）
+  const W = (...p) => p.map((s) => `<span style="white-space:nowrap">${s}</span>`).join('');
+  const sm = (...p) => `<br><small>${W(...p)}</small>`;
+  const OUT = K('外溫', '#62a8ff'), IN = K('內溫', '#ff8f6a');
+  const CHARTS = [
+    { type: 'table', title: '五界的比較', cols: [['細胞核', ''], ['細胞數目', ''], ['獲得養分', ''], ['例子', '']],
+      rows: [
+        [K('原核生物界', '#9fd8ff'), K('沒有', '#ff9a8a'), '單細胞', W('分解、', '寄生') + sm('藍綠菌行', '光合作用'), W('細菌、', '藍綠菌')],
+        [K('原生生物界', '#9fe8da'), '有', W('大多是', '單細胞'), W('光合作用、', '攝食', '或分解'), W('草履蟲、', '矽藻、', '海帶')],
+        [K('菌物界', '#e8c890'), '有', W('大多是', '多細胞'), W('吸收外界', '的養分'), W('酵母菌、', '黴菌、', '香菇')],
+        [K('植物界', '#8fd07a'), '有', '多細胞', W('光合作用，', '自己製造'), W('蘚苔、', '蕨類、', '松、', '稻')],
+        [K('動物界', '#ffb35c'), '有', '多細胞', W('攝食', '其他生物'), W('昆蟲、', '魚、', '鳥、', '貓')],
+      ], note: '分界的依據：有沒有細胞核、細胞的數目、獲得養分的方式。原生生物界也有多細胞的藻類（如海帶、紫菜）；菌物界的酵母菌是單細胞。病毒沒有細胞構造，只能在活細胞內繁殖，不屬於五界中的任何一界。', link: ['microbes', 7] },
+    { type: 'svg', title: '植物的四大類（一次問一個特徵）', w: 600, h: 420, link: ['plants', 1],
+      note: '裸子植物沒有花和果實，種子裸露在毬果的鱗片上；被子植物的種子包在果實裡。蘚苔植物沒有真正的根、莖、葉，用假根固著。',
+      draw(svg) {
+        const { el, text, C } = S;
+        const Y = (i) => 60 + i * 100, QX = 115, GX = 377, YES = '#8be07a', NO = '#ff9a8a';
+        const arrowHead = (x, y, dir) => el('path', { d: dir === 'down' ? `M ${x},${y} l -7,-12 l 14,0 Z` : `M ${x},${y} l -12,-7 l 0,14 Z`, fill: C.ink2 }, svg);
+        const G = [['蘚苔植物', '#9be58c', '例：土馬騌、地錢'], ['蕨類植物', '#6fd0a0', '例：腎蕨、筆筒樹'], ['裸子植物', '#7fc8e0', '例：松、杉、蘇鐵、銀杏'], ['被子植物', '#ffb3d0', '例：稻、油菜、榕樹']];
+        ['有維管束嗎？', '有種子嗎？', '有花和果實嗎？'].forEach((q, i) => {
+          const yc = Y(i);
+          // 「有」往下
+          el('line', { x1: QX, y1: yc + 24, x2: QX, y2: Y(i + 1) - (i < 2 ? 36 : 0), stroke: C.ink2, 'stroke-width': 3 }, svg);
+          if (i < 2) arrowHead(QX, Y(i + 1) - 24, 'down');
+          text(svg, QX + 12, (yc + Y(i + 1)) / 2 + 7, '有', { 'font-size': 18, 'font-weight': 700, fill: YES });
+          // 「沒有」往右
+          el('line', { x1: 210, y1: yc, x2: 250, y2: yc, stroke: C.ink2, 'stroke-width': 3 }, svg);
+          arrowHead(262, yc, 'right');
+          text(svg, 234, yc - 10, '沒有', { 'font-size': 17, 'font-weight': 700, 'text-anchor': 'middle', fill: NO });
+          el('rect', { x: 20, y: yc - 24, width: 190, height: 48, rx: 24, fill: C.hi, 'fill-opacity': 0.1, stroke: C.hi, 'stroke-width': 2 }, svg);
+          text(svg, QX, yc + 7, q, { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle', fill: C.hi });
+        });
+        el('line', { x1: QX - 1.5, y1: Y(3), x2: 250, y2: Y(3), stroke: C.ink2, 'stroke-width': 3 }, svg);
+        arrowHead(262, Y(3), 'right');
+        G.forEach(([n, col, ex], i) => {
+          const yc = Y(i);
+          el('rect', { x: 262, y: yc - 36, width: 230, height: 72, rx: 12, fill: col, 'fill-opacity': 0.14, stroke: col, 'stroke-width': 2 }, svg);
+          text(svg, GX, yc - 5, n, { 'font-size': 22, 'font-weight': 700, 'text-anchor': 'middle', fill: col });
+          text(svg, GX, yc + 22, ex, { 'font-size': 17, 'text-anchor': 'middle', fill: C.ink2 });
+        });
+        [[0, 1, '靠孢子', '#d9b98a'], [2, 3, '靠種子', '#ffd166']].forEach(([a, b, s, col]) => {
+          el('path', { d: `M 500,${Y(a) - 30} L 510,${Y(a) - 30} L 510,${Y(b) + 30} L 500,${Y(b) + 30}`, fill: 'none', stroke: col, 'stroke-width': 2.5 }, svg);
+          const ym = (Y(a) + Y(b)) / 2;
+          text(svg, 553, ym - 5, s, { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: col });
+          text(svg, 553, ym + 21, '繁殖', { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: col });
+        });
+      } },
+    { type: 'table', title: '脊椎動物五大類的比較', cols: [['呼吸', ''], ['體表', ''], ['體溫', ''], ['受精', ''], ['生殖', '']],
+      rows: [
+        [K('魚類', '#7fd0ff') + '<br><small>吳郭魚</small>', '鰓', W('大多', '有鱗片'), OUT, W('大多', '體外'), W('大多卵生')],
+        [K('兩生類', '#7fd0ff') + '<br><small>青蛙</small>', W('幼體：鰓') + sm('成體：', '肺、', '皮膚'), W('皮膚裸露', '、濕潤'), OUT, '體外', '卵生' + sm('卵沒有', '卵殼')],
+        [K('爬蟲類', '#7fd0ff') + '<br><small>蜥蜴</small>', '肺', W('鱗片', '或骨板'), OUT, '體內', W('大多卵生') + sm('卵有卵殼')],
+        [K('鳥類', '#7fd0ff') + '<br><small>麻雀</small>', '肺', '羽毛', IN, '體內', '卵生' + sm('卵有卵殼')],
+        [K('哺乳類', '#7fd0ff') + '<br><small>人、鯨</small>', '肺', '毛髮', IN, '體內', W('大多胎生') + sm('用乳汁', '哺育')],
+      ], note: '外溫動物（變溫動物）的體溫隨環境溫度改變；內溫動物（恆溫動物）的體溫大致維持恆定。受精分成體外受精和體內受精。表中是大多數的情況，也有例外（例如鯊魚是體內受精、鴨嘴獸是卵生的哺乳類）。越往下越能防止水分散失、適應乾燥的陸地。', link: ['animals', 5] },
+  ];
+
+  S.summaryLab({ id: 'summary-b4', section: '下總4', title: '知識地圖與自我檢測', heading: '第十章 知識地圖', done: '第十章的重點都掌握了。', MAP, QUIZ, CHARTS });
 })();

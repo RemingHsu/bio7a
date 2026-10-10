@@ -28,7 +28,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-reaction', section: '4-1', title: '反應時間',
+    id: 'lab-reaction', section: '5-1', title: '反應時間',
     mount(box) {
       box.innerHTML = `
 <style>

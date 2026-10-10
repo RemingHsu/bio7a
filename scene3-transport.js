@@ -29,7 +29,7 @@
   const run = (list) => (u) => list.forEach((o) => place(o, u));
 
   S.register({
-    id: 'transport', section: '1-3', title: '物質進出細胞',
+    id: 'transport', section: '2-2', title: '物質進出細胞',
     build(root) {
       const tl = gsap.timeline({ paused: true });
       const rnd = S.rng(21);

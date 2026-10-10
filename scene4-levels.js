@@ -42,7 +42,7 @@
   const ST_BIG = { x: (BIG.x - T3.x) / T3.s, y: (BIG.y - T3.y) / T3.s, s: BIG.s / T3.s };
 
   S.register({
-    id: 'levels', section: '1-4', title: '組成層次',
+    id: 'levels', section: '2-3', title: '組成層次',
     build(root) {
       const tl = gsap.timeline({ paused: true });
       const rnd = S.rng(9);

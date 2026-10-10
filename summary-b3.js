@@ -1,4 +1,4 @@
-/* 第八章（七下）總整理：資料（版面在 summary.js） */
+/* 第九章（七下）總整理：資料（版面在 summary.js） */
 (() => {
   const MAP = [
     ['下3-1', '化石', ['化石：古代生物的遺體（骨骼、牙齒、外殼）或遺跡（足跡、爬痕、糞便），經過很長的時間保存在地層（大多是沉積岩）中', '形成：生物死後很快被泥沙掩埋，柔軟的部分分解，堅硬的部分被礦物質慢慢取代；地殼抬升、侵蝕後露出地表', '沒有翻轉的地層：越下層越古老；比較各層的化石，可以推測生物出現的先後', '地質年代：古生代（三葉蟲）→ 中生代（恐龍、菊石）→ 新生代（哺乳類興盛）', '始祖鳥：有牙齒、翅膀前端有爪、長尾椎骨（像爬蟲類），也有羽毛和翅膀（像鳥類）', '馬的化石：體型變大、腳趾數變少（4 趾 → 1 趾）；生物由簡單到複雜、由水中到陸地、種類由少到多'], '化石不一定是骨頭，足跡、糞便也是化石。化石是研究演化最直接的證據。三葉蟲是古生代海中的生物，恐龍則在中生代興盛'],
@@ -22,5 +22,64 @@
     ['用二分法檢索表辨識生物時，正確的做法是？', ['從最下面的生物名稱往上找', '從最上面開始，每次只看一個特徵，回答是或否', '一次比較所有的特徵', '只看生物的大小'], 1, '從最上面開始，每次只判斷一個特徵，一步步縮小範圍，最後找到生物的名稱。', 'lab-key'],
   ];
 
-  S.summaryLab({ id: 'summary-b3', section: '下總3', title: '知識地圖與自我檢測', heading: '第八章 知識地圖', done: '第八章的重點都掌握了。', MAP, QUIZ });
+  const CHARTS = [
+    { type: 'svg', title: '地質年代與代表生物', w: 560, h: 505, link: ['fossil', 4],
+      note: '＊年代都是約略值，不同資料略有差異；色帶的長短大約依照時間比例，生物圖是示意。上面較新、下面較古老，和沒有翻轉的地層一樣。恐龍在中生代末滅絕。古生代以前的時期佔了地球歷史（約 46 億年＊）的大部分，那時的生物大多是微小的單細胞生物。',
+      draw(svg) {
+        const { el, text, C } = S;
+        const Y0 = 34, K = 78, y = (a) => Y0 + a * K; // a：億年前
+        const BX = 166, BW = 116, TX = 298;
+        const ERAS = [
+          ['新生代', 0, 0.66, '#d9a066', '哺乳類興盛', ['例：長毛象'], ['mammoth', 505, 60, 0.3]],
+          ['中生代', 0.66, 2.5, '#7fae6a', '恐龍興盛', ['也有菊石'], ['sauropod', 490, 165, 0.36]],
+          ['古生代', 2.5, 5.4, '#6a8fb0', '三葉蟲', ['生活在海中', '也有魚類、蕨類森林'], ['trilobite', 515, 345, 0.7]],
+        ];
+        ERAS.forEach(([n, a, b, col, head, subs, [ic, ix, iy, is]], i) => {
+          S.B3[ic](S.place(S.g(svg), { x: ix, y: iy, s: is }));
+          el('rect', { x: BX, y: y(a) + (i ? 1.5 : 0), width: BW, height: y(b) - y(a) - (i ? 1.5 : 0), rx: 6, fill: col }, svg);
+          const yc = (y(a) + y(b)) / 2;
+          text(svg, BX + BW / 2, yc + 8, n, { 'font-size': 23, 'font-weight': 700, 'text-anchor': 'middle', fill: '#0d1822' });
+          const lines = [head, ...subs], y1 = yc - ((lines.length - 1) * 26) / 2 + 7;
+          lines.forEach((s, k) => text(svg, TX, y1 + k * 26, s, k ? { 'font-size': 18, fill: C.ink2 } : { 'font-size': 20, 'font-weight': 700, fill: col }));
+        });
+        [[0, '現在'], [0.66, '約 6600 萬年前＊'], [2.5, '約 2.5 億年前＊'], [5.4, '約 5.4 億年前＊']].forEach(([a, s]) => {
+          el('line', { x1: BX - 8, y1: y(a), x2: BX, y2: y(a), stroke: C.ink2, 'stroke-width': 2 }, svg);
+          if (a > 0 && a < 5.4) el('line', { x1: BX + BW + 6, y1: y(a), x2: 548, y2: y(a), stroke: '#3a5262', 'stroke-width': 1.5, 'stroke-dasharray': '6 5' }, svg);
+          text(svg, BX - 12, y(a) + 6, s, { 'font-size': 17, 'text-anchor': 'end', fill: C.ink2 });
+        });
+        S.pill(svg, 280, 486, '三葉蟲、菊石、恐龍都已經滅絕', { size: 19, color: '#ff9a8a', edge: '#ff9a8a' });
+      } },
+    { type: 'table', title: '拉馬克 vs 達爾文', cols: [['拉馬克', '#ff7a66'], ['達爾文', '#6fce62']],
+      rows: [
+        ['學說', '用進廢退說', '天擇說'],
+        ['主要說法', '常用的器官發達、不用的退化；<b>後天獲得的特徵會遺傳</b>', '個體本來就有<b>變異</b>；適應環境的個體容易存活、繁殖（<b>適者生存</b>），有利的變異逐代累積'],
+        ['長頸鹿的<br>脖子', '常伸長脖子吃高處的葉子，脖子漸漸變長，再遺傳給後代', '祖先的脖子有長有短；食物不足時，脖子長的容易存活、留下較多後代'],
+        ['是否被接受', '<b>不被接受</b><br><small>後天獲得的特徵不會遺傳</small>', '<b>被接受</b><br><small>也能解釋樺尺蛾、細菌的抗藥性</small>'],
+      ], note: '現在知道，只有生殖細胞中遺傳物質的改變才會遺傳給後代；身體在一生中因使用或鍛鍊而產生的改變（例如練出來的肌肉）不會遺傳。（補充：演化學說在高中會再詳細學習。）', link: ['evolution', 1] },
+    { type: 'svg', title: '分類階層（以家貓為例）', w: 560, h: 455, link: ['classify', 2],
+      note: '同一層的動物只舉幾個例子。獅子也是貓科，但屬於豹屬；沙貓和家貓同屬貓屬，但是不同的種。',
+      draw(svg) {
+        const { el, text, C } = S;
+        const CX = 170, RX = 342, Y = (i) => 74 + i * 52;
+        const R = [['界', '動物界', '蝴蝶、蝸牛'], ['門', '脊索動物門', '吳郭魚、青蛙、麻雀'], ['綱', '哺乳綱', '兔'], ['目', '食肉目', '狗'], ['科', '貓科', '獅子'], ['屬', '貓屬', '沙貓'], ['種', '家貓', null]];
+        text(svg, CX, 32, '由大到小', { 'font-size': 18, 'text-anchor': 'middle', fill: C.mute });
+        text(svg, RX, 32, '同一層也包括（例）', { 'font-size': 18, fill: C.mute });
+        R.forEach(([r, n, ex], i) => {
+          const w = 300 - i * 30, yc = Y(i), last = i === R.length - 1;
+          el('rect', { x: CX - w / 2, y: yc - 21, width: w, height: 42, rx: 10, fill: C.hi, 'fill-opacity': 0.06 + i * 0.035, stroke: last ? C.hi : '#4a5a66', 'stroke-width': last ? 2.5 : 1.5 }, svg);
+          const tw = S.textWidth(r, 22) + 10 + S.textWidth(n, 20), x0 = CX - tw / 2;
+          text(svg, x0, yc + 8, r, { 'font-size': 22, 'font-weight': 700, fill: C.hi });
+          text(svg, x0 + 32, yc + 7, n, { 'font-size': 20, fill: C.ink, 'font-weight': last ? 700 : 400 });
+          el('line', { x1: CX + w / 2 + 6, y1: yc, x2: RX - 10, y2: yc, stroke: '#2b4252', 'stroke-width': 1.5, 'stroke-dasharray': '4 5' }, svg);
+          if (ex) text(svg, RX, yc + 6, ex, { 'font-size': 18, fill: C.ink2 });
+          else {
+            text(svg, RX, yc + 6, '學名', { 'font-size': 18, fill: C.ink2 });
+            text(svg, RX + 44, yc + 7, 'Felis catus', { 'font-size': 21, fill: C.hi, 'font-style': 'italic', 'font-family': 'Georgia, "Times New Roman", serif' });
+          }
+        });
+        text(svg, 280, 438, '↓ 階層越低：生物越少、共同特徵越多、親緣關係越近', { 'font-size': 18, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
+      } },
+  ];
+
+  S.summaryLab({ id: 'summary-b3', section: '下總3', title: '知識地圖與自我檢測', heading: '第九章 知識地圖', done: '第九章的重點都掌握了。', MAP, QUIZ, CHARTS });
 })();

@@ -3,7 +3,7 @@
   const { el, g, text, C } = S;
 
   S.register({
-    id: 'scale', section: '1-4', title: '尺度之旅',
+    id: 'scale', section: '2-3', title: '尺度之旅',
     build(root) {
       const W = S.scaleWorld(root, 'sc1');
       const { levels, huds, LV, zoom, extras, setSize, ladderY } = W;

@@ -34,7 +34,7 @@
   };
 
   S.register({
-    id: 'photo', section: '2-3', title: '光合作用',
+    id: 'photo', section: '3-3', title: '光合作用',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

@@ -42,7 +42,7 @@
   }
 
   S.register({
-    id: 'cell', section: '1-2', title: '細胞的構造',
+    id: 'cell', section: '2-1', title: '細胞的構造',
     build(root) {
       // 左側清單
       const legend = g(root);

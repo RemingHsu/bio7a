@@ -27,7 +27,7 @@
   };
 
   S.register({
-    id: 'method', section: '1-6', title: '科學方法',
+    id: 'method', section: '1-3', title: '科學方法',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

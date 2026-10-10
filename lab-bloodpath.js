@@ -47,7 +47,7 @@
   const mix = (a, b, t) => { const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return `rgb(${A.map((v, i) => Math.round(S.lerp(v, B[i], S.clamp(t)))).join(',')})`; };
 
   S.registerLab({
-    id: 'lab-bloodpath', section: '3-4', title: '血液的旅程',
+    id: 'lab-bloodpath', section: '4-4', title: '血液的旅程',
     mount(box) {
       box.innerHTML = `
 <style>

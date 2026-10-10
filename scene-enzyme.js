@@ -28,7 +28,7 @@
   const at = (p, x, y, s = 1) => S.place(g(p), { x, y, s });
 
   S.register({
-    id: 'enzyme', section: '2-2', title: '酵素的特性',
+    id: 'enzyme', section: '3-2', title: '酵素的特性',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

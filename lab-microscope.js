@@ -22,7 +22,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-microscope', section: '1-5', title: '顯微鏡操作',
+    id: 'lab-microscope', section: '1-4', title: '顯微鏡操作',
     mount(box) {
       box.innerHTML = `
 <style>
@@ -125,7 +125,7 @@
         st.targetDist = Math.hypot(tx - VC.x, ty - VC.y);
         // 側面圖
         ms.turnTo(st.obj);
-        ms.stageG.setAttribute('transform', `translate(0,${(-(st.z - ZF) * 3.8).toFixed(1)})`);
+        ms.stageG.setAttribute('transform', `translate(0,${(-(st.z - ZF) * 1.1).toFixed(1)})`); // 載物台上下移動的距離（示意）：最低時也不碰到光源
         ms.coarse.setAttribute('transform', `rotate(${st.coarse * 6} 100 -252)`);
         ms.fine.setAttribute('transform', `rotate(${st.fine * 60} 100 -206)`);
         glow.setAttribute('opacity', (0.2 + 0.7 * st.iris / 100).toFixed(2));

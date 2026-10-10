@@ -1,4 +1,4 @@
-/* 第六章（七下）總整理：資料（版面在 summary.js） */
+/* 第七章（七下）總整理：資料（版面在 summary.js） */
 (() => {
   const MAP = [
     ['下1-1', '細胞的分裂', ['細胞核內有遺傳物質；細胞分裂時濃縮成棒狀的染色體。染色體主要由 DNA 和蛋白質組成，基因是 DNA 上的片段', '體細胞的染色體成對：同源染色體大小、形狀相似，一條來自父方、一條來自母方。人有 46 條＝23 對，是雙套（2n）', '細胞分裂：染色體複製一次、細胞分裂一次 → 2 個子細胞，染色體數目和原來相同；用於生長、更新修補、單細胞生物的生殖', '減數分裂：在生殖器官中產生精子和卵；染色體複製一次、細胞連續分裂兩次 → 4 個子細胞，染色體數目減半（單套 n）', '受精：精子（n）＋卵（n）→ 受精卵（2n），使每一代的染色體數目維持一定'], '減數分裂是「複製一次、分裂兩次」，第一次分裂時同源染色體分開。人的精子和卵有 23 條染色體，但不成對（不是 23 對）'],
@@ -23,5 +23,56 @@
     ['和無性生殖相比，有性生殖產生的子代有什麼特點？', ['和親代完全相同', '變異較多，環境改變時族群較能適應', '不需要經過減數分裂', '繁殖的速度一定比較快'], 1, '有性生殖的子代有雙親的遺傳物質，彼此之間差異較大，環境改變時，族群中較可能有能適應的個體。', 'sexual'],
   ];
 
-  S.summaryLab({ id: 'summary-b1', section: '下總1', title: '知識地圖與自我檢測', heading: '第六章 知識地圖', done: '第六章的重點都掌握了。', MAP, QUIZ });
+  const CHARTS = [
+    { type: 'table', title: '細胞分裂 vs 減數分裂', cols: [['細胞分裂', '#63d4bf'], ['減數分裂', '#ffd166']],
+      rows: [
+        ['染色體複製', '1 次', '1 次'],
+        ['細胞分裂', '1 次', '<b>連續 2 次</b><br><small>第一次分裂時，同源染色體分開</small>'],
+        ['子細胞數目', '2 個', '<b>4 個</b>'],
+        ['子細胞的染色體', '和原來相同<br><small>人：46 → 46 條</small>', '<b>減半</b>（單套 n）<br><small>人：46 → 23 條</small>'],
+        ['發生在', '體細胞<br><small>身體各處</small>', '生殖器官<br><small>人：睪丸、卵巢</small>'],
+        ['功用', '生長、更新修補；單細胞生物的生殖', '產生精子和卵<br><small>（配子）</small>'],
+      ], note: '減數分裂＋受精，使每一代的染色體數目維持一定：精子（23 條）＋卵（23 條）→ 受精卵（46 條）。', link: ['division', 5] },
+    { type: 'table', title: '無性生殖 vs 有性生殖', cols: [['無性生殖', '#8fd07a'], ['有性生殖', '#ff7d9a']],
+      rows: [
+        ['精子和卵', '不需要', '需要：兩者結合<br><small>稱為受精</small>'],
+        ['子代來自', '親代的細胞經細胞分裂', '受精卵經細胞分裂、發育<br><small>精子、卵由減數分裂產生</small>'],
+        ['遺傳物質', '和親代<b>相同</b>', '來自父母<b>雙方</b>'],
+        ['特點', '繁殖快、<b>變異少</b><br><small>環境改變時，可能全部受影響</small>', '<b>變異較多</b><br><small>環境改變時，族群較能適應</small>'],
+        ['例子', '草履蟲分裂、水螅出芽、馬鈴薯塊莖、蘭花組織培養', '青蛙、雞、人；開花植物結出種子'],
+      ], note: '組織培養、扦插也是無性生殖，子代的染色體數目和親代相同。', link: ['asexual', 6] },
+    { type: 'svg', title: '花的哪裡變成果實和種子？', w: 600, h: 490, link: ['flower', 4],
+      note: '以番茄這類果實為例，花萼常留在果實上；例如豌豆的豆莢是果實、豆子是種子。子房壁發育成果皮（補充）。',
+      draw(svg) {
+        const { el, g, text, C } = S;
+        const B1 = S.b1;
+        const defs = el('defs', {}, svg);
+        // 花梗太長，只留上段
+        [['sb1-clipA', 0], ['sb1-clipB', 340]].forEach(([id, x]) => el('rect', { x, y: 60, width: 260, height: 240 }, el('clipPath', { id }, defs)));
+        text(svg, 130, 40, '花（縱切面）', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
+        text(svg, 460, 40, '受精後', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
+        el('line', { x1: 238, y1: 32, x2: 352, y2: 32, stroke: C.ink2, 'stroke-width': 4 }, svg);
+        el('path', { d: 'M 366,32 L 350,24 L 350,40 Z', fill: C.ink2 }, svg);
+        const fA = B1.flower(g(svg, { 'clip-path': 'url(#sb1-clipA)' }), { x: 130, y: 240, s: 0.7 });
+        const fB = B1.flower(g(svg, { 'clip-path': 'url(#sb1-clipB)' }), { x: 470, y: 240, s: 0.7 });
+        B1.wither(fB, 1);
+        B1.fruitGrow(fB, 1);
+        const lab = (tx, ty, x, y, s, col) => { S.callout(svg, tx, ty, x, y, s, col, { size: 20 }).setAttribute('opacity', 1); };
+        lab(...fA.at(11, -61), 300, 150, '胚珠', '#f6faec');
+        lab(...fA.at(30, -36), 300, 236, '子房', '#9fd77a');
+        lab(...fB.at(-80, -116), 386, 74, '果實', '#ff9a7a');
+        lab(...fB.at(30, -81), 556, 120, '種子', '#f2dc9a');
+        // 對照表
+        el('rect', { x: 16, y: 318, width: 568, height: 156, rx: 14, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, svg);
+        [['子房', '果實', '#9fd77a', '#ff9a7a'], ['胚珠', '種子', '#f6faec', '#f2dc9a'], ['受精卵', '胚（在種子內）', '#ffcf8a', C.hi], ['花瓣、雄蕊、柱頭、花柱', '凋謝掉落', '#ff8fb8', C.mute]].forEach(([a, b, ca, cb], i) => {
+          const y = 352 + i * 36;
+          text(svg, 284, y, a, { 'font-size': 21, 'text-anchor': 'end', 'font-weight': 700, fill: ca });
+          el('line', { x1: 298, y1: y - 7, x2: 330, y2: y - 7, stroke: C.ink2, 'stroke-width': 3 }, svg);
+          el('path', { d: `M 342,${y - 7} L 328,${y - 14} L 328,${y} Z`, fill: C.ink2 }, svg);
+          text(svg, 354, y, b, { 'font-size': 21, 'font-weight': 700, fill: cb });
+        });
+      } },
+  ];
+
+  S.summaryLab({ id: 'summary-b1', section: '下總1', title: '知識地圖與自我檢測', heading: '第七章 知識地圖', done: '第七章的重點都掌握了。', MAP, QUIZ, CHARTS });
 })();

@@ -108,7 +108,7 @@
   }
 
   S.register({
-    id: 'heart', section: '3-3', title: '心臟、血管與血液',
+    id: 'heart', section: '4-3', title: '心臟、血管與血液',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

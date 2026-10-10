@@ -1,4 +1,4 @@
-/* 第七章（七下）總整理：資料（版面在 summary.js） */
+/* 第八章（七下）總整理：資料（版面在 summary.js） */
 (() => {
   const IA = 'I<sup>A</sup>', IB = 'I<sup>B</sup>';
   const MAP = [
@@ -24,5 +24,72 @@
     ['桃莉羊的基因和哪一隻羊相同？', ['提供卵細胞的黑面母羊', '提供細胞核的白面母羊', '代理孕母（黑面母羊）', '和三隻羊都不同'], 1, '基因主要在細胞核中。桃莉羊由白面母羊乳腺細胞的細胞核發育而來，所以基因和白面母羊相同，外表也是白面。', 'biotech'],
   ];
 
-  S.summaryLab({ id: 'summary-b2', section: '下總2', title: '知識地圖與自我檢測', heading: '第七章 知識地圖', done: '第七章的重點都掌握了。', MAP, QUIZ });
+  // 重點圖表：基因的顏色和動畫一樣（I^A 橘、I^B 青、i 藍；顯性 T 黃、隱性 t 藍）
+  const AC = { A: '#ffb35c', B: '#7fe0c8', AB: '#d6a8ff', O: '#8fd3ff' };
+  const cA = `<span style="color:${AC.A}">I<sup>A</sup></span>`, cB = `<span style="color:${AC.B}">I<sup>B</sup></span>`, ci = `<span style="color:${AC.O}">i</span>`;
+  const gt = (s) => `<b style="font-family:var(--font-mono);font-size:1.05em">${s}</b>`;
+  const bt = (t) => `<b style="color:${AC[t]}">${t} 型</b>`;
+  const CHARTS = [
+    { type: 'svg', title: '棋盤方格法：Tt × Tt', w: 520, h: 520, link: ['mendel', 5],
+      note: '每一格出現的機會都一樣（各 1/4）。比例是機率，子代數量越多，結果越接近 3：1（孟德爾：787：277）。',
+      draw(svg) {
+        const { el, text, C } = S;
+        const DOM = '#ffd166', REC = '#8fd3ff', MONO = 'font-family: var(--font-mono)';
+        const geno = (x, y, str, size, attrs = {}) => {
+          const t = el('text', { x, y, 'font-size': size, 'text-anchor': 'middle', 'font-weight': 700, style: MONO, ...attrs }, svg);
+          for (const ch of str) el('tspan', { fill: ch === ch.toUpperCase() ? DOM : REC }, t).textContent = ch;
+          return t;
+        };
+        const gamete = (x, y, ch) => {
+          el('circle', { cx: x, cy: y, r: 24, fill: '#1a2c3a', stroke: ch === 'T' ? DOM : REC, 'stroke-width': 3 }, svg);
+          geno(x, y + 9, ch, 26);
+        };
+        const GX = 190, GY = 114, CS = 132;
+        text(svg, GX + CS, 34, '高莖 Tt 的精細胞（在花粉中）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
+        text(svg, 82, GY + CS - 12, '高莖 Tt', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
+        text(svg, 82, GY + CS + 16, '的卵細胞', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
+        ['T', 't'].forEach((ch, j) => gamete(GX + CS / 2 + j * CS, 76, ch));
+        ['T', 't'].forEach((ch, i) => gamete(GX - 40, GY + CS / 2 + i * CS, ch));
+        [['TT', 'Tt'], ['Tt', 'tt']].forEach((row, i) => row.forEach((s, j) => {
+          const x = GX + j * CS, y = GY + i * CS, tall = s.includes('T');
+          el('rect', { x: x + 4, y: y + 4, width: CS - 8, height: CS - 8, rx: 10, fill: tall ? 'rgba(255,209,102,0.10)' : 'rgba(143,211,255,0.14)' }, svg);
+          geno(x + CS / 2, y + 62, s, 34);
+          text(svg, x + CS / 2, y + 100, tall ? '高莖' : '矮莖', { 'font-size': 21, 'text-anchor': 'middle', 'font-weight': 700, fill: tall ? DOM : REC });
+        }));
+        for (let k = 0; k <= 2; k++) {
+          el('line', { x1: GX, y1: GY + k * CS, x2: GX + 2 * CS, y2: GY + k * CS, stroke: '#4a6272', 'stroke-width': 3 }, svg);
+          el('line', { x1: GX + k * CS, y1: GY, x2: GX + k * CS, y2: GY + 2 * CS, stroke: '#4a6272', 'stroke-width': 3 }, svg);
+        }
+        // 結果
+        const RY = GY + 2 * CS + 30;
+        el('rect', { x: 16, y: RY, width: 488, height: 102, rx: 14, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, svg);
+        text(svg, 36, RY + 38, '基因型', { 'font-size': 20, fill: C.mute });
+        const r1 = el('text', { x: 300, y: RY + 39, 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 }, svg);
+        [['TT', 1], ['：', 0], ['Tt', 1], ['：', 0], ['tt', 1], [' ＝ 1：2：1', 0]].forEach(([s, isG]) => {
+          if (!isG) { el('tspan', { fill: C.ink }, r1).textContent = s; return; }
+          for (const ch of s) el('tspan', { fill: ch === 'T' ? DOM : REC, style: MONO }, r1).textContent = ch;
+        });
+        text(svg, 36, RY + 80, '表現型', { 'font-size': 20, fill: C.mute });
+        text(svg, 300, RY + 81, '高莖：矮莖 ＝ 3：1', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
+      } },
+    { type: 'table', title: 'ABO 血型：基因型 → 血型', cols: [['血型（表現型）', '#ffd166'], ['配子的基因', '#c9d6dc']],
+      rows: [
+        [gt(cA + cA), bt('A'), gt(cA)],
+        [gt(cA + ci), bt('A'), `${gt(cA)} 或 ${gt(ci)}`],
+        [gt(cB + cB), bt('B'), gt(cB)],
+        [gt(cB + ci), bt('B'), `${gt(cB)} 或 ${gt(ci)}`],
+        [gt(cA + cB), bt('AB'), `${gt(cA)} 或 ${gt(cB)}`],
+        [gt(ci + ci), bt('O'), gt(ci)],
+      ], note: `${IA}、${IB} 對 i 是顯性；${IA} 和 ${IB} 在一起時兩種都表現出來，是 AB 型（高中稱為共顯性，補充）。6 種基因型 → 4 種血型。`, link: ['humangen', 4] },
+    { type: 'table', title: '常見的遺傳性疾病', cols: [['原因', '#ffb35c'], ['特徵', '#63d4bf']],
+      rows: [
+        ['唐氏症', '<b>染色體數目異常</b><br><small>第 21 號染色體多一條（3 條）</small>', '智力、反應較慢，有些器官發育不完全'],
+        ['白化症', '<b>突變基因</b><br><small>控制黑色素的基因；隱性</small>', '缺乏黑色素，皮膚、毛髮偏白；眼睛怕光、容易曬傷'],
+        ['地中海型貧血', '<b>突變基因</b>', '紅血球較小、容易破裂，帶氧的能力變差 → 貧血'],
+        ['血友病', '<b>突變基因</b><br><small>在 X 染色體上<br>（補充）</small>', '受傷出血時，血液不容易凝固'],
+        ['紅綠色盲', '<b>突變基因</b><br><small>在 X 染色體上<br>（補充）</small>', '不容易分辨紅色和綠色'],
+      ], note: '突變基因來自親代，可能一代一代遺傳。致病的基因大多是隱性：正常的父母（Aa × Aa）也可能生下患病的孩子（aa），機率 1/4。', link: ['mutation', 4] },
+  ];
+
+  S.summaryLab({ id: 'summary-b2', section: '下總2', title: '知識地圖與自我檢測', heading: '第八章 知識地圖', done: '第八章的重點都掌握了。', MAP, QUIZ, CHARTS });
 })();

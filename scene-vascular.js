@@ -106,7 +106,7 @@
   }
 
   S.register({
-    id: 'vascular', section: '3-1', title: '植物的運輸構造',
+    id: 'vascular', section: '4-1', title: '植物的運輸構造',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

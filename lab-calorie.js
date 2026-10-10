@@ -20,7 +20,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-calorie', section: '2-1', title: '食物熱量實驗',
+    id: 'lab-calorie', section: '3-1', title: '食物熱量實驗',
     mount(box) {
       box.innerHTML = `
 <style>

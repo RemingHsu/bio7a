@@ -1,4 +1,4 @@
-/* 第十一章（七下）總整理：資料（版面在 summary.js） */
+/* 第十二章（七下）總整理：資料（版面在 summary.js） */
 (() => {
   const MAP = [
     ['下6-1', '生物多樣性', ['三個層次：遺傳多樣性（同一種生物個體間的差異）、物種多樣性（生物種類的多寡）、生態系多樣性（生態系種類的多寡）', '生物多樣性提供食物、藥物（例如從紅豆杉提煉的紫杉醇）和原料；生物也幫忙授粉、保持水土、淨化空氣和水', '生物種類越多，食物網越複雜，生態系越穩定', '臺灣生物多樣性高：北回歸線經過、高山多（海拔高低差大）、海島與大陸隔離；特有種如臺灣獼猴、帝雉，臺灣黑熊、櫻花鉤吻鮭是特有亞種', '生物多樣性減少的原因：棲地破壞、過度利用、環境汙染、外來入侵種、氣候變遷'], '遺傳多樣性是「同一種」生物個體之間的差異（例如異色瓢蟲的斑紋），不是不同物種的差異'],
@@ -21,5 +21,50 @@
     ['下列哪一個做法最符合「永續發展」？', ['大量捕撈海魚，越多越好', '依照魚類繁殖的速度，適量捕撈', '把森林全部改成農田', '把養不下的寵物放生到野外'], 1, '適量利用，讓族群來得及恢復，既滿足現在的需求，也不損害未來世代的需求。', 'conserve'],
   ];
 
-  S.summaryLab({ id: 'summary-b6', section: '下總6', title: '知識地圖與自我檢測', heading: '第十一章 知識地圖', done: '第十一章的重點都掌握了。', MAP, QUIZ });
+  const CHARTS = [
+    { type: 'table', title: '生物多樣性的三個層次', cols: [['意思', null], ['例子', '#ffd166']],
+      rows: [
+        ['遺傳多樣性', '同一種生物的個體之間，遺傳（基因）的差異', '異色瓢蟲的斑紋有很多種<br><small>甘藍選育成高麗菜、青花菜</small>'],
+        ['物種多樣性', '一個地區生物種類的多寡', '天然林的種類多<br><small>只種一種樹的人工林，種類少</small>'],
+        ['生態系多樣性', '一個地區生態系種類的多寡', '高山、森林、河流、溼地、海洋'],
+      ], note: '範圍由小到大：同一種之內 → 不同的物種 → 不同的生態系。易錯：同一種生物個體之間的差異（例如小狗的毛色、稻米的品種）是遺傳多樣性。', link: ['biodiversity', 1] },
+    { type: 'table', title: '就地保育 vs 移地保育', cols: [['就地保育', '#9be58c'], ['移地保育', '#8fd0ff']],
+      rows: [
+        ['做法', '在生物原本生活的地方，保護牠們和棲地', '把生物或種子移到原本棲地以外的地方保存、繁殖'],
+        ['例子', '國家公園、自然保留區、野生動物保護區<br><small>例：玉山國家公園、曾文溪口黑面琵鷺保護區</small>', '動物園、植物園、種原庫（種子庫）<br><small>種原庫在低溫、乾燥下保存種子</small>'],
+        ['保護的對象', '棲地和生活在其中的許多生物', '個別的生物或種子<br><small>常用在野外數量很少的生物</small>'],
+      ], note: '移地保育的生物數量增加後，有些可以再野放回原本的棲地。易錯：動物園、植物園、種原庫是「移地」保育；國家公園、保護區是「就地」保育。', link: ['conserve', 1] },
+    { type: 'svg', title: '生物放大作用：越上層，濃度越高', w: 560, h: 420, link: ['impact', 7],
+      note: '＊數量是示意：假設每個消費者吃下 3 個下一層的生物（和互動「生物放大作用」相同）；真實的 DDT 例子中，從水到吃魚的鳥，濃度可以相差數百萬倍以上（約）。會發生生物放大作用的，是難分解、不易排出的物質，例如 DDT、汞、鎘。',
+      draw(svg) {
+        const { el, text, C } = S;
+        const RED = '#ff5f74', X = [52, 166, 280, 394, 508], BASE = 350, MAXH = 200;
+        const L = [['水', null], ['浮游植物', 2], ['小魚', 6], ['大魚', 18], ['水鳥', 54]];
+        // 上方：食物鏈（水 → 浮游植物 → 小魚 → 大魚 → 水鳥）
+        L.forEach(([n], i) => text(svg, X[i], 52, n, { 'font-size': 21, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink }));
+        const half = (i) => (L[i][0].length * 21) / 2 + 7;
+        for (let i = 0; i < 4; i++) {
+          const x1 = X[i] + half(i), x2 = X[i + 1] - half(i + 1), y = 45;
+          el('line', { x1, y1: y, x2: x2 - 8, y2: y, stroke: C.ink2, 'stroke-width': 2.5 }, svg);
+          el('path', { d: `M ${x2},${y} l -11,-6 l 0,12 Z`, fill: C.ink2 }, svg);
+          text(svg, (x1 + x2) / 2, 80, i ? '被吃' : '吸收', { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute });
+        }
+        // 下方：每個個體體內累積的量
+        text(svg, 16, 122, '每個個體體內累積的量＊', { 'font-size': 18, fill: C.ink2 });
+        el('line', { x1: 10, y1: BASE, x2: 550, y2: BASE, stroke: C.mute, 'stroke-width': 2 }, svg);
+        L.forEach(([, v], i) => {
+          if (!v) {
+            for (let k = 0; k < 3; k++) el('circle', { cx: X[i] - 16 + k * 16, cy: BASE - 48, r: 4, fill: RED }, svg);
+            text(svg, X[i], BASE - 14, '濃度很低', { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute });
+            return;
+          }
+          const h = (v / 54) * MAXH;
+          el('rect', { x: X[i] - 28, y: BASE - h, width: 56, height: h, rx: 3, fill: RED, 'fill-opacity': 0.85 }, svg);
+          text(svg, X[i], BASE - h - 10, `${v}＊`, { 'font-size': 21, 'font-weight': 700, 'text-anchor': 'middle', fill: '#ff8f9a' });
+        });
+        text(svg, 280, 395, '食物鏈越上層的消費者，體內的濃度越高', { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle', fill: C.hi });
+      } },
+  ];
+
+  S.summaryLab({ id: 'summary-b6', section: '下總6', title: '知識地圖與自我檢測', heading: '第十二章 知識地圖', done: '第十二章的重點都掌握了。', MAP, QUIZ, CHARTS });
 })();

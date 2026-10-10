@@ -74,7 +74,7 @@
   };
 
   S.registerLab({
-    id: 'lab-method', section: '1-6', title: '設計公平的實驗',
+    id: 'lab-method', section: '1-3', title: '設計公平的實驗',
     mount(box) {
       box.innerHTML = `
 <style>

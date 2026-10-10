@@ -23,7 +23,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-digest', section: '2-4', title: '消化之旅',
+    id: 'lab-digest', section: '3-4', title: '消化之旅',
     mount(box) {
       box.innerHTML = `
 <style>

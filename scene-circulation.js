@@ -42,7 +42,7 @@
   const grad = (defs, id, a, b, vertical) => { const lg = el('linearGradient', { id, x1: 0, y1: 0, x2: vertical ? 0 : 1, y2: vertical ? 1 : 0 }, defs); el('stop', { offset: 0, 'stop-color': a }, lg); el('stop', { offset: 1, 'stop-color': b }, lg); return `url(#${id})`; };
 
   S.register({
-    id: 'circulation', section: '3-4', title: '血液循環與淋巴',
+    id: 'circulation', section: '4-4', title: '血液循環與淋巴',
     build(root) {
       const tl = gsap.timeline({ paused: true });
       const defs = el('defs', {}, root);

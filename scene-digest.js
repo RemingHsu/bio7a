@@ -14,7 +14,7 @@
   const chain = (p, x, y, n, kind, gap = 26) => { const c = g(p); el('line', { x1: x, y1: y, x2: x + (n - 1) * gap, y2: y, stroke: kind === 's' ? STA : PRO, 'stroke-width': 3 }, c); for (let i = 0; i < n; i++) (kind === 's' ? glu : amino)(c, x + i * gap, y); return c; };
 
   S.register({
-    id: 'digest', section: '2-4', title: '消化與吸收',
+    id: 'digest', section: '3-4', title: '消化與吸收',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

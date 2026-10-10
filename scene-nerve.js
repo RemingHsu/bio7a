@@ -61,7 +61,7 @@
   }, dur, pos, ease);
 
   S.register({
-    id: 'nerve', section: '4-1', title: '神經系統',
+    id: 'nerve', section: '5-1', title: '神經系統',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

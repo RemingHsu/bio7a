@@ -1,4 +1,4 @@
-/* 第十章（七下）總整理：資料（版面在 summary.js） */
+/* 第十一章（七下）總整理：資料（版面在 summary.js） */
 (() => {
   const MAP = [
     ['下5-1', '族群、群集與演替', ['個體 → 族群（同一區域內的同種生物）→ 群集（同一區域內所有的族群）→ 生態系（群集＋非生物環境）→ 生物圈（地球上所有的生態系）', '族群大小會改變：出生、遷入使個體增加；死亡、遷出使個體減少', '資源有限，族群增加到一定數量後會趨於穩定，在一個範圍內上下變動', '估算族群大小：樣區法（植物等不太移動的生物）、捉放法（會移動的動物）；族群密度＝單位面積內的個體數', '捉放法：族群總數 ≈ 第一次標記數 × 第二次捕捉數 ÷ 第二次捕捉中有標記的數', '演替：生態系的生物組成隨時間改變，例如崩塌的裸地 → 草本植物 → 灌木 → 森林'], '池塘裡所有的「魚」通常不是一個族群（不只一種魚）；樣區法、捉放法估算出的是近似值'],
@@ -23,5 +23,61 @@
     ['紅樹林植物水筆仔的「胎生苗」是指？', ['種子掉到泥中才發芽', '從泥中伸出的根，幫助取得氧', '能排出鹽分的葉片', '種子在母樹上就發芽，長成筆狀的幼苗才掉落'], 3, '水筆仔的種子在母樹上發芽，長成像筆的幼苗後才掉落，插入泥中生長。伸出泥面的是海茄苳的呼吸根。', 'biomes'],
   ];
 
-  S.summaryLab({ id: 'summary-b5', section: '下總5', title: '知識地圖與自我檢測', heading: '第十章 知識地圖', done: '第十章的重點都掌握了。', MAP, QUIZ });
+  // ＋／－／０ 的記號（顏色跟著頁面的深淺色主題）
+  const P = '<b style="color:var(--good);font-size:1.15em">＋</b>', M = '<b style="color:var(--bad);font-size:1.15em">－</b>', Z = '<b style="color:var(--muted);font-size:1.15em">０</b>';
+  const pair = (a, b, roles) => `<span style="white-space:nowrap">${a} ／ ${b}</span>${roles ? `<br><small>${roles}</small>` : ''}`;
+  const CHARTS = [
+    { type: 'table', title: '生物間的互動關係', cols: [['一方／另一方', null], ['例子', '#ffd166']],
+      rows: [
+        ['競爭', pair(M, M), '大樹與小草爭奪陽光<br><small>同種的麻雀爭奪食物</small>'],
+        ['掠食', pair(P, M, '掠食者／獵物'), '老鷹捕食野兔<br><small>青蛙捕食蚱蜢</small>'],
+        ['寄生', pair(P, M, '寄生者／寄主'), '跳蚤寄生在狗身上<br><small>菟絲子、蛔蟲</small>'],
+        ['片利共生', pair(P, Z), '鮣魚與鯊魚<br><small>山蘇與大樹</small>'],
+        ['互利共生', pair(P, P), '豆科植物與根瘤菌<br><small>地衣、小丑魚與海葵</small>'],
+      ], note: `${P} 有利、${M} 有害、${Z} 沒有影響；例子中先寫的生物是「一方」。競爭通常對雙方都不利。掠食和寄生都是一方有利、一方有害：掠食通常把獵物吃掉，寄生者則長時間從寄主身上取得養分。`, link: ['interact', 7] },
+    { type: 'svg', title: '能量塔：能量沿食物鏈逐層減少', w: 560, h: 480, link: ['ecosystem', 4],
+      note: '以食物鏈「草 → 蚱蜢 → 青蛙 → 蛇」為例。＊數值是示意：「約 10%」是常用的估計值，實際比例會因生態系和生物而不同；各層的寬度沒有依照比例。能量單向流動、不能循環，所以食物鏈不會太長。',
+      draw(svg) {
+        const { el, text, C } = S;
+        const HEAT = '#ff8a5c', PX = 255, W = [360, 270, 192, 128], TH = 80, STEP = 84, BASE = 410;
+        const T = [['生產者', '例：草', '10000', '#4f9a4a'], ['初級消費者', '例：蚱蜢', '約 1000', '#c88a3a'], ['次級消費者', '例：青蛙', '約 100', '#c86a3a'], ['三級消費者', '例：蛇', '約 10', '#b8483a']];
+        const arrowHead = (x, y, ang, col) => el('path', { d: `M ${x},${y} L ${x - 12 * Math.cos(ang - 0.45)},${y - 12 * Math.sin(ang - 0.45)} L ${x - 12 * Math.cos(ang + 0.45)},${y - 12 * Math.sin(ang + 0.45)} Z`, fill: col }, svg);
+        text(svg, 20, 52, '大部分能量以熱的形式散失', { 'font-size': 17, fill: HEAT });
+        text(svg, 490, 52, '能量（單位＊）', { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink2 });
+        T.forEach(([n, ex, v, col], i) => {
+          const y = BASE - (i + 1) * STEP + 4, w = W[i], cy = y + TH / 2, lx = PX - w / 2;
+          el('rect', { x: lx, y, width: w, height: TH, rx: 6, fill: col, stroke: '#0d1822', 'stroke-width': 2 }, svg);
+          text(svg, PX, y + 35, n, { 'font-size': 21, 'font-weight': 700, 'text-anchor': 'middle', fill: '#fff' });
+          text(svg, PX, y + 62, ex, { 'font-size': 17, 'text-anchor': 'middle', fill: '#fff6e0' });
+          // 左側：散失的熱
+          el('path', { d: `M ${lx - 6},${cy} C ${lx - 20},${cy - 2} ${lx - 30},${cy - 12} ${lx - 40},${cy - 24}`, fill: 'none', stroke: HEAT, 'stroke-width': 3, 'stroke-linecap': 'round' }, svg);
+          arrowHead(lx - 46, cy - 31, Math.atan2(-7, -6), HEAT);
+          text(svg, lx - 52, cy - 20, '熱', { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'end', fill: HEAT });
+          // 右側：能量的數值，層與層之間標出約 10%
+          text(svg, 490, cy + 8, v, { 'font-size': 22, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink });
+          if (i < 3) {
+            const y1 = cy - 18, y2 = cy - STEP + 18;
+            el('line', { x1: 455, y1, x2: 455, y2: y2 + 9, stroke: C.ink2, 'stroke-width': 2.5 }, svg);
+            arrowHead(455, y2, -Math.PI / 2, C.ink2);
+            text(svg, 465, (y1 + y2) / 2 + 6, '約 10%＊', { 'font-size': 17, fill: C.hi });
+          }
+        });
+        // 能量的來源
+        const sx = 118, sy = 446;
+        el('circle', { cx: sx, cy: sy, r: 11, fill: C.hi }, svg);
+        for (let k = 0; k < 8; k++) { const a = (k * Math.PI) / 4; el('line', { x1: sx + Math.cos(a) * 15, y1: sy + Math.sin(a) * 15, x2: sx + Math.cos(a) * 20, y2: sy + Math.sin(a) * 20, stroke: C.hi, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, svg); }
+        text(svg, 146, sy + 7, '能量來自太陽：生產者行光合作用', { 'font-size': 18, fill: C.hi });
+      } },
+    { type: 'table', title: '生態系的類型', cols: [['環境', '#8fd0ff'], ['生物（例）', '#9be58c']],
+      rows: [
+        ['森林', '雨量多', '生物種類多、層次多<br><small>比較穩定</small>'],
+        ['草原', '雨量較少', '以草本植物為主<br><small>動物善跑或住在地洞</small>'],
+        ['沙漠', '雨量很少<br><small>乾燥、日夜溫差大</small>', '生物種類少<br><small>仙人掌的葉變成刺、莖肥厚儲水</small>'],
+        ['淡水', '流動的水：河川、溪流<br>靜止的水：湖泊、池塘', '生產者有浮游藻類、水草'],
+        ['河口', '河水和海水交會<br><small>鹽度變化大、泥灘缺氧</small>', '紅樹林<br><small>水筆仔有胎生苗、海茄苳有呼吸根</small>'],
+        ['海洋', '面積最大<br><small>潮間帶、珊瑚礁、大洋區</small>', '珊瑚礁生物種類非常多<br><small>大洋區的生產者主要是浮游藻類</small>'],
+      ], note: '森林、草原、沙漠是陸域生態系，主要受雨量和溫度影響；淡水、河口、海洋是水域生態系，依水中的鹽分多少區分。', link: ['biomes', 1] },
+  ];
+
+  S.summaryLab({ id: 'summary-b5', section: '下總5', title: '知識地圖與自我檢測', heading: '第十一章 知識地圖', done: '第十一章的重點都掌握了。', MAP, QUIZ, CHARTS });
 })();

@@ -73,7 +73,7 @@
   }
 
   S.register({
-    id: 'discovery', section: '1-2', title: '細胞的發現與種類',
+    id: 'discovery', section: '2-1', title: '細胞的發現與種類',
     build(root) {
       const tl = gsap.timeline({ paused: true });
       const rnd = S.rng(4);

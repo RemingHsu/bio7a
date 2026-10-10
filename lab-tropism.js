@@ -23,7 +23,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-tropism', section: '4-3', title: '植物的向性',
+    id: 'lab-tropism', section: '5-3', title: '植物的向性',
     mount(box) {
       box.innerHTML = `
 <style>

@@ -32,7 +32,7 @@
   ];
 
   S.registerLab({
-    id: 'lab-breath', section: '5-1', title: '呼吸運動模型',
+    id: 'lab-breath', section: '6-1', title: '呼吸運動模型',
     mount(box) {
       box.innerHTML = `
 <style>
