@@ -16,7 +16,7 @@
     .xcol { white-space: nowrap; }
     .xarr { margin: 0 0.2em; color: var(--muted); }
     .xw { white-space: nowrap; }
-    @media (max-width: 22rem) { table.cmp:has(thead th:nth-child(4)) .xw { white-space: normal; } } /* 很窄的手機：4 欄的表格放不下，才在詞語中間換行 */
+    @media screen and (max-width: 22rem) { table.cmp:has(thead th:nth-child(4)) .xw { white-space: normal; } } /* 很窄的手機：4 欄的表格放不下，才在詞語中間換行 */
     .xchips { display: flex; flex-wrap: wrap; white-space: normal; margin-top: 0.3rem; }
     table.cmp tbody th:has(.xchips) { color: var(--ink); }`;
     document.head.appendChild(st);
