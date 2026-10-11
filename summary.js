@@ -6,7 +6,8 @@
    格子裡可以用 <b>、<small>；link 的「第幾步」從 1 開始（和動畫上的 1 / 7 一樣），互動可以只寫 [id]；可以連到任何一章（S.findItem）。
    MAP 每一項：[小節代號, 小節名稱, 重點[], 易錯]
      重點的每一條可以是 '文字'，或 ['文字', ['小點', …]]（下一層條列，可以再巢狀）；易錯可以是 '文字' 或 ['…', '…']。
-     各節重點同時是可以列印的複習講義（「列印講義」按鈕：淺色、隱藏按鈕，自我檢測印成題目＋解答）。
+     各節重點同時是可以列印的複習講義：列印時用淺色、隱藏按鈕；預設不印自我檢測，網址加 ?pq=qa 才印題目＋解答。
+     做好的 PDF 講義放在 pdf/（tools/make_pdfs.py），有的話標題旁會出現下載連結。
    MAP 可以是 []（例如 summary-x.js 的跨章比較），就不顯示「各節重點」。 */
 (() => {
   // 作答進度放在每個總整理自己的閉包裡：跳去看動畫再回來，進度還在
@@ -35,11 +36,8 @@
     .sumCard .trap ul { margin: 0.15rem 0 0; padding-left: 1.1em; }
     .sumHeadRow { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 1rem; }
     .sumPrintOpt { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; }
-    .sumPrintOpt label { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.92rem; color: var(--muted); }
-    .sumPrintOpt label { cursor: pointer; }
     .sumPdf { font-size: 0.92rem; color: var(--muted); }
     .sumPdf a { color: var(--accent); }
-    .sumPrintOpt input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); margin: 0; }
     #sum-printquiz { display: none; }
     /* 列印用的外框表格：螢幕上不影響版面；列印時 thead/tfoot 在每一頁重複，當作上下留白 */
     table.pwrap, .pwrap > tbody, .pwrap > tbody > tr, .pwrap > tbody > tr > td { display: contents; }
@@ -88,8 +86,8 @@
         @bottom-center { content: counter(page) ' / ' counter(pages); font-size: 9pt; color: #555; }
       }
       body { background: #fff !important; color: #111 !important; padding: 0 !important; margin: 0 !important; }
-      /* 列印用電腦內建的中文字型：PDF 只要嵌一套字型，檔案小很多 */
-      body, .lab, .lab :is(h2, h3, p, li, td, th, b, small, span, div, ol, ul, button) { font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif !important; }
+      /* 列印用電腦內建的中文字型（蘋方、微軟正黑體）：PDF 只要嵌一套字型，檔案小很多 */
+      body, .lab, .lab :is(h2, h3, p, li, td, th, b, small, span, div, ol, ul, button) { font-family: "PingFang TC", "Microsoft JhengHei", "Heiti TC", "Noto Sans TC", sans-serif !important; }
       header, .player, p.hint, .lab .btn-row, .lab button, #sum-quiz, .sumIntro .m-hint { display: none !important; }
       .lab { display: block !important; padding: 0 !important; }
       .sumCharts { display: block; }
@@ -121,23 +119,16 @@
     }
 </style>
 <table class="pwrap"><thead><tr><td><div class="pspace"></div></td></tr></thead><tbody><tr><td>
-<div class="card quizCard sumIntro" style="background:transparent;border:0;padding:0"><div class="sumHeadRow"><h2 style="font-family:var(--font-label);font-size:1.5rem;margin:0 0 0.2rem">${heading}</h2><div class="sumPrintOpt"><label><input type="checkbox" id="sum-pq">一起印自我檢測和解答</label><button class="ctl small" type="button" id="sum-print" title="印出淺色版的重點圖表和各節重點；勾選後再加印自我檢測和解答">列印講義</button><span class="sumPdf" id="sum-pdf" hidden>PDF：<a href="pdf/${pdfBase}.pdf" download="${pdfName}-重點.pdf">重點</a>・<a href="pdf/${pdfBase}-qa.pdf" download="${pdfName}-含自我檢測與解答.pdf">含自我檢測與解答</a></span></div></div><p class="m-hint">${!MAP.length ? '先看重點圖表，再做自我檢測。' : CHARTS.length ? '先看重點圖表，再看每一節的重點和易錯觀念。' : '每一節的重點和易錯觀念。'}按下按鈕可以直接打開對應的動畫或互動。</p></div>
+<div class="card quizCard sumIntro" style="background:transparent;border:0;padding:0"><div class="sumHeadRow"><h2 style="font-family:var(--font-label);font-size:1.5rem;margin:0 0 0.2rem">${heading}</h2><div class="sumPrintOpt"><span class="sumPdf" id="sum-pdf" hidden>PDF：<a href="pdf/${pdfBase}.pdf" download="${pdfName}-重點.pdf">重點</a>・<a href="pdf/${pdfBase}-qa.pdf" download="${pdfName}-含自我檢測與解答.pdf">含自我檢測與解答</a></span></div></div><p class="m-hint">${!MAP.length ? '先看重點圖表，再做自我檢測。' : CHARTS.length ? '先看重點圖表，再看每一節的重點和易錯觀念。' : '每一節的重點和易錯觀念。'}按下按鈕可以直接打開對應的動畫或互動。</p></div>
 ${CHARTS.length ? `<h3 class="sumHead">重點圖表</h3><div class="sumCharts" id="sum-charts"></div>${MAP.length ? '<h3 class="sumHead">各節重點</h3>' : ''}` : ''}
 ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
 <div class="card quizCard" id="sum-quiz"></div>
 <section id="sum-printquiz"></section>
 </td></tr></tbody><tfoot><tr><td><div class="pspace"></div></td></tr></tfoot></table>`;
-        // 列印選項：預設只印重點圖表和各節重點；勾選才加印自我檢測和解答（記在這台電腦的瀏覽器裡）
-        const pqSel = box.querySelector('#sum-pq'), pqBox = box.querySelector('#sum-printquiz');
-        try { pqSel.checked = localStorage.getItem('bio-print-quiz') === 'qa'; } catch (e) {}
-        const pqUrl = new URLSearchParams(location.search).get('pq'); // 產生 PDF 時用網址指定，不記住
-        if (pqUrl) pqSel.checked = pqUrl === 'qa';
-        const pqApply = (save) => { pqBox.dataset.mode = pqSel.checked ? 'qa' : 'none'; if (save) try { localStorage.setItem('bio-print-quiz', pqBox.dataset.mode); } catch (e) {} };
-        pqSel.addEventListener('change', () => pqApply(true));
-        pqApply(false);
+        // 列印（瀏覽器的列印、或 tools/make_pdfs.py 產生 PDF）：預設只印重點圖表和各節重點；網址加 ?pq=qa 才加印自我檢測和解答
+        box.querySelector('#sum-printquiz').dataset.mode = new URLSearchParams(location.search).get('pq') === 'qa' ? 'qa' : 'none';
         // 有做好的 PDF 才顯示下載連結（離線單檔沒有 pdf 資料夾）
         if (location.protocol !== 'file:') fetch(`pdf/${pdfBase}.pdf`, { method: 'HEAD' }).then((r) => { if (r.ok) box.querySelector('#sum-pdf').hidden = false; }).catch(() => {});
-        box.querySelector('#sum-print').addEventListener('click', () => window.print());
         // 重點圖表
         const findItem = (iid) => S.findItem(iid); // 任何一章的動畫／互動都可以連結
         const linkBtn = (link) => {
