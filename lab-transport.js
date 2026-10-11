@@ -113,6 +113,8 @@
     // k = 畫布座標 ÷ 螢幕像素。畫面縮得很小時（k 大），放大主要標籤、省略長說明（下方文字備註仍有）
     sim.draw = (g, k = 1) => {
       const f = Math.min(1.9, Math.max(1, k / 1.5)), narrow = k > 1.6;
+      // 小字的最小字級：筆電上畫布約縮成 0.75 倍，小字放大到畫面上約 14.5 px（和互動舞台的最小字級差不多）；窄螢幕另外用 f 放大
+      const fs = (b) => Math.max(b, narrow ? 0 : 14.5 * k);
       const semi = sim.cfg.membrane === 'semi';
       g.fillStyle = K.bg; g.fillRect(0, 0, W, H);
       g.fillStyle = K.box; g.strokeStyle = K.edge; g.lineWidth = 3;
@@ -145,7 +147,7 @@
         g.fillStyle = col; g.beginPath(); g.roundRect(x - 34 * f, 6, 68 * f, 30 * f, 15 * f); g.fill();
         g.fillStyle = '#ffffff'; g.fillText(n, x, 6 + 22 * f);
       });
-      g.textAlign = 'right'; g.font = `500 ${18 * f}px "JetBrains Mono", monospace`; g.fillStyle = K.mute;
+      g.textAlign = 'right'; g.font = `500 ${fs(18 * f)}px "JetBrains Mono", monospace`; g.fillStyle = K.mute;
       const osmo = semi && sim.cfg.solute !== 'small';
       // 窄螢幕：時間改放左上角，避免和「右邊」標籤、比例尺擠在一起
       if (narrow) g.textAlign = 'left';
@@ -154,14 +156,16 @@
       const bar = 1e-4 / sim.M_PER_PX, bx = X1 - 22, by = narrow ? YT + 34 + 17 * f : YT + 18;
       g.strokeStyle = K.ink; g.lineWidth = 3; g.beginPath();
       g.moveTo(bx - bar, by - 7); g.lineTo(bx - bar, by + 7); g.moveTo(bx - bar, by); g.lineTo(bx, by); g.moveTo(bx, by - 7); g.lineTo(bx, by + 7); g.stroke();
-      g.textAlign = 'center'; g.fillStyle = K.ink; g.font = `700 ${17 * f}px "JetBrains Mono", monospace`;
+      g.textAlign = 'center'; g.fillStyle = K.ink; g.font = `700 ${fs(17 * f)}px "JetBrains Mono", monospace`;
       g.fillText('0.1 mm', bx - bar / 2, by - 12);
       if (!narrow) {
-        g.font = '500 15px "Noto Sans TC", sans-serif'; g.fillStyle = K.mute;
-        g.fillText('容器寬約 0.32 mm・分子擴散為真實速度', bx - bar / 2, by + 26);
-        if (osmo) { g.fillStyle = K.large; g.fillText('＊示意時間：水位變化已加快', bx - bar / 2, by + 48); }
+        // 字放大後比比例尺寬，改成靠右對齊比例尺的右端，才不會超出容器
+        const nf = fs(15);
+        g.font = `500 ${nf}px "Noto Sans TC", sans-serif`; g.fillStyle = K.mute; g.textAlign = 'right';
+        g.fillText('容器寬約 0.32 mm・分子擴散為真實速度', bx, by + 10 + nf);
+        if (osmo) { g.fillStyle = K.large; g.fillText('＊示意時間：水位變化已加快', bx, by + 18 + nf * 2.3); }
       }
-      if (semi) { g.textAlign = 'center'; g.fillStyle = K.membrane; g.font = `500 ${16 * f}px "Noto Sans TC", sans-serif`; g.fillText('半透膜', XM, Math.min(H - 4, YB + 8 + 14 * f)); }
+      if (semi) { const mf = fs(16 * f); g.textAlign = 'center'; g.fillStyle = K.membrane; g.font = `500 ${mf}px "Noto Sans TC", sans-serif`; g.fillText('半透膜', XM, Math.min(H - 3, YB + 8 + mf * 0.9)); }
     };
     return sim;
   }
@@ -212,6 +216,7 @@
     };
     sim.draw = (g, k = 1) => {
       const f = Math.min(1.9, Math.max(1, k / 1.5)), narrow = k > 1.6;
+      const fs = (b) => Math.max(b, narrow ? 0 : 14.5 * k); // 小字的最小字級（同上）
       const { cell, cout } = sim.cfg;
       g.fillStyle = K.bg; g.fillRect(0, 0, W, H);
       g.fillStyle = `rgba(95,184,255,${0.1 + 0.02 * (3 - Math.min(3, cout))})`; g.fillRect(14, 14, W - 28, H - 28);
@@ -255,9 +260,10 @@
           g.beginPath(); g.ellipse(x, y, 20 * s + 4, 9 * s + 2, 0, 0, 6.283); g.fill(); g.stroke();
         });
         rx = mw / 2; ry = mh / 2;
-        g.font = `500 ${18 * f}px "Noto Sans TC", sans-serif`; g.textAlign = 'left';
+        const lf = fs(18 * f);
+        g.font = `500 ${lf}px "Noto Sans TC", sans-serif`; g.textAlign = 'left';
         g.fillStyle = K.wall; g.fillText('細胞壁', CX + ww / 2 + 16, CY - wh / 2 + 10);
-        g.fillStyle = K.membrane; g.fillText('細胞膜', CX + ww / 2 + 16, CY - wh / 2 + 10 + 26 * f);
+        g.fillStyle = K.membrane; g.fillText('細胞膜', CX + ww / 2 + 16, CY - wh / 2 + 10 + Math.max(26 * f, lf * 1.35));
       }
       // 水分子進出
       g.fillStyle = K.water;
@@ -269,12 +275,16 @@
       g.globalAlpha = 1;
       g.font = '500 18px "JetBrains Mono", monospace'; g.textAlign = 'right'; g.fillStyle = K.mute;
       const note = narrow ? '' : cell === 'rbc' ? '＊示意時間（真實也在幾秒內）' : '＊示意時間（已加快）';
-      g.font = '500 15px "Noto Sans TC", sans-serif';
-      const nw = Math.max(note ? g.measureText(note).width : 0, 90 * f) + 20;
-      g.fillStyle = 'rgba(13,24,34,0.88)'; g.beginPath(); g.roundRect(W - 28 - nw + 10, 20, nw, note ? 54 : 34 * f, 10); g.fill();
-      g.fillStyle = K.mute; g.font = `500 ${18 * f}px "JetBrains Mono", monospace`;
-      g.fillText(`${sim.t.toFixed(1)} 秒＊`, W - 28, 22 + 20 * f);
-      if (note) { g.font = '500 15px "Noto Sans TC", sans-serif'; g.fillText(note, W - 28, 64); }
+      // 時間和說明的底框：依放大後的字算大小
+      const tf = fs(18 * f), nf = fs(15), tStr = `${sim.t.toFixed(1)} 秒＊`;
+      g.font = `500 ${nf}px "Noto Sans TC", sans-serif`;
+      const noteW = note ? g.measureText(note).width : 0;
+      g.font = `500 ${tf}px "JetBrains Mono", monospace`;
+      const nw = Math.max(noteW, g.measureText(tStr).width, 90 * f) + 20, tY = 22 + Math.max(20 * f, tf * 1.05);
+      g.fillStyle = 'rgba(13,24,34,0.88)'; g.beginPath(); g.roundRect(W - 28 - nw + 10, 20, nw, note ? tY - 20 + nf * 1.75 : Math.max(34 * f, tf * 1.6), 10); g.fill();
+      g.fillStyle = K.mute;
+      g.fillText(tStr, W - 28, tY);
+      if (note) { g.font = `500 ${nf}px "Noto Sans TC", sans-serif`; g.fillText(note, W - 28, tY + nf * 1.25); }
     };
     return sim;
   }
@@ -363,7 +373,7 @@
       task: '同樣的設定，這次觀察「水」。', q: '過一段時間後，哪一邊的水位會比較高？', opts: ['左邊（有蔗糖的一邊）', '右邊（清水）', '兩邊一樣高'], ans: 0,
       judge: (m) => { const h = m.hist[m.hist.length - 1], up = h.wL - h.wR >= 10; return (m.t >= 12 && up) || m.t >= 30 ? { ok: up, text: `${m.t.toFixed(0)} 秒＊後，左邊水量 ${Math.round(h.wL)}%、右邊 ${Math.round(h.wR)}%` } : null; },
       why: '水分子兩個方向都會通過半透膜，但進入左邊的比較多：水會往「過不了膜的溶質粒子」濃度較高（水比較少）的一邊淨移動，所以左邊水位上升。這就是滲透作用。' },
-    { mode: 'mol', timeNote: '＊示意時間：水位變化已加快，真實要幾十分鐘以上。', key: 'conc', title: '滲透看粒子濃度', setup: { membrane: 'semi', solute: 'mix', nL: 6, nR: 35, T: 25 },
+    { mode: 'mol', timeNote: '＊示意時間：水位變化已加快，真實要幾十分鐘以上。', key: 'conc', title: '（補充）滲透看粒子濃度', setup: { membrane: 'semi', solute: 'mix', nL: 6, nR: 35, T: 25 },
       task: '左邊是 10% 蔗糖水，右邊是 10% 食鹽水，重量百分濃度一樣。預設的 6 個蔗糖分子和 35 份食鹽（氯化鈉）重量相同。', q: '水會往哪一邊移動？', opts: ['左邊（蔗糖水）', '右邊（食鹽水）', '水沒有淨移動（水位不變），因為一樣是 10%'], ans: 1,
       judge: (m) => { const h = m.hist[m.hist.length - 1], up = h.wR - h.wL >= 10; return (m.t >= 10 && up) || m.t >= 30 ? { ok: up, text: `${m.t.toFixed(0)} 秒＊後，左邊水量 ${Math.round(h.wL)}%、右邊 ${Math.round(h.wR)}%` } : null; },
       why: '一份食鹽比一個蔗糖分子輕很多，同樣重量的食鹽份數多很多，而且每份食鹽在水中會分成鈉離子和氯離子兩個粒子。用預設的數量時，右邊「過不了膜的粒子」（70 個離子）大約是左邊（6 個蔗糖分子）的 12 倍，所以水往食鹽水淨移動。判斷滲透方向要看溶質粒子的濃度，不能只看重量百分濃度。' },
@@ -652,7 +662,7 @@
         } else if (phase === 'predict' && note) {
           html += `<div class="acts"><button class="ctl primary" type="button" id="labB-go">重新開始實驗</button></div>`;
         }
-        if (phase === 'running') html += `<p class="m-hint">實驗進行中，觀察畫面和圖表…</p>`;
+        if (phase === 'running') html += `<p class="m-hint">實驗進行中，觀察畫面和圖表……</p>`;
         if (phase === 'result') {
           const okPred = pred === m.ans;
           html += `<div class="fb ${judged.ok ? 'ok' : 'bad'}"><strong>${judged.ok ? (okPred ? '預測正確！' : '和你的預測不一樣') : '這次的結果不是任務要的'}</strong>

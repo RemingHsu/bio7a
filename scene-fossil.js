@@ -27,7 +27,7 @@
       // ===== 0 化石是什麼：遺體與遺跡 =====
       const P0 = g(root);
       const head0 = g(P0, { opacity: 0 });
-      S.pill(head0, 305, 70, '遺體：生物身體的一部分', { size: 24, color: '#ffc98a', edge: '#ffc98a' });
+      S.pill(head0, 305, 70, '遺體：生物的身體或身體的一部分', { size: 24, color: '#ffc98a', edge: '#ffc98a' });
       S.pill(head0, 895, 70, '遺跡：生物活動留下的痕跡', { size: 24, color: '#9fd8ff', edge: '#9fd8ff' });
       const CX0 = [165, 445, 755, 1035];
       const cards0 = CX0.map((x, i) => {
@@ -176,7 +176,7 @@
       el('rect', { x: TX0, y: 96, width: xFull(5.4) - TX0, height: 36, rx: 6, fill: '#3a4a56' }, full);
       el('rect', { x: xFull(5.4), y: 96, width: TX1 - xFull(5.4), height: 36, fill: C.hi }, full);
       text(full, (TX0 + xFull(5.4)) / 2, 122, '更早的時期：生物大多是微小的單細胞生物', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
-      const tick = (x, s) => { el('line', { x1: x, y1: 78, x2: x, y2: 96, stroke: C.ink2, 'stroke-width': 2 }, full); text(full, x - (x > TX0 ? 8 : 0), 86, s, { 'font-size': 20, 'text-anchor': x > TX0 ? 'end' : 'start', fill: C.ink2, transform: x > TX0 ? '' : null }); };
+      const tick = (x, s) => { el('line', { x1: x, y1: 78, x2: x, y2: 96, stroke: C.ink2, 'stroke-width': 2 }, full); text(full, x + (x > TX0 ? -8 : 8), 86, s, { 'font-size': 20, 'text-anchor': x > TX0 ? 'end' : 'start', fill: C.ink2, transform: x > TX0 ? '' : null }); };
       tick(TX0, '地球形成'); el('line', { x1: xFull(35), y1: 78, x2: xFull(35), y2: 96, stroke: C.ink2, 'stroke-width': 2 }, full); text(full, xFull(35) + 8, 86, '最早的生物化石（約 35 億年前＊）', { 'font-size': 20, fill: C.ink2 });
       const zoom3 = g(P3, { opacity: 0 });
       el('path', { d: `M ${xFull(5.4)},132 L ${TX0},236 M ${TX1},132 L ${TX1},236`, stroke: C.hi, 'stroke-width': 2, 'stroke-dasharray': '7 6', fill: 'none' }, zoom3);
@@ -219,7 +219,7 @@
       const P4 = g(root, { opacity: 0 });
       const RC = '#9be07a', BC = '#8fc8ff';
       el('path', { d: 'M 150,540 C 260,530 560,528 700,540 L 700,560 L 150,560 Z', fill: '#3a3226' }, P4);
-      text(P4, 420, 640, '始祖鳥（復原圖＊）約 1.5 億年前＊', { 'font-size': 24, 'text-anchor': 'middle', fill: C.ink2 });
+      text(P4, 420, 658, '始祖鳥（復原圖＊）約 1.5 億年前＊', { 'font-size': 24, 'text-anchor': 'middle', fill: C.ink2 });
       const bird = at(P4, 420, 440, 1.4);
       B.archaeopteryx(bird);
       const bpt = (x, y) => [420 + x * 1.4, 440 + y * 1.4];
@@ -327,13 +327,13 @@
           '化石大多保存在沉積岩中。琥珀是古代樹脂變硬形成的，偶爾會把小昆蟲完整保存下來；在寒冷的永凍層中，也發現過保有皮肉的長毛象。',
           '＊示意：動畫把很長的時間（往往是數百萬年以上）縮短成幾秒，地層的厚度也是示意。大多數生物死後很快被分解，沒有機會變成化石。',
           '＊示意：各層的化石是舉例。有些化石能推測古代的環境，例如珊瑚生活在溫暖、清澈的淺海，在陸地上發現珊瑚化石，表示那裡以前可能是淺海。地殼變動可能讓地層彎曲、翻轉，這時就要另外判斷。',
-          '＊年代都是約略值，不同資料略有差異；古生代以前的時期（前寒武紀）佔了地球歷史的大部分。古生代末和中生代末都發生過大規模的生物滅絕，恐龍在中生代末滅絕。',
+          '＊年代都是約略值，不同資料略有差異；古生代以前的時期（前寒武紀）占了地球歷史的大部分。古生代末和中生代末都發生過大規模的生物滅絕，恐龍在中生代末滅絕。',
           '＊示意：依化石畫出的復原圖，羽毛顏色是推測的。始祖鳥的化石在德國發現，生存於約 1.5 億年前（中生代），體型大約像烏鴉。',
           '＊年代為約略值；馬的大小比例與骨骼都簡化了（始祖馬實際上只有狐狸般大小）。牙齒的咀嚼面也越來越大，適合磨碎草。馬的演化其實像一棵有許多分支的樹，圖中只挑出其中幾種。',
           '＊示意：每一列只挑幾種生物做代表。目前發現最古老的生物化石約 35 億年前＊，是生活在海中的微小生物（例如藍綠菌）。',
         ],
         steps: [
-          '<b>化石</b>：古代生物的<b>遺體</b>（外殼、骨骼…）或<b>遺跡</b>（足跡、爬痕、糞便…），經過很長的時間保存在<b>地層</b>（岩層）中。',
+          '<b>化石</b>：古代生物的<b>遺體</b>（外殼、骨骼……）或<b>遺跡</b>（足跡、爬痕、糞便……），經過很長的時間保存在<b>地層</b>（岩層）中。',
           '化石的形成：生物死亡後很快被<b>泥沙掩埋</b>，柔軟的部分被分解，<b>堅硬的部分</b>（骨骼、牙齒、外殼）被礦物質慢慢取代；地殼抬升、侵蝕後才露出地表。',
           '地層是一層層堆積起來的。沒有翻轉的地層，<b>越下層越古老</b>。比較各層的化石，可以推測生物<b>出現的先後</b>。',
           '依化石紀錄把地球的歷史分成<b>地質年代</b>：<b>古生代</b>有三葉蟲；<b>中生代</b>恐龍興盛；<b>新生代</b>哺乳類興盛。有些生物（如三葉蟲、恐龍）已經<b>滅絕</b>。',

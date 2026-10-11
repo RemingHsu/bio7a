@@ -1,4 +1,4 @@
-/* 3-4 血液循環與淋巴：體循環、肺循環（充氧血／缺氧血）、微血管的物質交換、小魚尾鰭的血流、淋巴系統、人體的防禦 */
+/* 4-4 血液循環與淋巴：體循環、肺循環（充氧血／缺氧血）、微血管的物質交換、小魚尾鰭的血流、淋巴系統、人體的防禦（非專一性、發炎反應、專一性） */
 (() => {
   const { el, g, text, C } = S;
   const OXY = '#ff4d5e', DEOX = '#8f6cf2', LYM = '#7fdc8a', MUSC = '#d9707f', MUSC_E = '#ffb3bf', RBC = '#e0384c';
@@ -32,7 +32,7 @@
     return ag;
   };
   const hexD = (r) => { let d = ''; for (let i = 0; i < 6; i++) { const a = (i / 6) * 6.283 + 0.52; d += (i ? 'L' : 'M') + `${(Math.cos(a) * r).toFixed(1)},${(Math.sin(a) * r).toFixed(1)}`; } return d + 'Z'; };
-  const mol = (p, label, fill, r = 15) => { const m = g(p); el('circle', { cx: 0, cy: 0, r, fill, stroke: '#0d1822', 'stroke-width': 1.5 }, m); text(m, 0, 5, label, { 'font-size': 13, 'text-anchor': 'middle', fill: '#0d1822', 'font-weight': 700 }); return m; };
+  const mol = (p, label, fill, r = 15) => { const m = g(p); el('circle', { cx: 0, cy: 0, r, fill, stroke: '#0d1822', 'stroke-width': 1.5 }, m); text(m, 0, 7, label, { 'font-size': 20, 'text-anchor': 'middle', fill: '#0d1822', 'font-weight': 700 }); return m; };
   const chain = (p, x, y0, gap, items, color) => items.map((s, i) => {
     const cg = g(p, { opacity: 0 });
     S.pill(cg, x, y0 + i * gap, s, { size: 22, color, edge: color });
@@ -55,7 +55,8 @@
       text(lungs, 600, 34, '肺', { 'font-size': 26, 'text-anchor': 'middle', fill: '#ffb3c8', 'font-weight': 700 });
       const lungBed = g(D);
       for (let k = 0; k < 4; k++) { let d = `M 420,${102 + k * 12}`; for (let x = 420; x < 780; x += 30) d += ` q 15,${k % 2 ? 9 : -9} 30,0`; el('path', { d, fill: 'none', stroke: gLung, 'stroke-width': 4 }, lungBed); }
-      text(lungBed, 600, 168, '肺部的微血管', { 'font-size': 20, 'text-anchor': 'middle', fill: '#ffb3c8' });
+      // 標在右肺外側、緊接微血管的末端：放在肺裡會被兩片肺的輪廓線和微血管穿過
+      text(lungBed, 822, 130, '肺部的微血管', { 'font-size': 22, fill: '#ffb3c8' });
       const bodyBed = g(D);
       for (let k = 0; k < 4; k++) { let d = `M 380,${612 + k * 12}`; for (let x = 380; x < 840; x += 30) d += ` q 15,${k % 2 ? 9 : -9} 30,0`; el('path', { d, fill: 'none', stroke: gBody, 'stroke-width': 4 }, bodyBed); }
       for (let i = 0; i < 9; i++) el('rect', { x: 392 + i * 50, y: 668, width: 42, height: 30, rx: 10, fill: 'rgba(99,212,191,0.12)', stroke: '#63d4bf', 'stroke-width': 1.5 }, bodyBed);
@@ -74,7 +75,7 @@
       text(vl, 508, 250, '肺動脈', { 'font-size': 22, 'text-anchor': 'middle', fill: '#c8b8ff', 'font-weight': 700 });
       text(vl, 796, 250, '肺靜脈', { 'font-size': 22, fill: '#ffb0b8', 'font-weight': 700 });
       text(vl, 856, 530, '主動脈', { 'font-size': 22, fill: '#ffb0b8', 'font-weight': 700 });
-      text(vl, 366, 560, '上、下腔靜脈', { 'font-size': 22, 'text-anchor': 'end', fill: '#c8b8ff', 'font-weight': 700 });
+      text(vl, 366, 560, '上、下大靜脈', { 'font-size': 22, 'text-anchor': 'end', fill: '#c8b8ff', 'font-weight': 700 });
       const leg = g(D);
       el('circle', { cx: 940, cy: 40, r: 10, fill: OXY }, leg); text(leg, 958, 48, '充氧血', { 'font-size': 22, fill: C.ink2 });
       el('circle', { cx: 1060, cy: 40, r: 10, fill: DEOX }, leg); text(leg, 1078, 48, '缺氧血', { 'font-size': 22, fill: C.ink2 });
@@ -85,7 +86,7 @@
       const sysC = (x, y) => (y > 600 ? mix(OXY, DEOX, (840 - x) / 460) : x > 600 ? OXY : DEOX);
       const pulC = (x, y) => (y < 130 && x >= 420 ? mix(DEOX, OXY, (x - 420) / 360) : x > 700 && y < 340 ? OXY : DEOX);
       const sd = Array.from({ length: 8 }, () => dot(D, 9)), pd = Array.from({ length: 8 }, () => dot(D, 9));
-      const ch0 = chain(D, 1040, 190, 82, ['左心室', '主動脈', '全身的微血管', '上、下腔靜脈', '右心房'], '#ffd0d8');
+      const ch0 = chain(D, 1040, 190, 82, ['左心室', '主動脈', '全身的微血管', '上、下大靜脈', '右心房'], '#ffd0d8');
       const ch1 = chain(D, 160, 180, 82, ['右心室', '肺動脈', '肺部的微血管', '肺靜脈', '左心房'], '#ffd0d8');
       const trap = g(D, { opacity: 0 });
       el('rect', { x: 900, y: 250, width: 270, height: 170, rx: 16, fill: 'rgba(255,107,107,0.08)', stroke: '#ff9a8a', 'stroke-width': 2 }, trap);
@@ -123,8 +124,8 @@
       const ex = [];
       for (let i = 0; i < 7; i++) {
         const x = 154 + i * 150;
-        if (i % 2 === 0) { ex.push({ m: mol(P2, 'O₂', OXY), x: x - 20, a: 340, b: 220 }); ex.push({ m: (() => { const h = g(P2); el('path', { d: hexD(13), fill: 'rgba(255,207,92,0.35)', stroke: C.sugar, 'stroke-width': 3 }, h); return h; })(), x: x + 22, a: 380, b: 500 }); }
-        else { ex.push({ m: mol(P2, 'CO₂', '#b8c4cc', 17), x: x - 20, a: 220, b: 340 }); ex.push({ m: (() => { const h = g(P2); el('rect', { x: -10, y: -10, width: 20, height: 20, rx: 5, fill: '#c89a5a', stroke: '#0d1822', 'stroke-width': 1.5 }, h); return h; })(), x: x + 22, a: 500, b: 380 }); }
+        if (i % 2 === 0) { ex.push({ m: mol(P2, 'O₂', OXY, 22), x: x - 20, a: 340, b: 220 }); ex.push({ m: (() => { const h = g(P2); el('path', { d: hexD(13), fill: 'rgba(255,207,92,0.35)', stroke: C.sugar, 'stroke-width': 3 }, h); return h; })(), x: x + 22, a: 380, b: 500 }); }
+        else { ex.push({ m: mol(P2, 'CO₂', '#b8c4cc', 25), x: x - 20, a: 220, b: 340 }); ex.push({ m: (() => { const h = g(P2); el('rect', { x: -10, y: -10, width: 20, height: 20, rx: 5, fill: '#c89a5a', stroke: '#0d1822', 'stroke-width': 1.5 }, h); return h; })(), x: x + 22, a: 500, b: 380 }); }
       }
       for (let i = 1; i < 6; i++) {
         const x = 154 + i * 150 + 40, up = i % 2 === 0;
@@ -153,7 +154,7 @@
       el('path', { d: 'M 112,232 C 120,186 210,180 268,204 C 284,226 284,236 268,258 C 210,282 120,276 112,232 Z', fill: '#f4f4f0', stroke: '#fff', 'stroke-width': 2 }, P3);
       for (let i = 0; i < 6; i++) el('circle', { cx: 140 + i * 22, cy: 216 + (i % 2) * 22, r: 12, fill: '#ffffff', opacity: 0.8 }, P3);
       el('circle', { cx: 352, cy: 230, r: 34, fill: 'none', stroke: C.hi, 'stroke-width': 3 }, P3);
-      text(P3, 260, 104, '用浸濕的棉花包住魚身，露出尾鰭', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink });
+      text(P3, 260, 104, '用浸溼的棉花包住魚身，露出尾鰭', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink });
       text(P3, 260, 344, '放在顯微鏡下，用低倍鏡觀察', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink });
       el('line', { x1: 386, y1: 230, x2: 560, y2: 250, stroke: C.hi, 'stroke-width': 1.5, 'stroke-dasharray': '6 6', opacity: 0.7 }, P3);
       const FC = [850, 370], FR = 300;
@@ -207,14 +208,14 @@
       const NODES = [[588, 150], [612, 152], [676, 214], [526, 220], [606, 300], [582, 470], [624, 470], [598, 250]];
       NODES.forEach(([x, y]) => el('ellipse', { cx: x, cy: y, rx: 7, ry: 5, fill: LYM, stroke: '#d8ffd8', 'stroke-width': 1 }, hb));
       el('path', { d: 'M 560,182 C 580,176 600,176 620,182', fill: 'none', stroke: DEOX, 'stroke-width': 5 }, hb);
-      const co4 = [S.callout(P4, ...H2S(608, 184), 1080, 110, '匯入大靜脈', '#c8b8ff', { size: 22 }), S.callout(P4, ...H2S(676, 214), 1090, 250, '淋巴結', LYM, { size: 22 }), S.callout(P4, ...H2S(690, 300), 1090, 440, '淋巴管', LYM, { size: 22 })];
+      const co4 = [S.callout(P4, ...H2S(608, 184), 1062, 110, '匯入鎖骨附近的靜脈', '#c8b8ff', { size: 22 }), S.callout(P4, ...H2S(676, 214), 1090, 250, '淋巴結', LYM, { size: 22 }), S.callout(P4, ...H2S(690, 300), 1090, 440, '淋巴管', LYM, { size: 22 })];
       const node4 = g(P4, { opacity: 0 });
       el('ellipse', { cx: 1090, cy: 316, rx: 34, ry: 24, fill: 'rgba(127,220,138,0.3)', stroke: LYM, 'stroke-width': 3 }, node4);
       [[-14, -6], [6, -10], [14, 8], [-6, 10], [0, 0]].forEach(([dx, dy]) => el('circle', { cx: 1090 + dx, cy: 316 + dy, r: 5, fill: '#e8e4f0' }, node4));
       text(node4, 1090, 372, '有許多白血球，', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink });
       text(node4, 1090, 398, '能消滅病原體', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink });
       const ch4 = g(P4, { opacity: 0 });
-      const CH4 = ['組織液', '微淋巴管', '淋巴管', '淋巴結', '大靜脈'];
+      const CH4 = ['組織液', '微淋巴管', '淋巴管', '淋巴結', '鎖骨附近的靜脈'];
       const w4 = CH4.map((s) => S.textWidth(s, 22) + 28), t4 = w4.reduce((a, b) => a + b, 0) + 44 * 4;
       let cx4 = (1200 - t4) / 2;
       CH4.forEach((s, i) => { S.pill(ch4, cx4 + w4[i] / 2, 640, s, { size: 22, color: i === 4 ? '#c8b8ff' : i === 0 ? '#9fd8ff' : LYM, edge: i === 4 ? '#c8b8ff' : i === 0 ? '#9fd8ff' : LYM }); if (i < 4) text(ch4, cx4 + w4[i] + 22, 648, '→', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute }); cx4 += w4[i] + 44; });
@@ -236,13 +237,19 @@
       const P5 = g(root, { opacity: 0 });
       const BAC = '#7fdc8a';
       const bac = (p) => { const b = g(p); el('rect', { x: -14, y: -7, width: 28, height: 14, rx: 7, fill: BAC, stroke: '#2f7a3a', 'stroke-width': 2 }, b); return b; };
-      const cards5 = [['第一道防線', '皮膚、黏膜', ['阻擋病原體進入身體', '黏膜分泌黏液，黏住灰塵和細菌']], ['第二道防線', '白血球', ['吞噬侵入的病原體']], ['第三道防線', '淋巴球產生抗體', ['抗體和特定的病原體結合', '一種抗體只對付一種病原體']]].map(([t, s, pts], i) => {
+      const cards5 = [['第一道防線', '皮膚、黏膜', ['阻擋病原體進入身體', '黏膜分泌黏液，黏住灰塵和細菌']], ['第二道防線', '發炎反應', ['白血球聚集，吞噬病原體', '受傷處紅、腫、熱、痛']], ['第三道防線', '淋巴球產生抗體', ['抗體和特定的病原體結合', '一種抗體只對付一種病原體']]].map(([t, s, pts], i) => {
         const x0 = 40 + i * 380, cg = g(P5, { opacity: 0 });
         el('rect', { x: x0, y: 60, width: 360, height: 470, rx: 16, ...FRAME }, cg);
         text(cg, x0 + 180, 102, t, { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
         text(cg, x0 + 180, 140, s, { 'font-size': 30, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
         pts.forEach((q, k) => text(cg, x0 + 20, 440 + k * 36, '• ' + q, { 'font-size': 22, fill: C.ink }));
         return cg;
+      });
+      // 非專一性（第一、二道）與專一性（第三道）
+      const br5 = g(P5, { opacity: 0 });
+      [[50, 750, '非專一性防禦：不分病原體', '#9fd8ff'], [810, 1150, '專一性防禦', C.hi]].forEach(([xa, xb, s, c]) => {
+        el('path', { d: `M ${xa},54 L ${xa},32 L ${xb},32 L ${xb},54`, fill: 'none', stroke: c, 'stroke-width': 2.5 }, br5);
+        S.pill(br5, (xa + xb) / 2, 32, s, { size: 22, color: c, edge: c, bg: C.bg });
       });
       // 1 皮膚
       const c1 = cards5[0];
@@ -251,17 +258,47 @@
       for (let x = 60; x < 380; x += 32) el('line', { x1: x, y1: 300, x2: x, y2: 326, stroke: '#c07a5e', 'stroke-width': 1.5 }, c1);
       text(c1, 220, 360, '皮膚', { 'font-size': 22, 'text-anchor': 'middle', fill: '#3a1e14', 'font-weight': 700 });
       const b1 = [0, 1, 2].map(() => bac(c1));
-      // 2 白血球吞噬
-      const c2 = cards5[1];
-      el('circle', { cx: 600, cy: 300, r: 70, fill: 'rgba(232,228,240,0.85)', stroke: '#fff', 'stroke-width': 3 }, c2);
-      el('path', { d: 'M 570,300 C 560,270 592,262 600,282 C 608,262 640,270 630,300 C 642,326 612,336 600,320 C 588,336 558,326 570,300 Z', fill: '#8a6ad8' }, c2);
-      const b2 = [0, 1].map(() => bac(c2));
+      // 2 發炎反應：病原體從傷口進入，受傷處的血管擴張（紅、熱）、組織腫起來，白血球從微血管鑽出、聚集吞噬病原體
+      const c2 = cards5[1], WX = 600, ST = 214;
+      const glow = el('ellipse', { cx: WX, cy: 262, rx: 130, ry: 78, fill: 'url(#ciInfl)', opacity: 0 }, c2);
+      const rg5 = el('radialGradient', { id: 'ciInfl' }, defs);
+      el('stop', { offset: 0, 'stop-color': '#ff4d5e', 'stop-opacity': 0.9 }, rg5); el('stop', { offset: 1, 'stop-color': '#ff4d5e', 'stop-opacity': 0 }, rg5);
+      const derm = el('path', { fill: 'rgba(217,143,120,0.28)' }, c2);
+      c2.insertBefore(derm, glow); // 真皮在紅色光暈的下面
+      const epi = [el('path', { fill: '#f2b38a', stroke: '#c07a5e', 'stroke-width': 1.5 }, c2), el('path', { fill: '#f2b38a', stroke: '#c07a5e', 'stroke-width': 1.5 }, c2)];
+      // 皮膚：sw 是受傷處腫起來的高度；表皮厚 22，中間有一道傷口
+      const setSkin = (sw) => {
+        const top = (x) => ST - sw * Math.exp(-(((x - WX) / 95) ** 2));
+        const line = (xa, xb, dy, rev) => { const P = []; for (let x = xa; x <= xb + 0.1; x += 5) P.push(`${x.toFixed(1)},${(top(x) + dy).toFixed(1)}`); return (rev ? P.reverse() : P).join(' L '); };
+        [[440, WX - 10, WX - 3], [WX + 10, 760, WX + 3]].forEach(([xa, xb, xv], i) => {
+          const v = `${xv},${(top(WX) + 26).toFixed(1)}`;
+          epi[i].setAttribute('d', i ? `M ${v} L ${line(xa, xb, 0)} L ${line(xa, xb, 22, true)} Z` : `M ${line(xa, xb, 0)} L ${v} L ${line(xa, xb, 22, true)} Z`);
+        });
+        derm.setAttribute('d', `M ${line(440, 760, 22)} L 760,410 L 440,410 Z`);
+      };
+      setSkin(0);
+      el('rect', { x: 440, y: 362, width: 320, height: 26, rx: 13, fill: 'rgba(140,28,46,0.65)', stroke: '#ff5f74', 'stroke-width': 2.5 }, c2);
+      [470, 530, 660, 730].forEach((x) => el('ellipse', { cx: x, cy: 375, rx: 9, ry: 6, fill: RBC }, c2));
+      // 標在微血管左上方：放在下面會壓到微血管和組織的下緣（第一個白血球改從右邊一點出發，不經過標籤）
+      text(c2, 448, 352, '微血管', { 'font-size': 22, fill: '#ff8a9a' });
+      const wbcs = [[530, 375, 572, 266], [600, 375, 628, 276], [716, 375, 600, 300]].map(([x, y, tx, ty]) => {
+        const w = g(c2);
+        el('circle', { cx: 0, cy: 0, r: 15, fill: 'rgba(232,228,240,0.92)', stroke: '#fff', 'stroke-width': 2 }, w);
+        el('path', { d: 'M -7,-2 C -9,-10 -1,-10 0,-4 C 2,-10 10,-7 7,1 C 10,7 2,10 0,5 C -3,10 -11,6 -7,-2 Z', fill: '#8a6ad8' }, w);
+        tr(w, [x, y]);
+        return { w, x, y, tx, ty };
+      });
+      const b2 = [[-30, 588, 262], [10, 616, 274], [-6, 598, 296]].map(([dx, tx, ty]) => ({ b: bac(c2), dx, tx, ty }));
+      const infl = g(c2, { opacity: 0 });
+      S.pill(infl, WX, 176, '紅、腫、熱、痛', { size: 22, color: '#ff8a7a', edge: '#ff8a7a' });
+      const wLbl = text(c2, 744, 318, '白血球聚集', { 'font-size': 20, 'text-anchor': 'end', fill: '#e8e4f0', opacity: 0 });
       // 3 抗體
       const c3 = cards5[2];
       const lym3 = g(c3);
       el('circle', { cx: 900, cy: 300, r: 46, fill: 'rgba(232,228,240,0.85)', stroke: '#fff', 'stroke-width': 3 }, lym3);
       el('circle', { cx: 900, cy: 300, r: 30, fill: '#8a6ad8' }, lym3);
-      text(c3, 900, 376, '淋巴球（白血球的一種）', { 'font-size': 18, 'text-anchor': 'middle', fill: C.mute });
+      text(c3, 900, 374, '淋巴球', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
+      text(c3, 900, 400, '（白血球的一種）', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       const Y = (p) => { const y = g(p); el('path', { d: 'M 0,12 L 0,0 L -8,-10 M 0,0 L 8,-10', fill: 'none', stroke: C.hi, 'stroke-width': 3.5, 'stroke-linecap': 'round' }, y); return y; };
       const abs = Array.from({ length: 6 }, () => Y(c3));
       const b3 = [bac(c3), bac(c3)];
@@ -283,28 +320,45 @@
       cards5.forEach((c, i) => S.show(tl, c, `s5+=${0.4 + i * 1.2}`, 0.4));
       S.drive(tl, (u) => {
         b1.forEach((b, i) => { const t = S.clamp(u * 2.4 - i * 0.3); const y = t < 0.5 ? S.lerp(190, 292, t * 2) : S.lerp(292, 210, (t - 0.5) * 2); tr(b, [120 + i * 100 + t * 30, y], u > 0 && u < 1 ? 1 : 0); });
-        b2.forEach((b, i) => { const t = S.clamp(u * 1.8 - 0.3 - i * 0.35); tr(b, [S.lerp(i ? 720 : 480, 600 + (i ? 30 : -30), t), S.lerp(i ? 400 : 200, 300 + (i ? 28 : -28), t)], u > 0 ? 1 - 0.45 * S.smoothstep(0.7, 1, t) : 0); });
         abs.forEach((a, i) => { const t = S.clamp(u * 1.6 - 0.6 - i * 0.05), tgt = [1060 + (i % 3 - 1) * 22, 230 + Math.floor(i / 3) * 120 + (i % 3 === 1 ? -14 : 8)]; tr(a, [S.lerp(900, tgt[0], t), S.lerp(300, tgt[1], t)], u > 0 && t > 0 ? 1 : 0); });
       }, 5.5, 's5+=0.6', 'none');
-      S.show(tl, vac, 's5+=4.4', 0.5);
+      S.drive(tl, (u) => {
+        const t1 = S.smoothstep(0, 0.3, u), k2 = S.smoothstep(0.25, 0.6, u), t3 = S.smoothstep(0.3, 0.78, u), eat = S.smoothstep(0.78, 0.95, u);
+        glow.setAttribute('opacity', (0.55 * k2).toFixed(2));
+        setSkin(12 * k2);
+        infl.style.opacity = k2;
+        b2.forEach(({ b, dx, tx, ty }, i) => {
+          const p = [S.lerp(WX + dx * 0.25, tx, t1), S.lerp(188 + i * 6, ty, t1)];
+          const w = wbcs[i];
+          tr(b, [S.lerp(p[0], w.tx, eat), S.lerp(p[1], w.ty, eat)], u > 0 ? 1 - 0.65 * eat : 0);
+        });
+        wbcs.forEach(({ w, x, y, tx, ty }) => {
+          // 先往上鑽出微血管，再走到病原體旁邊
+          const up = S.smoothstep(0, 0.35, t3), go = S.smoothstep(0.25, 1, t3);
+          tr(w, [S.lerp(x, tx, go), S.lerp(y, 340, up) + (ty - 340) * go]);
+        });
+        wLbl.style.opacity = S.smoothstep(0.8, 1, u);
+      }, 3.6, 's5+=1.8', 'none');
+      S.show(tl, br5, 's5+=4.4', 0.5);
+      S.show(tl, vac, 's5+=4.9', 0.5);
 
       return {
         tl,
         notes: [
-          '＊示意：心臟和血管都畫成簡單的方塊和管子。充氧血是含氧較多的血液（圖中紅色），缺氧血是含氧較少的血液（圖中紫色）；真實的缺氧血是暗紅色。上、下腔靜脈也有課本稱為上、下大靜脈。',
+          '＊示意：心臟和血管都畫成簡單的方塊和管子。充氧血是含氧較多的血液（圖中紅色），缺氧血是含氧較少的血液（圖中紫色）；真實的缺氧血是暗紅色。',
           '＊示意：血液在肺部的微血管放出二氧化碳、得到氧，變成充氧血。易錯：動脈不一定流充氧血，靜脈也不一定流缺氧血，要看血管連接心臟的哪裡。',
-          '＊示意：分子和細胞都畫得很大。物質主要以擴散的方式在血液和細胞之間移動（1-3 擴散）。',
-          '＊示意：視野中的血管和血球都簡化了。先找到紅血球只能排成一列通過的微血管，再依血流方向判斷：流向微血管的是小動脈，從微血管流出的是小靜脈。',
+          '＊示意：分子和細胞都畫得很大。物質主要以擴散的方式在血液和細胞之間移動（2-2 擴散）。',
+          '＊示意：視野中的血管和血球都簡化了。先找到紅血球只能排成一列通過的微血管，再依血流方向判斷：流向微血管的是小動脈，從微血管流出的是小靜脈。複式顯微鏡的像上下左右顛倒：視野中往右流，實際上是往左流。',
           '＊示意：淋巴結和淋巴管只畫出一部分。淋巴管中有瓣膜，淋巴只朝一個方向流動；推動淋巴的主要是周圍肌肉的運動。',
-          '＊「三道防線」是常見的整理方式；發炎反應、各種白血球的名稱和作用方式屬於高中（補充）。疫苗裡沒有抗體，是讓身體自己產生抗體。',
+          '＊示意：細胞和病原體都畫得很大。發炎反應：受傷處紅、腫、熱、痛，因為血管擴張、血流增加，白血球從微血管鑽出來聚集。疫苗讓身體預先產生抗體和記憶，疫苗裡沒有抗體。（補充）白血球還分成好幾種，其他種類的名稱高中才會學。',
         ],
         steps: [
-          '<b>體循環</b>：<b>左心室</b> → 主動脈 → 全身各處的微血管 → 上、下腔靜脈 → <b>右心房</b>。血液在全身微血管把氧交給細胞，由<b>充氧血</b>變成<b>缺氧血</b>。',
+          '<b>體循環</b>：<b>左心室</b> → 主動脈 → 全身各處的微血管 → 上、下大靜脈 → <b>右心房</b>。血液在全身微血管把氧交給細胞，由<b>充氧血</b>變成<b>缺氧血</b>。',
           '<b>肺循環</b>：<b>右心室</b> → 肺動脈 → 肺部的微血管 → 肺靜脈 → <b>左心房</b>。血液在肺部得到氧，變成充氧血。注意：<b>肺動脈</b>裡是缺氧血，<b>肺靜脈</b>裡是充氧血。',
           '<b>微血管</b>的管壁很薄：<b>氧和養分</b>由血液進入細胞，<b>二氧化碳和廢物</b>由細胞進入血液，這就是<b>物質交換</b>。',
           '觀察<b>小魚尾鰭</b>：<b>動脈</b>的血液由主幹流向分支、流速快；<b>微血管</b>中紅血球排成一列、流速最慢；<b>靜脈</b>的血液由分支匯合到主幹。',
-          '<b>淋巴系統</b>：組織液進入<b>微淋巴管</b>成為淋巴，經<b>淋巴管</b>和<b>淋巴結</b>，最後匯入<b>大靜脈</b>，回到血液。淋巴結中有許多白血球，能消滅病原體。',
-          '人體的防禦：<b>皮膚、黏膜</b>阻擋病原體；<b>白血球</b>吞噬病原體；<b>淋巴球</b>產生<b>抗體</b>對付特定的病原體。接種<b>疫苗</b>能讓身體預先產生抗體和記憶。',
+          '<b>淋巴系統</b>：組織液進入<b>微淋巴管</b>成為淋巴，經<b>淋巴管</b>和<b>淋巴結</b>，最後匯入<b>鎖骨附近的靜脈</b>，回到心臟。淋巴結中有許多白血球，能消滅病原體。',
+          '<b>非專一性防禦</b>：皮膚、黏膜阻擋病原體，白血球吞噬病原體（<b>發炎反應</b>）。<b>專一性防禦</b>：淋巴球產生<b>抗體</b>，對付特定的病原體。',
         ],
       };
     },

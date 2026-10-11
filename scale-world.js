@@ -107,7 +107,9 @@
     for (let i = -3; i <= 3; i++) if (i) cellUnit(p, i * 112, false);
     o.focus = cellUnit(p, 0, true);
     el('line', { x1: -440, y1: 184, x2: 440, y2: 184, stroke: '#f0d0b8', 'stroke-width': 4, 'stroke-dasharray': '10 8' }, p);
-    o.dim = S.dimension(p, 74, 177, 74, -173, '約 25 μm', { offset: -80 });
+    // 標籤放在箭頭上端的胃腔（深色處）：放在箭頭旁邊會蓋到隔壁的細胞
+    o.dim = S.dimension(p, 74, 177, 74, -173, '');
+    S.text(o.dim, 74, -192, '約 25 μm', { 'font-size': 26, fill: C.hi, 'text-anchor': 'middle', 'font-weight': 700 });
     o.labels = [S.callout(p, 33, 75, 230, 260, '細胞核', C.nucleus, { size: 24 }), S.callout(p, -53, -40, -250, -260, '細胞膜', TISSUE.epi, { size: 24 })];
     o.ring = el('circle', { cx: LV[3].f[0], cy: LV[3].f[1], r: 52, fill: 'none', stroke: C.hi, 'stroke-width': 4, opacity: 0 }, p);
   }
@@ -142,7 +144,7 @@
     o.labels = [
       // 標籤放左上：右上角有兩行的工具標籤
       S.callout(p, -120, -150, -330, -240, '細胞核', C.nucleus, { size: 24 }),
-      S.callout(p, -215, 175, -300, 280, '粒線體', C.mito, { size: 24 }),
+      S.callout(p, -215, 175, -345, 280, '粒線體', C.mito, { size: 24 }), // 整個標籤放在左邊細胞膜（x = -265）外側
       S.callout(p, 265, 150, 340, 60, '細胞膜', TISSUE.epi, { size: 24 }),
     ];
     o.ring = el('circle', { cx: LV[4].f[0], cy: LV[4].f[1], r: 30, fill: 'none', stroke: C.hi, 'stroke-width': 4, opacity: 0 }, p);
@@ -184,7 +186,7 @@
       S.callout(p, 120, 2, 230, 120, 'DNA（遺傳物質）', '#cbbfff', { size: 24 }),
       S.callout(p, -230, -170, -90, -250, '葡萄糖', C.sugar, { size: 24 }),
     ];
-    o.waterLabel = S.pill(g(p, { opacity: 0 }), 230, 290, '紅白小點：水分子 約 0.3 nm', { size: 22, color: '#ffd0d0', edge: C.oxygen });
+    o.waterLabel = S.pill(g(p, { opacity: 0 }), 230, 290, '紅白小點：水分子，約 0.3 nm', { size: 22, color: '#ffd0d0', edge: C.oxygen });
     o.labels.push(o.waterLabel.parentNode);
   }
 
@@ -232,11 +234,13 @@
     const lad = g(root);
     text(lad, 1028, 50, '大小尺', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700 });
     el('line', { x1: 960, y1: ladderY(10 ** 0.35), x2: 960, y2: ladderY(1e-9), stroke: '#4a6272', 'stroke-width': 3 }, lad);
+    // 讀數虛線畫在刻度文字下面，刻度文字加深色描邊：虛線經過刻度時字才不會被線穿過
+    const mline = el('line', { x1: 968, y1: 0, x2: 1170, y2: 0, stroke: C.hi, 'stroke-width': 2, 'stroke-dasharray': '4 5', opacity: 0.8 }, lad);
     const units = ['1 m', '10 cm', '1 cm', '1 mm', '100 μm', '10 μm', '1 μm', '100 nm', '10 nm', '1 nm'];
     const ticks = units.map((u, i) => {
       const y = ladderY(10 ** -i), major = i % 3 === 0;
       el('line', { x1: 960, y1: y, x2: major ? 976 : 970, y2: y, stroke: major ? C.ink : '#4a6272', 'stroke-width': major ? 3 : 2 }, lad);
-      return text(lad, 982, y + 7, u, { 'font-size': major ? 21 : 18, fill: major ? C.ink : C.mute, class: 'mono', 'font-weight': major ? 700 : 500 });
+      return text(lad, 982, y + 7, u, { 'font-size': major ? 21 : 18, fill: major ? C.ink : C.mute, class: 'mono', 'font-weight': major ? 700 : 500, stroke: C.bg, 'stroke-width': 6, 'stroke-linejoin': 'round', 'paint-order': 'stroke' });
     });
     [['肉眼', 1.6, 1e-4, C.chloro], ['光學顯微鏡', 1e-4, 2e-7, C.vacuole], ['電子顯微鏡', 2e-7, 1e-9, C.nucleus]].forEach(([n, a, b, col]) => {
       const y1 = ladderY(a) + 2, y2 = ladderY(b) - 2;
@@ -246,12 +250,11 @@
     const marker = g(lad);
     el('path', { d: 'M 940,-11 L 958,0 L 940,11 Z', fill: C.hi }, marker);
     el('circle', { cx: 960, cy: 0, r: 8, fill: C.hi, stroke: C.bg, 'stroke-width': 3 }, marker);
-    el('line', { x1: 968, y1: 0, x2: 1170, y2: 0, stroke: C.hi, 'stroke-width': 2, 'stroke-dasharray': '4 5', opacity: 0.8 }, marker);
     el('rect', { x: 896, y: 628, width: 264, height: 84, rx: 14, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, root);
     huds.forEach((h) => root.appendChild(h));
     const readout = text(root, 1028, 698, '', { 'font-size': 34, fill: C.hi, 'text-anchor': 'middle', class: 'mono', 'font-weight': 700 });
     let curSize = LV[0].size;
-    const setSize = (m) => { curSize = m; readout.textContent = '≈ ' + fmt(m); marker.setAttribute('transform', `translate(0,${ladderY(m).toFixed(1)})`); };
+    const setSize = (m) => { curSize = m; readout.textContent = '≈ ' + fmt(m); const tr = `translate(0,${ladderY(m).toFixed(1)})`; marker.setAttribute('transform', tr); mline.setAttribute('transform', tr); };
     setSize(LV[0].size);
 
     // 放大轉場：A 放大淡出，B 從聚焦點長出來

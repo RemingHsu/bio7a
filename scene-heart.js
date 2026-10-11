@@ -1,4 +1,4 @@
-/* 3-3 心臟、血管與血液：循環系統、心臟的四個腔室與瓣膜、心壁厚度、動脈／微血管／靜脈、血液的組成、心跳與脈搏、開放式與閉鎖式循環 */
+/* 4-3 心臟、血管與血液：循環系統、心臟的四個腔室與瓣膜（收縮與舒張）、心壁厚度、動脈／微血管／靜脈、血液的組成、心跳與脈搏、開放式與閉鎖式循環 */
 (() => {
   const { el, g, text, C } = S;
   const ART = '#ff5f74', VEIN = '#8f9cff', BLOOD = '#8c1c2e', MUSC = '#d9707f', MUSC_E = '#ffb3bf', VALVE = '#ffe9a8';
@@ -49,16 +49,16 @@
   function heartDiagram(p) {
     const h = g(p);
     const vessel = (d, color, w) => { el('path', { d, fill: 'none', stroke: V_EDGE, 'stroke-width': w + 6 }, h); return el('path', { d, fill: 'none', stroke: color, 'stroke-width': w }, h); };
-    // 血管（在心肌後面）：主動脈弓、下腔靜脈、肺靜脈
+    // 血管（在心肌後面）：主動脈弓、下大靜脈、肺靜脈
     vessel('M 640,215 L 640,140 C 640,98 688,86 730,90 C 780,94 806,120 808,150 L 808,176', LB, 36); // 主動脈弓：往下的一段藏在肺動脈後面
     vessel('M 420,338 C 398,360 382,392 378,440 L 376,526', RB, 34);
     vessel('M 962,262 L 836,280', LB, 26);
     vessel('M 962,316 L 838,318', LB, 26);
-    // 肺動脈：主幹往上，分成兩條到左右兩肺（從主動脈前面、上腔靜脈後面經過）
+    // 肺動脈：主幹往上，分成兩條到左右兩肺（從主動脈前面、上大靜脈後面經過）
     vessel('M 575,215 L 575,166', RB, 38);
     vessel('M 575,168 C 540,160 470,160 384,164', RB, 30);
     vessel('M 575,168 C 640,162 760,170 930,176', RB, 30);
-    vessel('M 452,92 L 452,236', RB, 40); // 上腔靜脈
+    vessel('M 452,92 L 452,236', RB, 40); // 上大靜脈
     // 心肌
     h.outline = el('path', { d: 'M 470,205 C 430,205 395,240 395,290 C 395,340 405,385 430,430 C 470,505 560,590 715,655 C 790,600 845,520 852,420 C 857,360 850,310 838,270 C 825,232 800,212 765,208 Z', fill: MUSC, stroke: MUSC_E, 'stroke-width': 3, 'stroke-linejoin': 'round' }, h);
     // 腔室
@@ -94,11 +94,11 @@
     [['右心房', 478, 300], ['左心房', 752, 300], ['右心室', 520, 480], ['左心室', 712, 490]].forEach(([s, x, y]) => text(h, x, y, s, { 'font-size': 26, 'text-anchor': 'middle', fill: '#fff', 'font-weight': 700 }));
     // 血管名稱
     const vn = (x, y, s, c, anchor = 'middle') => text(h, x, y, s, { 'font-size': 20, 'text-anchor': anchor, fill: c });
-    vn(452, 82, '上腔靜脈', '#c9b8ff');
-    vn(376, 552, '下腔靜脈', '#c9b8ff');
+    vn(452, 82, '上大靜脈', '#c9b8ff');
+    vn(376, 552, '下大靜脈', '#c9b8ff');
     vn(376, 150, '肺動脈（往肺）', '#c9b8ff', 'end');
     vn(940, 160, '肺動脈（往肺）', '#c9b8ff', 'start');
-    vn(730, 72, '主動脈（往全身）', '#ffb3bf');
+    vn(840, 92, '主動脈（往全身）', '#ffb3bf', 'start'); // 放在主動脈弓右邊：放在弓上方會碰到弓的外緣
     vn(972, 296, '肺靜脈', '#ffb3bf', 'start');
     // 圖例
     const lg = g(h);
@@ -163,6 +163,25 @@
       const vco = [S.callout(P1, 470, 375, 200, 330, '瓣膜', VALVE, { size: 24 }), S.callout(P1, 566, 404, 200, 330, '瓣膜', VALVE, { size: 24 })];
       const one1 = g(P1, { opacity: 0 });
       S.pill(one1, 600, 690, '瓣膜只朝一個方向打開，防止血液倒流', { size: 24, color: VALVE, edge: VALVE });
+      // 舒張與收縮：動畫中亮起正在進行的那一個
+      const cyc1 = g(P1, { opacity: 0 });
+      const relax1 = g(cyc1), squeeze1 = g(cyc1);
+      S.pill(relax1, 196, 200, '舒張：血液由靜脈流回心房', { size: 22, color: '#c9b8ff', edge: '#c9b8ff' });
+      S.pill(squeeze1, 196, 252, '收縮：心室把血液擠進動脈', { size: 22, color: '#ffb3bf', edge: '#ffb3bf' });
+      // 心室收縮時，心壁往內擠（箭頭垂直心臟外框、指向內側）
+      const sqA = g(P1, { opacity: 0 });
+      const oL = H1.outline.getTotalLength(), oPts = Array.from({ length: 200 }, (_, i) => { const q = H1.outline.getPointAtLength((oL * i) / 200); return [q.x, q.y, i]; });
+      const lowL = oPts.filter((q) => q[1] > 450 && q[0] < 600).reduce((a, b) => (b[0] < a[0] ? b : a));
+      const lowR = oPts.filter((q) => q[1] > 420 && q[0] > 620).reduce((a, b) => (b[0] > a[0] ? b : a));
+      const apex = oPts.reduce((a, b) => (b[1] > a[1] ? b : a));
+      [lowL, lowR, [apex[0] - 30, apex[1] - 14, apex[2]]].forEach(([x, y]) => {
+        let nx = 640 - x, ny = 470 - y; const n = Math.hypot(nx, ny); nx /= n; ny /= n;
+        arrow(sqA, x - nx * 40, y - ny * 40, x - nx * 6, y - ny * 6, C.hi, 4, 14);
+      });
+      const vScale = (k) => {
+        H1.rv.setAttribute('transform', k ? `translate(522,392) scale(${(1 - 0.1 * k).toFixed(3)},${(1 - 0.16 * k).toFixed(3)}) translate(-522,-392)` : '');
+        H1.lv.setAttribute('transform', k ? `translate(715,392) scale(${(1 - 0.1 * k).toFixed(3)},${(1 - 0.16 * k).toFixed(3)}) translate(-715,-392)` : '');
+      };
       // 血流路徑：前半段（心房 → 心室）在房室瓣打開時走，後半段（心室 → 動脈）在動脈瓣打開時走
       const RP = [[452, 100], [452, 240], [478, 300], [503, 375], [515, 470], [565, 425], [575, 300], [575, 168], [400, 164]];
       const LP = [[955, 264], [836, 282], [752, 300], [730, 375], [712, 480], [650, 425], [640, 300], [640, 128], [700, 92], [790, 112], [808, 160]];
@@ -178,6 +197,11 @@
         const c = (u * 2) % 1, A = c < 0.5, f = A ? c / 0.5 : (c - 0.5) / 0.5;
         const sm = (x) => S.smoothstep(0, 0.15, x) * (1 - S.smoothstep(0.85, 1, x));
         H1.set(A ? sm(f) : 0, A ? 0 : sm(f));
+        const live = u > 0 && u < 0.995, k = live && !A ? sm(f) : 0;
+        vScale(k);
+        sqA.style.opacity = k;
+        relax1.style.opacity = !live || A ? 1 : 0.3;
+        squeeze1.style.opacity = !live || !A ? 1 : 0.3;
         bd1.forEach((d, i) => {
           const j = i >> 1, off = (j % 3) * 0.06 - 0.06, side = i % 2 ? pL : pR, KV = i % 2 ? KVL : KVR;
           const t = A ? KV * S.clamp(f * 1.1 + off) : KV + (1 - KV) * S.clamp(f * 1.1 + off);
@@ -185,6 +209,7 @@
           put(d, [x + ((j * 13) % 3 - 1) * 6, y + (j > 2 ? 6 : -4)], u > 0 && u < 1 ? (t > 0.97 ? 0 : 1) : 0);
         });
       }, 6, 's1+=1.6', 'none');
+      S.show(tl, cyc1, 's1+=1.5', 0.4);
       vco.forEach((c) => S.show(tl, c, 's1+=3', 0.4));
       S.show(tl, one1, 's1+=4.8', 0.4);
 
@@ -272,7 +297,7 @@
       el('path', { d: `M ${TX - 48},${TT - 8} L ${TX - 40},${TT} L ${TX - 40},${TB - 30} C ${TX - 40},${TB + 18} ${TX + 40},${TB + 18} ${TX + 40},${TB - 30} L ${TX + 40},${TT} L ${TX + 48},${TT - 8}`, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 4, 'stroke-linejoin': 'round' }, P4);
       const sepLbl = text(P4, TX, 110, '', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       const BND = TT + 20 + (TH - 20) * 0.55;
-      const lay4 = [S.callout(P4, TX + 30, TT + 120, 330, 240, '血漿 約 55%＊', PLASMA, { size: 24 }), S.callout(P4, TX + 30, BND + 100, 330, 470, '血球 約 45%＊', '#ff6b7d', { size: 24 })];
+      const lay4 = [S.callout(P4, TX + 30, TT + 120, 330, 240, '血漿約 55%＊', PLASMA, { size: 24 }), S.callout(P4, TX + 30, BND + 100, 330, 470, '血球約 45%＊', '#ff6b7d', { size: 24 })];
       const rows = [];
       const row = (y, draw, t1, t2, c) => { const rg = g(P4, { opacity: 0 }); el('rect', { x: 450, y: y - 62, width: 710, height: 124, rx: 16, ...FRAME }, rg); draw(rg, 530, y); text(rg, 620, y - 10, t1, { 'font-size': 26, fill: c, 'font-weight': 700 }); text(rg, 620, y + 32, t2, { 'font-size': 22, fill: C.ink2 }); rows.push(rg); return rg; };
       row(110, (p, x, y) => el('rect', { x: x - 40, y: y - 26, width: 80, height: 52, rx: 10, fill: PLASMA }, p), '血漿：淡黃色的液體', '運送養分、激素和廢物（例如二氧化碳）等', PLASMA);
@@ -488,7 +513,7 @@
         tl,
         notes: [
           '＊示意：血管只畫出主要的幾條，紅色表示動脈、藍紫色表示靜脈（真實的血液都是紅色）。成人的心臟大約和自己的拳頭一樣大。',
-          '＊示意：心臟的形狀和血管都簡化了。看心臟的圖要記得「面對面」：圖的左邊是這個人的右邊。右心房和右心室相通，左心房和左心室相通；左右兩邊不相通。',
+          '＊示意：形狀、血管和收縮的幅度都簡化了。四個腔室：右心房、右心室、左心房、左心室；心房接受流回的血液，心室把血液送出，左右兩邊不相通。看圖要「面對面」：圖的左邊是這個人的右邊。上、下大靜脈也稱為上、下腔靜脈。',
           '＊厚度是成人的約略值，每個人不同；圖中的心壁厚度只是示意。',
           '＊示意：血管的粗細和管壁厚度都不是真實比例。瓣膜在較大的靜脈中（例如四肢的靜脈）；動脈中沒有瓣膜。微血管非常細，直徑只比紅血球大一點，紅血球要排成一列通過。',
           '＊比例是約略值。血液加入防止凝固的物質後離心或靜置，會分成兩層；血球層的最上面還有一層很薄的白色層，主要是白血球和血小板。大小約為：紅血球直徑 7～8 μm、血小板 2～3 μm，白血球大多更大（醫學參考值）。',
@@ -497,7 +522,7 @@
         ],
         steps: [
           '<b>循環系統</b>由<b>心臟</b>、<b>血管</b>和<b>血液</b>組成。心臟推動血液，經由血管流到全身，再流回心臟。',
-          '心臟有四個腔室：<b>右心房</b>、<b>右心室</b>、<b>左心房</b>、<b>左心室</b>。心房接受流回的血液，心室把血液送出；<b>瓣膜</b>能防止血液倒流。',
+          '心臟<b>舒張</b>時，血液由靜脈流回<b>心房</b>；心房收縮，血液流進心室；<b>心室收縮</b>，把血液擠進動脈。<b>瓣膜</b>讓血液只朝一個方向流。',
           '<b>心室壁</b>比心房壁厚；<b>左心室</b>要把血液送到全身，所以壁<b>最厚</b>。',
           '血管有三種：<b>動脈</b>把血液帶離心臟，管壁厚有彈性；<b>靜脈</b>把血液帶回心臟，管壁較薄，有<b>瓣膜</b>；<b>微血管</b>的管壁只有一層細胞，是物質交換的地方。',
           '血液由<b>血漿</b>和<b>血球</b>組成。<b>紅血球</b>含血紅素、運送氧，成熟後沒有細胞核；<b>白血球</b>有細胞核，能對抗病原體；<b>血小板</b>幫助血液凝固。',

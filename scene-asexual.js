@@ -145,6 +145,47 @@
     return o;
   }
 
+  // ---------- 壁虎（從背面看，頭朝左；原點在身體中央，長約 170）：tail 'full' | 'cut'（斷尾）| 'regrown'（長回來的尾巴顏色較淡） ----------
+  function gecko(p, x, y, s, tail = 'full') {
+    const G = S.place(g(p), { x, y, s });
+    const SK = '#c9b68a', ED = '#6f5f3c', NEW = '#e6dcc0';
+    // 四肢：先畫外框再畫填色；腳趾末端有圓圓的趾墊
+    [[-32, -1], [-32, 1], [12, -1], [12, 1]].forEach(([lx, sd]) => {
+      const back = lx > 0, kx = lx + (back ? 12 : -4), ky = sd * 22, fx = lx + (back ? 4 : -14), fy = sd * 30;
+      const d = `M ${lx},${sd * 8} Q ${kx},${ky - sd * 6} ${kx},${ky} T ${fx},${fy}`;
+      el('path', { d, fill: 'none', stroke: ED, 'stroke-width': 7.5, 'stroke-linecap': 'round' }, G);
+      el('path', { d, fill: 'none', stroke: SK, 'stroke-width': 4.5, 'stroke-linecap': 'round' }, G);
+      // 腳趾張開成扇形：前腳朝外、朝前，後腳朝外、朝後
+      const base = (back ? 45 : 135) * sd;
+      [-50, -25, 0, 25, 50].forEach((da) => {
+        const r = ((base + da) * Math.PI) / 180, ex = fx + Math.cos(r) * 7, ey = fy + Math.sin(r) * 7;
+        el('line', { x1: fx, y1: fy, x2: ex, y2: ey, stroke: SK, 'stroke-width': 2, 'stroke-linecap': 'round' }, G);
+        el('circle', { cx: ex, cy: ey, r: 1.8, fill: SK, stroke: ED, 'stroke-width': 0.8 }, G);
+      });
+    });
+    // 尾巴：原本的尾巴（深）＋長回來的部分（淡）
+    const tailD = (x0, x1, w0, w1) => `M ${x0},${-w0} C ${(x0 + x1) / 2},${-w0 * 0.9} ${x1 - 10},${-w1 - 1} ${x1},${-w1 + 2} C ${x1 + 3},0 ${x1 + 3},0 ${x1},${w1 + 2} C ${x1 - 10},${w1 + 1} ${(x0 + x1) / 2},${w0 * 0.9} ${x0},${w0} Z`;
+    if (tail === 'full') el('path', { d: tailD(18, 98, 7, 0.5), fill: SK, stroke: ED, 'stroke-width': 1.6 }, G);
+    else {
+      el('path', { d: tailD(18, 50, 7, 5), fill: SK, stroke: ED, 'stroke-width': 1.6 }, G);
+      if (tail === 'regrown') {
+        el('path', { d: tailD(48, 90, 5, 0.6), fill: NEW, stroke: ED, 'stroke-width': 1.6 }, G);
+        el('line', { x1: 49, y1: -5, x2: 49, y2: 5, stroke: ED, 'stroke-width': 1.4, 'stroke-dasharray': '2 2' }, G);
+      } else el('path', { d: 'M 50,-5 L 47,-2 L 51,1 L 47,5', fill: 'none', stroke: ED, 'stroke-width': 1.4 }, G);
+    }
+    // 頭＋身體：一條平滑的外框
+    el('path', { d: 'M -74,0 C -74,-9 -66,-14 -57,-14 C -49,-14 -45,-11 -40,-8 C -28,-13 -8,-15 8,-12 C 16,-10 22,-7 24,-3 L 24,3 C 22,7 16,10 8,12 C -8,15 -28,13 -40,8 C -45,11 -49,14 -57,14 C -66,14 -74,9 -74,0 Z', fill: SK, stroke: ED, 'stroke-width': 1.8 }, G);
+    [[-24, -4], [-12, 5], [0, -5], [10, 3], [-34, 2], [32, 0]].forEach(([cx, cy]) => el('circle', { cx, cy, r: 2.2, fill: '#a8946a' }, G));
+    [-1, 1].forEach((sd) => { el('ellipse', { cx: -60, cy: sd * 10, rx: 4.5, ry: 3.6, fill: '#3a2e1c' }, G); el('circle', { cx: -61.5, cy: sd * 10 - 1.2, r: 1.2, fill: '#ffffff' }, G); });
+    return G;
+  }
+  // 斷掉的一截尾巴
+  function geckoTail(p, x, y, s, r = 0) {
+    const G = S.place(g(p), { x, y, s, r });
+    el('path', { d: 'M 0,-6 C 16,-7 32,-5 46,1 C 48,2 48,4 46,5 C 32,3 16,6 0,6 L 3,2 L -1,-1 Z', fill: '#c9b68a', stroke: '#6f5f3c', 'stroke-width': 1.6 }, G);
+    return G;
+  }
+
   // ---------- 蘭花（盆栽） ----------
   function orchid(p, x, y, s = 1) {
     const o = S.place(g(p), { x, y, s });
@@ -283,10 +324,19 @@
       const regenA = g(P2, { opacity: 0 }), regenB = g(P2, { opacity: 0 });
       text(regenA, 400, 254, '長出新的尾部', { 'font-size': 22, fill: WORM_NEW, 'font-weight': 700 });
       text(regenB, 345, 470, '長出新的頭部', { 'font-size': 22, 'text-anchor': 'middle', fill: WORM_NEW, 'font-weight': 700 });
-      text(P2, 310, 530, '渦蟲', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700 });
-      S.pill(P2, 446, 530, '約 1～2 cm＊', { size: 20, color: C.hi });
-      text(P2, 310, 592, '斷成幾段，每段都能長成新個體', { 'font-size': 23, 'text-anchor': 'middle', fill: C.ink2 });
-      text(P2, 310, 630, '例如：渦蟲、海星、水綿', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
+      text(P2, 250, 193, '渦蟲', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700 });
+      S.pill(P2, 370, 184, '約 1～2 cm＊', { size: 20, color: C.hi });
+      text(P2, 310, 506, '1 隻斷成 2 段 → 長成 2 隻：數目增加', { 'font-size': 23, 'text-anchor': 'middle', fill: C.ink2 });
+      text(P2, 310, 538, '例如：渦蟲、海星、水綿', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
+      // 對照：壁虎斷尾再長出來，數目沒有增加 → 只是再生
+      const regen2 = g(P2, { opacity: 0 });
+      el('rect', { x: 46, y: 556, width: 528, height: 86, rx: 12, fill: 'rgba(255,143,143,0.07)', stroke: '#ff8f8f', 'stroke-width': 2 }, regen2);
+      gecko(regen2, 104, 598, 0.6, 'cut');
+      geckoTail(regen2, 148, 614, 0.6, 10);
+      arrow(regen2, 192, 598, 226, 598, C.ink2, 3, 11);
+      gecko(regen2, 288, 598, 0.6, 'regrown');
+      text(regen2, 362, 590, '壁虎斷尾再長出來：', { 'font-size': 21, fill: C.ink });
+      text(regen2, 362, 622, '是再生，不是生殖', { 'font-size': 22, fill: '#ff8f8f', 'font-weight': 700 });
       // 黑黴菌
       const bread = g(P2);
       el('path', { d: 'M 640,560 L 640,450 C 640,400 690,388 712,410 C 740,384 800,392 806,440 L 806,560 Z', fill: '#d9a35a', stroke: '#a8742e', 'stroke-width': 4 }, bread);
@@ -339,6 +389,7 @@
         sproutPath.style.opacity = sm(0.85, 1, u);
       }, 4, 's2+=2', 'none');
       S.show(tl, sporeT, 's2+=5.2', 0.4);
+      S.show(tl, regen2, 's2+=5.6', 0.5);
 
       // ===== 3 營養器官繁殖：根、莖、葉 =====
       const P3 = g(root, { opacity: 0 });
@@ -395,7 +446,7 @@
       const babyL = S.callout(P3, 810, 394, 838, 250, '新植株', C.hi, { size: 22 });
       // 落地生根
       el('rect', { x: 913, y: 440, width: 247, height: 40, rx: 10, fill: '#e8eef2', opacity: 0.9 }, P3);
-      text(P3, 1036, 506, '濕棉花', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(P3, 1036, 506, '溼棉花', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       const LCX = 1036, LCY = 400, LRX = 112, LRY = 40;
       const lp = [], notch = [];
       for (let i = 0; i < 112; i++) {
@@ -436,7 +487,7 @@
       el('rect', { x: 24, y: 96, width: 676, height: 540, rx: 16, ...FRAME }, P4);
       el('rect', { x: 716, y: 96, width: 460, height: 540, rx: 16, ...FRAME }, P4);
       text(P4, 362, 144, '組織培養', { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
-      text(P4, 946, 140, '其他人為的方法（國小學過）', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
+      text(P4, 946, 140, '其他人為的繁殖方法', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
       const tc = [g(P4, { opacity: 0 }), g(P4, { opacity: 0 }), g(P4, { opacity: 0 }), g(P4, { opacity: 0 })];
       orchid(tc[0], 110, 460, 0.95);
       // 一小塊組織
@@ -543,16 +594,16 @@
         tl,
         notes: [
           '＊示意：以 2 對染色體為例。無性生殖靠細胞分裂產生子代，通常不經過減數分裂，所以子代的遺傳物質和親代相同。',
-          '＊大小為約略值，圖中的生物都放大了。細菌也是一分為二地繁殖。酵母菌是單細胞的生物，水螅是多細胞動物。',
-          '＊示意：孢子非常小，圖中畫得很大；渦蟲的大小為約略值。渦蟲切成兩段後，有頭的前段長出尾部，有尾的後段長出頭部。蕈類（例如香菇）和蕨類也用孢子繁殖，第十章會再學。',
-          '＊市面上的番薯，大多是取一段番薯的莖插在土中繁殖（扦插）。用來繁殖的根、莖、葉都是營養器官；花、果實、種子才是生殖器官。',
-          '＊扦插、壓條、嫁接是國小學過的人為繁殖方法，也是利用營養器官的無性生殖。目前市面上的蘭花，大多用組織培養大量繁殖。',
+          '＊大小為約略值，圖中的生物都放大了。細菌也是一分為二地繁殖。酵母菌是單細胞生物，水螅是多細胞動物。',
+          '＊示意：孢子非常小，圖中畫得很大；渦蟲的大小為約略值。渦蟲切成兩段後，前段長出尾部、後段長出頭部，變成 2 隻。壁虎斷尾、傷口癒合只是把缺少的部分長回來（再生），個體數目沒有增加，不是生殖。蕈類和蕨類也用孢子繁殖，第十章會再學。',
+          '市面上的番薯，大多是取一段番薯的莖插在土中繁殖（扦插）。用來繁殖的根、莖、葉都是營養器官；花、果實、種子才是生殖器官。',
+          '扦插、壓條、嫁接是人為的繁殖方法，也是利用營養器官的無性生殖。目前市面上的蘭花，大多用組織培養大量繁殖。',
           '＊示意：植株的數目和受害的情形都是示意。例如香蕉多用無性生殖繁殖，植株的遺傳物質幾乎相同，遇到黃葉病時可能大片受害（補充）。',
         ],
         steps: [
           '<b>無性生殖</b>：親代產生子代時，<b>不需要</b>精子和卵（配子）結合。子代由親代的細胞分裂而來，遺傳物質和親代<b>相同</b>。',
           '<b>分裂生殖</b>：單細胞生物（例如草履蟲）經細胞分裂，一個變成兩個。<b>出芽生殖</b>：長出<b>芽體</b>，長大後脫離母體（例如水螅、酵母菌）。',
-          '<b>斷裂生殖</b>：身體斷成幾段，每段都能長成新個體（例如渦蟲）。<b>孢子繁殖</b>：產生大量<b>孢子</b>，散播到適當環境就能長成新個體（例如黴菌）。',
+          '<b>斷裂生殖</b>：身體斷成幾段，每段長成一個新個體，數目增加（例如渦蟲）。<b>孢子繁殖</b>：產生大量<b>孢子</b>，散播到適當環境就能長成新個體（例如黴菌）。',
           '<b>營養器官繁殖</b>：植物用<b>根、莖、葉</b>長出新植株，例如番薯的塊根、馬鈴薯的塊莖、草莓的匍匐莖、落地生根的葉。',
           '<b>組織培養</b>：把植物的一小塊組織放在含養分和激素的培養基中，經細胞分裂長成許多新植株，例如蘭花。扦插、壓條、嫁接也是人為的方法。',
           '無性生殖<b>繁殖快</b>，子代能保留親代的特徵；但子代的遺傳物質都相同、<b>變異少</b>，環境改變時，可能全部都受到影響。',

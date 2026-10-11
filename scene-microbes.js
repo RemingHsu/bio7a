@@ -216,7 +216,7 @@
       B(fSl, 990, 86, '原生菌類：黏菌', 26, '#f2c94c');
       const slime = D.slimeMold(fSl, 990, 230, 0.95);
       const sl4 = co(P4, slime, slime.pts.net, 990, 360, '黃色網狀的黏菌', '#f2c94c', 20);
-      ['生活在潮濕的腐木、落葉上', '分解有機物維生', '以孢子繁殖'].forEach((s, k) => T(fSl, 990, 420 + k * 34, s, 21, C.ink2));
+      ['生活在潮溼的腐木、落葉上', '分解有機物維生', '以孢子繁殖'].forEach((s, k) => T(fSl, 990, 420 + k * 34, s, 21, C.ink2));
       const slNote = g(P4, { opacity: 0 });
       T(slNote, 990, 600, '名字有「菌」，', 22, C.mute);
       T(slNote, 990, 634, '但屬於原生生物', 22, C.mute);
@@ -239,7 +239,7 @@
       const yst = D.yeast(cols5[0], 210, 290, 1.25);
       B(cols5[1], 600, 126, '黴菌（例：黑黴菌）', 28);
       const mold = D.breadMold(cols5[1], 600, 420, 0.95);
-      T(cols5[1], 690, 448, '麵包', 20, '#6a4a22', { 'font-weight': 700 });
+      T(cols5[1], 606, 450, '麵包', 20, '#6a4a22', { 'font-weight': 700, stroke: '#d9b06a', 'stroke-width': 4, 'stroke-linejoin': 'round', 'paint-order': 'stroke' }); // 麵包色描邊：蓋住字底下的斑點
       B(cols5[2], 990, 126, '蕈類（例：香菇）', 28);
       const shi = D.shiitake(cols5[2], 990, 400, 0.85);
       const c5 = [

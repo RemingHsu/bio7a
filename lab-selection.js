@@ -11,7 +11,7 @@
     { title: '樹幹被燻黑了', setup: { f: 0.05, bark: 0 }, text: '工業革命時，工廠的煤煙把樹幹燻黑了。按下按鈕，看看樹幹的變化：', env: ['樹幹被煤煙燻黑', 1],
       predict: { q: '經過 10 代以後，哪一種顏色的蛾會變多？', opts: ['淺色的蛾', '深色的蛾', '差不多，不會改變'], ans: 1 },
       why: '樹幹變黑後，淺色的蛾很<b>顯眼</b>，容易被鳥吃掉；深色的蛾不容易被發現，比較容易<b>存活、繁殖</b>。一代代下來，深色的蛾就變多了。' },
-    { title: '空氣變乾淨了', setup: 'after0', text: '後來改善了空氣污染，樹幹又恢復成淺色。按下按鈕：', env: ['空氣變乾淨', 0],
+    { title: '空氣變乾淨了', setup: 'after0', text: '後來改善了空氣汙染，樹幹又恢復成淺色。按下按鈕：', env: ['空氣變乾淨', 0],
       predict: { q: '再經過 10 代，會怎樣？', opts: ['深色的蛾仍然越來越多', '淺色的蛾又變多', '所有的蛾都變成深色'], ans: 1 },
       why: '樹幹變淺色後，換成<b>深色的蛾比較顯眼</b>，容易被吃掉，淺色的蛾又變多了。哪一種特徵比較有利，要看<b>環境</b>。' },
     { title: '深色的蛾從哪裡來？', quiz: { q: '在樹幹還沒有被燻黑的第 0 代，族群中就已經有少數深色的蛾。樹幹變黑後深色的蛾變多，原因是？', opts: ['煤煙把淺色的蛾染成深色', '蛾為了躲避鳥，讓自己變成深色', '族群中本來就有深色的蛾，樹幹變黑後牠們比較容易存活、繁殖'], ans: 2, hint: '看看長條圖的第 0 代：樹幹還是淺色時，族群裡有哪些顏色的蛾？' },
@@ -148,8 +148,8 @@
         text(root, CX0 + 38, y + 7, `${v * 100}%`, { 'font-size': 20, 'text-anchor': 'end', fill: C.mute, class: 'mono' });
       });
       const barsG = g(root);
-      const genLbl = text(root, CX1, CY1 + 52, '', { 'font-size': 20, 'text-anchor': 'end', fill: C.mute });
-      const readout = text(root, (CX0 + CX1) / 2, 568, '', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
+      const genLbl = text(root, CX1, CY1 + 60, '', { 'font-size': 20, 'text-anchor': 'end', fill: C.mute });
+      const readout = text(root, (CX0 + CX1) / 2, 580, '', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
       function drawChart() {
         barsG.innerHTML = '';
         const MAXB = 21, h = st.hist, start = Math.max(0, h.length - MAXB);
@@ -313,7 +313,7 @@
             if (phase !== 'env' && !barkAnim) {
               html += `<p class="m-text">${m.predict.q}</p><div class="opts">${m.predict.opts.map((o, k) => `<button class="opt" type="button" data-p="${k}" aria-pressed="${pred === k}" ${pred >= 0 ? 'disabled' : ''}>${o}</button>`).join('')}</div>`;
             }
-            if (phase === 'ready' || phase === 'running') html += `<div class="acts"><button class="ctl primary" type="button" data-run="1" ${phase === 'running' ? 'disabled' : ''}>${phase === 'running' ? '進行中…' : '經過 10 代'}</button></div>`;
+            if (phase === 'ready' || phase === 'running') html += `<div class="acts"><button class="ctl primary" type="button" data-run="1" ${phase === 'running' ? 'disabled' : ''}>${phase === 'running' ? '進行中……' : '經過 10 代'}</button></div>`;
             if (phase === 'done') html += `<div class="fb ${pred === m.predict.ans ? 'ok' : 'bad'}"><strong>${pred === m.predict.ans ? '預測正確' : '和預測不一樣'}</strong>${m.why}</div>`;
           }
         }

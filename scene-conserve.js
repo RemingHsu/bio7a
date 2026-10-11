@@ -33,7 +33,7 @@
       const marks = NP.map(([n, lon, lat, side]) => {
         const q = g(mapG, { opacity: 0 }), [x, y] = tw.at(lon, lat);
         el('circle', { cx: x, cy: y, r: 9, fill: '#6fce62', stroke: '#0d1822', 'stroke-width': 2.5 }, q);
-        text(q, x + side * 16, y + 7, n, { 'font-size': 20, 'text-anchor': side > 0 ? 'start' : 'end', fill: '#d8f5cf', 'font-weight': 700 });
+        text(q, x + side * 16, y + 7, n, { 'font-size': 20, 'text-anchor': side > 0 ? 'start' : 'end', fill: '#d8f5cf', 'font-weight': 700, stroke: '#13314a', 'stroke-width': 5, 'stroke-linejoin': 'round', 'paint-order': 'stroke' }); // 深色描邊：壓在海岸線上也看得清楚
         return q;
       });
       text(mapG, 0, 252, '● 國家公園（例）', { 'font-size': 20, 'text-anchor': 'middle', fill: '#9be58c' });
@@ -90,7 +90,7 @@
         }
       }
       const th = B.thermo(at(ex[2], 1126, 296, 0.55)); th.set(0.05);
-      text(ex[2], 1126, 348, '低溫', { 'font-size': 20, 'text-anchor': 'middle', fill: '#8fd0ff' });
+      ['低', '溫'].forEach((c, i) => text(ex[2], 1126, 350 + i * 26, c, { 'font-size': 20, 'text-anchor': 'middle', fill: '#8fd0ff' })); // 直排：夾在櫃子和外框之間
       lines(ex[2], 972, 512, ['在低溫、乾燥下保存種子'], { size: 22, fill: C.ink });
       const p1b = g(P1, { opacity: 0 });
       S.pill(p1b, 600, 600, '移地保育：把生物或種子移到原本棲地以外的地方保存、繁殖', { size: 24, color: C.hi, edge: C.hi });
@@ -108,7 +108,7 @@
       const bar = (p, x, base, h, w, col) => el('rect', { x: x - w / 2, y: base - h, width: w, height: h, rx: 4, fill: col }, p);
       const cases = [
         { x: 40, title: '櫻花鉤吻鮭', col: '#ffb3a8', draw: (q) => { el('path', { d: 'M 60,250 C 160,236 300,262 520,244 L 520,300 C 300,316 160,292 60,306 Z', fill: '#2f6aa0', opacity: 0.8 }, q); B.salmon(at(q, 200, 270, 0.62)); B.salmon(at(q, 400, 262, 0.5)); },
-          bars: [['1992 年', '約 200 尾', 200], ['2025 年', '約 1.6 萬尾', 16020]], max: 16020, how: ['拆除攔砂壩、人工繁殖放流、', '溪邊種樹讓水溫保持低溫'] },
+          bars: [['1992 年', '約 200 尾', 200], ['2025 年', '約 1.6 萬尾', 16020]], max: 16020, how: ['拆除攔砂壩、人工繁殖放流、', '溪邊種樹讓溪水保持低溫'] },
         { x: 610, title: '黑面琵鷺（全球數量）', col: '#f4f6f1', draw: (q) => { el('path', { d: 'M 640,262 C 760,254 980,260 1130,252 L 1130,300 C 980,306 760,300 640,304 Z', fill: '#2f6aa0', opacity: 0.7 }, q); B.wader(at(q, 760, 196, 0.5), { kind: 'spoon' }); B.wader(at(q, 930, 200, 0.46), { kind: 'spoon' }); },
           bars: [['1990 年代', '不到 300 隻', 300], ['2026 年', '約 7700 隻', 7746]], max: 7746, how: ['保護溼地、劃設保護區，', '鼓勵魚塭收成後保留淺水'] },
       ].map((c) => {
@@ -219,7 +219,7 @@
       el('path', { d: 'M 600,250 C 620,276 630,292 630,306 C 630,324 616,336 600,336 C 584,336 570,324 570,306 C 570,292 580,276 600,250 Z', fill: '#5fb8ff' }, res);
       B.smallFish(at(res, 470, 300, 0.42));
       B.conifer(at(res, 740, 340, 1), { h: 100 });
-      text(res, 600, 380, '水、森林、魚…自然資源', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      text(res, 600, 380, '水、森林、魚等自然資源', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
       const arrs = g(P5, { opacity: 0 });
       arrow(arrs, 330, 300, 400, 300, C.ink2, 4, 14);
       arrow(arrs, 870, 300, 800, 300, C.ink2, 4, 14);
@@ -248,7 +248,7 @@
       return {
         tl,
         notes: [
-          '＊臺灣以保育為目的劃設的保護區，陸域約占臺灣陸地面積的 19%（約，林業及自然保育署統計）。地圖上只標出部分國家公園，位置為約略位置。',
+          '＊臺灣以保育為目的劃設的保護區，陸域約占臺灣陸地面積的 19%（約，林業及自然保育署統計）。地圖上只標出部分國家公園，位置是約略的。',
           '＊例如國家作物種原中心（臺中霧峰）用低溫、乾燥的方式長期保存作物的種子（補充）。示意：圖中的大小、數量都經過簡化。',
           '＊數量為約略值：櫻花鉤吻鮭來自雪霸國家公園管理處的調查；黑面琵鷺來自全球同步普查（林業及自然保育署、野鳥學會），2026 年約 6 成在臺灣度冬。長條的高度依數量比例畫出。',
           '＊野生動物保育法在 1989 年公布。違法獵捕、買賣保育類野生動物會受到處罰。埃及聖䴉的移除數量為約略值（林業及自然保育署）。',

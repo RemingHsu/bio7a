@@ -1,4 +1,5 @@
-/* 七下 2-4 生物技術：發酵、育種、基因轉殖（胰島素、螢光魚、基改作物）、複製動物（桃莉羊）、影響與爭議 */
+/* 七下 2-4 生物技術：發酵、育種、基因轉殖（胰島素、螢光魚、基改作物）、複製動物（桃莉羊）、試管嬰兒、影響與爭議
+   試管嬰兒的人物、精子、卵用 scene-humangen.js 的畫法（S.b2）。 */
 (() => {
   const { el, g, text, C } = S;
   const FRAME = { fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 };
@@ -134,7 +135,7 @@
       el('rect', { x: 958, y: 376, width: 44, height: 16, rx: 4, fill: '#c0394e' }, F[2]);
       el('rect', { x: 946, y: 444, width: 68, height: 30, rx: 4, fill: '#f2e6c8' }, F[2]);
       const def0 = g(P0, { opacity: 0 });
-      S.pill(def0, 600, 630, '生物技術：利用生物或生物的方法，製造產品、改善生活', { size: 26, color: C.hi, edge: C.hi });
+      S.pill(def0, 600, 630, '生物技術：利用生物或生物的產物（例如酵素），製造產品、改善生活', { size: 26, color: C.hi, edge: C.hi });
       tl.addLabel('s0');
       F.forEach((c, i) => S.show(tl, c, `s0+=${0.2 + i * 0.8}`, 0.5));
       S.show(tl, def0, 's0+=2.8', 0.5);
@@ -275,7 +276,7 @@
       text(s41, 320, 214, '乳腺細胞', { 'font-size': 22, 'text-anchor': 'middle' });
       arrow(s41, 366, 150, 412, 150, C.ink2, 3);
       el('circle', { cx: 440, cy: 150, r: 18, fill: 'rgba(255,209,102,0.6)', stroke: C.nucleus, 'stroke-width': 2.5 }, s41);
-      text(s41, 440, 204, '取出細胞核', { 'font-size': 22, 'text-anchor': 'middle', fill: C.hi });
+      text(s41, 432, 204, '取出細胞核', { 'font-size': 22, 'text-anchor': 'middle', fill: C.hi });
       const s42 = g(P4, { opacity: 0 });
       arrow(s42, 220, 400, 268, 400, C.ink2, 3);
       cellC(s42, 320, 400, 42, { nucCol: 'rgba(120,110,160,0.6)' });
@@ -302,7 +303,7 @@
       text(s45, 1080, 600, '桃莉羊：白面', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
       const con4 = g(P4, { opacity: 0 });
       el('rect', { x: 40, y: 560, width: 860, height: 130, rx: 18, ...FRAME }, con4);
-      const t4 = text(con4, 70, 608, '桃莉羊的基因和提供細胞核的', { 'font-size': 26 });
+      const t4 = text(con4, 70, 608, '桃莉羊細胞核中的基因和提供細胞核的', { 'font-size': 26 });
       const t4b = el('tspan', { fill: C.hi, 'font-weight': 700 }, t4); t4b.textContent = '白面母羊';
       const t4c = el('tspan', {}, t4); t4c.textContent = '相同';
       text(con4, 70, 660, '沒有精子和卵的結合 → 屬於無性生殖', { 'font-size': 26, fill: C.membrane, 'font-weight': 700 });
@@ -316,7 +317,82 @@
       S.show(tl, s45, 's4+=4.2', 0.5);
       S.show(tl, con4, 's4+=5', 0.5);
 
-      // ===== 5 生物技術的影響 =====
+      // ===== 5 試管嬰兒：體外受精，再植回子宮（和桃莉羊對照） =====
+      const PV = g(root, { opacity: 0 });
+      const B2 = S.b2 || {};
+      text(PV, 600, 50, '試管嬰兒：在體外受精，再植回母親的子宮', { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700 });
+      // 取出精子和卵
+      const v1 = g(PV, { opacity: 0 });
+      if (B2.sperm) B2.sperm(v1, 130, 150, 1.3, '', '#cfe3ee');
+      text(v1, 92, 200, '精子（父親）', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      if (B2.egg) B2.egg(v1, 110, 300, 36, '', '#ffd9b0');
+      text(v1, 110, 366, '卵（母親）', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      arrow(v1, 180, 168, 266, 222, C.ink2, 3); arrow(v1, 160, 294, 266, 262, C.ink2, 3);
+      // 培養皿
+      const DX = 370, DY = 244;
+      const dish = g(PV, { opacity: 0 });
+      el('ellipse', { cx: DX, cy: DY + 10, rx: 96, ry: 34, fill: 'rgba(200,230,255,0.10)', stroke: '#cfe8ff', 'stroke-width': 3 }, dish);
+      el('ellipse', { cx: DX, cy: DY + 8, rx: 84, ry: 26, fill: 'rgba(240,220,150,0.30)' }, dish);
+      el('ellipse', { cx: DX, cy: DY - 2, rx: 96, ry: 34, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 2, opacity: 0.6 }, dish);
+      el('circle', { cx: DX + 6, cy: DY + 6, r: 15, fill: 'rgba(255,214,170,0.35)', stroke: '#ffd9b0', 'stroke-width': 2 }, dish);
+      el('circle', { cx: DX + 6, cy: DY + 6, r: 6, fill: 'rgba(167,150,255,0.6)' }, dish);
+      const spD = [0, 1, 2].map(() => { const t = g(dish); el('path', { d: 'M -3,0 q -5,-3 -9,0 q -5,3 -9,0', fill: 'none', stroke: '#e8f6ff', 'stroke-width': 1.6 }, t); el('ellipse', { cx: 0, cy: 0, rx: 3.5, ry: 2.5, fill: '#e8f6ff' }, t); return t; });
+      const flashV = el('circle', { cx: DX + 6, cy: DY + 6, r: 15, fill: 'none', stroke: C.hi, 'stroke-width': 3, opacity: 0 }, dish);
+      text(dish, DX, DY + 82, '在培養皿中受精', { 'font-size': 22, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
+      text(dish, DX, DY + 112, '（體外受精）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      // 受精卵 → 胚胎
+      const v2 = g(PV, { opacity: 0 });
+      arrow(v2, 476, DY, 524, DY, C.ink2, 3);
+      cellC(v2, 570, DY, 34, { nucCol: 'rgba(167,150,255,0.5)' });
+      text(v2, 570, DY + 70, '受精卵', { 'font-size': 22, 'text-anchor': 'middle' });
+      const v3 = g(PV, { opacity: 0 });
+      arrow(v3, 614, DY, 662, DY, C.ink2, 3);
+      [[-14, -14], [14, -14], [-14, 14], [14, 14]].forEach(([a, b]) => el('circle', { cx: 716 + a, cy: DY + b, r: 17, fill: 'rgba(255,214,170,0.25)', stroke: '#ffd9b0', 'stroke-width': 2 }, v3));
+      text(v3, 716, DY + 70, '胚胎', { 'font-size': 22, 'text-anchor': 'middle' });
+      S.pill(v3, 716, DY + 108, '培養約 3～5 天＊', { size: 20, color: C.hi });
+      // 植回母親的子宮（只畫人物，不畫身體內部）
+      const v4 = g(PV, { opacity: 0 });
+      arrow(v4, 770, DY, 900, DY, C.ink2, 3);
+      text(v4, 835, DY - 16, '植回', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      if (B2.person) B2.person(v4, 1040, 196, 0.72, { adult: true, girl: true, shirt: '#8a5f8f' });
+      text(v4, 1040, 322, '母親的子宮', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
+      text(v4, 1040, 356, '胎兒在子宮內發育', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      // 對照表：試管嬰兒 vs 桃莉羊
+      const tbV = g(PV, { opacity: 0 });
+      const TXV = [60, 420, 780, 1140], TYV = 420, RHV = 66;
+      const rowsV = [['', '試管嬰兒', '桃莉羊（複製）'], ['精子和卵結合（受精）', '有，在體外受精', '沒有'], ['生殖方式', '有性生殖', '無性生殖'], ['細胞核的基因來自', '父母雙方', '提供細胞核的羊']];
+      el('rect', { x: TXV[0], y: TYV, width: TXV[3] - TXV[0], height: RHV * rowsV.length, rx: 14, ...FRAME }, tbV);
+      el('rect', { x: TXV[0], y: TYV, width: TXV[3] - TXV[0], height: RHV, rx: 14, fill: '#1a3242' }, tbV);
+      rowsV.forEach((r, i) => {
+        const y = TYV + i * RHV + RHV / 2 + 9;
+        if (i) el('line', { x1: TXV[0] + 10, y1: TYV + i * RHV, x2: TXV[3] - 10, y2: TYV + i * RHV, stroke: '#2b4252', 'stroke-width': 2 }, tbV);
+        r.forEach((t, j) => {
+          const fill = i === 0 ? (j === 1 ? '#ffb3c0' : '#d6a8ff') : j === 0 ? C.ink2 : i === 2 ? (j === 1 ? C.hi : C.membrane) : C.ink;
+          text(tbV, (TXV[j] + TXV[j + 1]) / 2, y, t, { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': i === 0 || j === 0 || i === 2 ? 700 : 400, fill });
+        });
+      });
+      [1, 2].forEach((j) => el('line', { x1: TXV[j], y1: TYV + 10, x2: TXV[j], y2: TYV + RHV * rowsV.length - 10, stroke: '#2b4252', 'stroke-width': 2 }, tbV));
+      tl.addLabel('s5');
+      S.hide(tl, P4, 's5', 0.4);
+      S.show(tl, PV, 's5+=0.3', 0.4);
+      S.show(tl, v1, 's5+=0.6', 0.5);
+      S.show(tl, dish, 's5+=1.2', 0.4);
+      S.drive(tl, (u) => {
+        const k = S.smoothstep(0, 0.8, u);
+        spD.forEach((t, i) => {
+          const a = -2.6 + i * 0.9, r = S.lerp(70, 22, k);
+          S.place(t, { x: DX + 6 + Math.cos(a) * r, y: DY + 6 + Math.sin(a) * r * 0.45, r: (a * 180) / Math.PI + 180 }); // 頭朝向卵
+          t.style.opacity = i === 0 && u >= 0.9 ? 0 : 1;
+        });
+        flashV.setAttribute('r', 15 + 14 * S.smoothstep(0.8, 1, u));
+        flashV.style.opacity = u > 0.8 && u < 0.999 ? 1 - S.smoothstep(0.8, 1, u) : 0;
+      }, 1.8, 's5+=1.4', 'none');
+      S.show(tl, v2, 's5+=3.3', 0.4);
+      S.show(tl, v3, 's5+=3.9', 0.4);
+      S.show(tl, v4, 's5+=4.6', 0.5);
+      S.show(tl, tbV, 's5+=5.4', 0.5);
+
+      // ===== 6 生物技術的影響 =====
       const P5 = g(root, { opacity: 0 });
       text(P5, 600, 56, '生物技術帶來好處，也帶來隱憂', { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700 });
       const W = [[40, '生態', '#b9e68f'], [420, '食品安全', '#ffb35c'], [800, '倫理', '#d6a8ff']].map(([x, t, c2]) => {
@@ -352,11 +428,11 @@
       text(W[2], 980, 494, '什麼程度？', { 'font-size': 22, 'text-anchor': 'middle' });
       const end5 = g(P5, { opacity: 0 });
       S.pill(end5, 600, 650, '使用生物技術時，要考慮對生態、健康和社會的影響', { size: 26, color: C.hi, edge: C.hi });
-      tl.addLabel('s5');
-      S.hide(tl, P4, 's5', 0.4);
-      S.show(tl, P5, 's5+=0.3', 0.4);
-      W.forEach((c, i) => S.show(tl, c, `s5+=${0.6 + i * 1}`, 0.5));
-      S.show(tl, end5, 's5+=3.6', 0.5);
+      tl.addLabel('s6');
+      S.hide(tl, PV, 's6', 0.4);
+      S.show(tl, P5, 's6+=0.3', 0.4);
+      W.forEach((c, i) => S.show(tl, c, `s6+=${0.6 + i * 1}`, 0.5));
+      S.show(tl, end5, 's6+=3.6', 0.5);
 
       return {
         tl,
@@ -366,6 +442,7 @@
           '＊示意：細菌和基因都畫得很大。高中會學到用來攜帶基因的環狀 DNA（質體，補充）。用同樣的方法也能生產生長激素、B 型肝炎疫苗等。',
           '螢光魚的螢光蛋白基因最早來自水母。基改木瓜轉殖的是能抵抗木瓜輪點病毒的基因。',
           '桃莉羊誕生於 1996 年，是第一隻用成體細胞複製成功的哺乳動物。植物的組織培養也能產生大量和親代基因相同的個體（例如蘭花，見第七章無性生殖）。',
+          '＊示意：細胞都畫得很大；胚胎在體外培養的天數依情況不同，常見約 3～5 天＊。「試管嬰兒」其實是在培養皿中受精，只有受精和最初幾天在體外，胎兒仍在母親的子宮內發育。這是醫療技術；人類自然的生殖仍是體內受精。',
           '基因改造食品：用基因改造生物做原料的食品。生物技術的發展常有不同的意見，可以從生態、健康、法律、倫理等角度討論。',
         ],
         steps: [
@@ -373,7 +450,8 @@
           '<b>育種</b>：從生物的變異中<b>挑選</b>需要的特徵，一代一代繁殖，例如野生甘藍培育出高麗菜、青花菜、大頭菜；<b>雜交</b>則能結合兩個品種的優點。',
           '<b>基因轉殖</b>：把人類製造<b>胰島素</b>的基因放進<b>細菌</b>，細菌大量繁殖，就能生產人類的胰島素，治療糖尿病。',
           '基因轉殖的應用：把水母的螢光基因轉殖到魚，培育出<b>螢光魚</b>；轉殖抗病、抗蟲基因的<b>基改作物</b>；長得較快的魚。這些都是<b>基因改造生物</b>。',
-          '<b>複製動物</b>：把白面母羊乳腺細胞的<b>細胞核</b>，放進去除細胞核的<b>卵細胞</b>，發育成胚胎，誕生了<b>桃莉羊</b>。牠的基因和白面母羊相同，屬於<b>無性生殖</b>。',
+          '<b>複製動物</b>：把白面母羊乳腺細胞的<b>細胞核</b>，放進去除細胞核的<b>卵細胞</b>，發育成胚胎，誕生了<b>桃莉羊</b>。牠細胞核中的基因和白面母羊相同，屬於<b>無性生殖</b>。',
+          '<b>試管嬰兒</b>：卵和精子在體外<b>受精</b>，受精卵發育成胚胎後，再植回母親的<b>子宮</b>。有精子和卵結合，所以是<b>有性生殖</b>；桃莉羊沒有受精，是無性生殖。',
           '生物技術也帶來隱憂：基改生物可能影響<b>野生物種</b>；基改食品要<b>標示</b>；複製和改變基因還有<b>倫理</b>上的爭議。',
         ],
       };

@@ -102,6 +102,21 @@
         S.callout(root, 790, 450, 1080, 470, '液胞', C.vacuole),
       ];
 
+      // 細胞壁放大：纖維素交錯排列（示意）
+      const wz = g(root, { opacity: 0 });
+      el('path', { d: 'M 968,372 L 1000,340 M 968,428 L 1000,516', stroke: C.wall, 'stroke-width': 1.5, 'stroke-dasharray': '6 6', opacity: 0.7 }, wz);
+      el('rect', { x: 960, y: 372, width: 14, height: 56, fill: 'none', stroke: C.hi, 'stroke-width': 3 }, wz);
+      el('rect', { x: 1000, y: 330, width: 180, height: 196, rx: 14, fill: '#122230', stroke: C.wall, 'stroke-width': 2 }, wz);
+      el('rect', { x: 1014, y: 344, width: 152, height: 96 }, el('clipPath', { id: 'cellWallZoom' }, el('defs', {}, wz)));
+      const fib = g(wz, { 'clip-path': 'url(#cellWallZoom)' });
+      el('rect', { x: 1014, y: 344, width: 152, height: 96, fill: '#2e2a1c' }, fib);
+      for (let i = -8; i < 16; i++) {
+        el('line', { x1: 1000 + i * 16, y1: 450, x2: 1060 + i * 16, y2: 330, stroke: '#b9a35f', 'stroke-width': 5, 'stroke-linecap': 'round' }, fib);
+        el('line', { x1: 1000 + i * 16, y1: 330, x2: 1060 + i * 16, y2: 450, stroke: C.wall, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.9 }, fib);
+      }
+      text(wz, 1090, 474, '主要成分', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(wz, 1090, 508, '纖維素', { 'font-size': 28, 'text-anchor': 'middle', fill: C.wall, 'font-weight': 700 });
+
       // 比較畫面
       const cmp = g(root, { opacity: 0 });
       const mini = g(cmp);
@@ -168,8 +183,10 @@
       S.drawOn(tl, wall, 1.2, 's5+=1.4');
       S.show(tl, plantHead, 's5+=1.6', 0.4);
       say(5, 4, 2.2);
+      S.show(tl, wz, 's5+=2.8', 0.5);
 
       step(6);
+      S.hide(tl, wz, 's6', 0.3);
       tl.fromTo(chloros, { opacity: 0, scale: 0, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.7)', stagger: 0.12 }, 's6');
       tl.to(chloros, { scale: 1.2, duration: 0.25, yoyo: true, repeat: 1, stagger: 0.05 }, 's6+=1.3');
       say(6, 5, 0.8);
@@ -195,7 +212,7 @@
           null,
           '＊補充：細胞核裡的遺傳物質（DNA）和蛋白質組成染色體，細胞分裂時最容易看到。',
           null,
-          '＊補充：細胞壁主要由纖維素構成。它沒有選擇性，水和大多數溶在水中的物質都能通過；控制物質進出的是細胞膜。',
+          '細胞壁沒有選擇性，水和大多數溶在水中的物質都能通過；控制物質進出的是細胞膜。纖維素也是一種醣類（第三章）。＊放大圖中纖維的排列是示意。',
           '＊補充：不是所有植物細胞都有葉綠體，例如根的細胞、洋蔥表皮細胞就沒有。',
           '＊補充：有些花瓣、果實的顏色來自液胞裡的色素；動物細胞的液胞小或不明顯。',
           null],
@@ -205,7 +222,7 @@
           '<b>細胞質</b>：細胞膜以內、細胞核以外的膠狀物質，許多生命活動在這裡進行。',
           '<b>細胞核</b>：含有遺傳物質（DNA），控制細胞的生命活動。',
           '<b>粒線體</b>：進行呼吸作用，分解養分、釋放能量。',
-          '換成植物細胞：細胞膜外面多了一層<b>細胞壁</b>，可以支持和保護細胞，讓形狀比較固定。',
+          '換成植物細胞：細胞膜外面多了一層<b>細胞壁</b>，主要成分是<b>纖維素</b>，可以支持和保護細胞，讓形狀比較固定。',
           '<b>葉綠體</b>：含有葉綠素，能進行光合作用、製造養分。',
           '<b>液胞</b>：儲存水分和物質。成熟的植物細胞通常有一個很大的液胞，把細胞核擠到旁邊。',
           '比一比：前四種構造兩者都有；<b>細胞壁、葉綠體、大液胞</b>是植物細胞的特色。',

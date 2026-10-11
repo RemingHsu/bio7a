@@ -281,7 +281,19 @@
         return ig;
       });
       const note2 = g(P2, { opacity: 0 });
-      S.pill(note2, 955, 580, '受精作用在胚珠內進行', { size: 24, color: C.hi, edge: C.hi });
+      text(note2, 955, 496, '受精作用在胚珠內進行', { 'font-size': 24, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
+      // 對照：開花植物靠花粉管送精細胞，受精不需要水；蕨類、蘚苔的精子要靠水游到卵
+      const water2 = g(P2, { opacity: 0 });
+      el('rect', { x: 740, y: 536, width: 430, height: 154, rx: 16, ...FRAME }, water2);
+      const drop = (x, y, crossed) => {
+        el('path', { d: `M ${x},${y - 18} C ${x + 6},${y - 8} ${x + 13},${y} ${x + 13},${y + 6} C ${x + 13},${y + 14} ${x + 7},${y + 19} ${x},${y + 19} C ${x - 7},${y + 19} ${x - 13},${y + 14} ${x - 13},${y + 6} C ${x - 13},${y} ${x - 6},${y - 8} ${x},${y - 18} Z`, fill: crossed ? 'rgba(95,184,255,0.25)' : C.water, stroke: C.water, 'stroke-width': 2 }, water2);
+        if (crossed) el('line', { x1: x - 17, y1: y + 17, x2: x + 17, y2: y - 15, stroke: '#ff8f8f', 'stroke-width': 4, 'stroke-linecap': 'round' }, water2);
+      };
+      drop(776, 582, true);
+      text(water2, 804, 580, '開花植物：花粉管送精細胞', { 'font-size': 22, fill: C.ink, 'font-weight': 700 });
+      text(water2, 804, 610, '→ 受精不需要水', { 'font-size': 22, fill: C.hi, 'font-weight': 700 });
+      drop(776, 650, false);
+      text(water2, 804, 660, '蕨類、蘚苔：精子要靠水游到卵', { 'font-size': 21, fill: C.ink2 });
       tl.addLabel('s2');
       S.hide(tl, P1, 's2', 0.4);
       S.show(tl, P2, 's2+=0.3', 0.4);
@@ -309,6 +321,7 @@
       S.show(tl, done2, 's2+=5.7', 0.3);
       [0, 1.4, 1.4, 3.6, 4.6, 5.6].forEach((t, i) => tl.fromTo(items2[i], { opacity: 0.25 }, { opacity: 1, duration: 0.3, immediateRender: false }, `s2+=${0.6 + t}`));
       S.show(tl, note2, 's2+=6.2', 0.4);
+      S.show(tl, water2, 's2+=6.8', 0.5);
 
       // ===== 3 果實與種子 =====
       const P3 = g(root, { opacity: 0 });
@@ -346,9 +359,9 @@
       const PX = [24, 315, 606, 897], PW = 279;
       PX.forEach((x) => el('rect', { x, y: 96, width: PW, height: 540, rx: 16, ...FRAME }, P4));
       ['風力', '動物', '水力', '自身的彈力'].forEach((s, i) => text(P4, PX[i] + PW / 2, 142, s, { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi }));
-      [['輕，有冠毛或翅', '例如：蒲公英、青楓'], ['有鉤刺，或果實被吃', '例如：鬼針草、番茄'], ['外殼厚，能浮在水上', '例如：椰子、棋盤腳'], ['果實成熟裂開，彈出種子', '例如：鳳仙花、酢漿草']].forEach(([a, b], i) => {
-        text(P4, PX[i] + PW / 2, 582, a, { 'font-size': 22, 'text-anchor': 'middle' });
-        text(P4, PX[i] + PW / 2, 614, b, { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      [['輕，有冠毛或翅', '例如：蒲公英、青楓'], ['有鉤刺，或果實被吃', '例如：鬼針草、榕樹'], ['果皮纖維厚，能浮在水上', '例如：椰子、棋盤腳'], ['果實成熟裂開，彈出種子', '例如：鳳仙花、酢漿草']].forEach(([a, b], i) => {
+        text(P4, PX[i] + PW / 2, 588, a, { 'font-size': 22, 'text-anchor': 'middle' });
+        text(P4, PX[i] + PW / 2, 620, b, { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       });
       // 風：蒲公英、青楓
       el('path', { d: 'M 110,530 C 106,460 114,400 110,330', fill: 'none', stroke: '#7fae4a', 'stroke-width': 5 }, P4);
@@ -366,7 +379,7 @@
       // 動物：鬼針草黏在毛上；鳥吃果實
       const fur = g(P4);
       for (let i = 0; i < 18; i++) el('path', { d: `M ${330 + i * 14},${180} q 6,40 -4,${80 + (i % 3) * 8}`, fill: 'none', stroke: '#a07a50', 'stroke-width': 5, 'stroke-linecap': 'round' }, fur);
-      text(P4, 454, 300, '動物的毛', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(P4, 454, 318, '動物的毛', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       const bidens = [[380, 230, -20], [430, 214, 10], [500, 240, 25]].map(([x, y, r]) => {
         const b = S.place(g(P4, { opacity: 0 }), { x, y, r });
         el('path', { d: 'M -5,0 L -3,54 L 3,54 L 5,0 Z', fill: '#d9b070', stroke: '#f2dca8', 'stroke-width': 1.5 }, b);
@@ -374,8 +387,11 @@
         return b;
       });
       el('path', { d: 'M 340,470 C 400,462 480,466 580,452', fill: 'none', stroke: '#8a6a40', 'stroke-width': 6, 'stroke-linecap': 'round' }, P4);
+      // 榕樹的小枝：葉片斜向上長，果實（榕果）一顆顆長在枝上
       el('path', { d: 'M 560,456 C 540,446 520,436 500,430', fill: 'none', stroke: '#8a6a40', 'stroke-width': 3 }, P4);
-      [[494, 428], [506, 438], [498, 444], [512, 426]].forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 8, fill: '#e0384c', stroke: '#ff8a9a', 'stroke-width': 1.5 }, P4));
+      const figLeaf = (x, y, ang, L = 34) => { const lg = S.place(g(P4), { x, y, r: ang }); el('path', { d: `M 0,0 C ${L * 0.2},${-L * 0.3} ${L * 0.75},${-L * 0.34} ${L},0 C ${L * 0.75},${L * 0.34} ${L * 0.2},${L * 0.3} 0,0 Z`, fill: '#3f8a46', stroke: '#8fcf8a', 'stroke-width': 1.5 }, lg); el('line', { x1: 2, y1: 0, x2: L * 0.85, y2: 0, stroke: '#a8e39a', 'stroke-width': 1.2, opacity: 0.8 }, lg); };
+      figLeaf(540, 446, -75); figLeaf(520, 438, -120); figLeaf(500, 430, -95, 28); figLeaf(552, 452, -40, 30);
+      [[494, 428], [508, 440], [524, 444], [512, 424]].forEach(([x, y]) => { el('ellipse', { cx: x, cy: y, rx: 7.5, ry: 8, fill: '#a8456a', stroke: '#e08aa8', 'stroke-width': 1.5 }, P4); el('circle', { cx: x + 1, cy: y + 5, r: 1.6, fill: '#5a1f34' }, P4); el('ellipse', { cx: x - 2.5, cy: y - 3, rx: 2, ry: 1.4, fill: '#f0b8c8', opacity: 0.7 }, P4); });
       const bird = g(P4);
       el('path', { d: 'M 370,452 L 340,470 L 362,466 Z', fill: '#6a5040' }, bird);
       el('ellipse', { cx: 410, cy: 440, rx: 40, ry: 24, fill: '#8a6a50', stroke: '#c8a888', 'stroke-width': 2 }, bird);
@@ -425,14 +441,14 @@
         notes: [
           '＊示意：典型的花的縱切面，不同植物的花構造會有差異。有些課本把花萼稱為萼片。花萼、花瓣、雄蕊和雌蕊都長在花托上。',
           '＊示意：花粉粒畫得很大。花粉落到同一朵花的柱頭上，也是授粉。玉米的雄花在植株頂端，雌花在莖的中段，玉米鬚是雌花長長的花柱和柱頭（補充）。',
-          '＊示意：花粉管和胚珠都畫得很大。補充：花粉管中有兩個精細胞，一個和卵結合成受精卵，另一個參與形成種子中儲存養分的部分（高中再學）。蕨類和蘚苔沒有花粉管，精子要靠水游到卵。',
+          '＊示意：花粉管和胚珠都畫得很大，圖中只畫出一條花粉管。一粒花粉長出一條花粉管，進入一個胚珠，所以果實裡有幾顆種子，至少就要有幾粒花粉。補充：花粉管中有兩個精細胞，一個和卵結合成受精卵，另一個參與形成種子中儲存養分的部分（高中再學）。',
           '＊示意：以番茄這類果實為例，花萼常留在果實上。子房壁發育成果皮（補充）。種子由種皮包覆，種皮可以保護種子。',
-          '＊果實和種子的傳播方式，國小已經學過，這裡是複習。鬼針草的果實有倒鉤，能黏在動物的毛或人的衣服上。',
+          '果實和種子的傳播方式，國小已經學過，這裡是複習。鬼針草的果實有倒鉤，能黏在動物的毛或人的衣服上。鳥吃下榕樹的果實（榕果），種子隨糞便排出，常在牆縫、屋頂長出小榕樹。',
         ],
         steps: [
           '<b>花</b>是開花植物的生殖器官。<b>雄蕊</b>包括花藥和花絲，花藥產生<b>花粉</b>；<b>雌蕊</b>包括柱頭、花柱和子房，子房內的<b>胚珠</b>中有卵。',
           '<b>授粉</b>：花粉落到雌蕊的<b>柱頭</b>上。<b>蟲媒花</b>靠昆蟲傳粉，花瓣鮮豔、有香味或花蜜；<b>風媒花</b>靠風傳粉，花小、不鮮豔，花粉多而輕。',
-          '<b>受精</b>：授粉後，花粉長出<b>花粉管</b>，穿過花柱到達<b>胚珠</b>；花粉管中的<b>精細胞</b>和胚珠內的<b>卵</b>結合，形成受精卵。',
+          '<b>受精</b>：授粉後，花粉長出<b>花粉管</b>，穿過花柱把<b>精細胞</b>送到<b>胚珠</b>，和胚珠內的<b>卵</b>結合。精細胞靠花粉管運送，所以受精<b>不需要水</b>。',
           '受精後，花瓣、雄蕊等逐漸凋謝；<b>子房</b>發育成<b>果實</b>，<b>胚珠</b>發育成<b>種子</b>，受精卵發育成種子內的<b>胚</b>。',
           '果實和種子靠<b>風</b>、<b>動物</b>、<b>水</b>或<b>自身的彈力</b>傳播到各處；落在適當的環境，種子就能萌芽，長成新植株。',
         ],

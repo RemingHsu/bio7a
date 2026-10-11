@@ -294,7 +294,7 @@
       const sets = g(P1, { opacity: 0 });
       S.pill(sets, 330, 614, '體細胞：染色體成對 → 雙套（2n）', { size: 24, color: C.ink, edge: '#4a6272' });
       S.pill(sets, 870, 614, '精子、卵：每對只有一條 → 單套（n）', { size: 24, color: C.hi, edge: C.hi });
-      text(P1, 600, 686, '染色體數目因生物而不同：豌豆 14 條、人 46 條、黑猩猩 48 條', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
+      text(P1, 600, 686, '染色體數目通常因生物而不同：豌豆 14 條、人 46 條、黑猩猩 48 條', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       tl.addLabel('s1');
       S.hide(tl, P0, 's1', 0.4);
       S.show(tl, P1, 's1+=0.3', 0.4);

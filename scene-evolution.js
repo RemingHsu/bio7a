@@ -149,10 +149,12 @@
       const faded = at(box2[3], BX(3) + 60, 344, 0.26); faded.setAttribute('opacity', 0.3); B.giraffe(faded, { neck: 40, ang: 74 });
       tick(box2[3], BX(3) + 176, 250, 11); cross(box2[3], BX(3) + 40, 286, 9);
       // 5：長脖子的比例越來越高（長條）
-      [[0.34, '第1代'], [0.6, '第2代'], [0.9, '很多代']].forEach(([f, s], k) => {
-        const x = BX(4) + 26 + k * 60;
-        el('rect', { x, y: 370 - 150 * f, width: 34, height: 150 * f, rx: 4, fill: '#d9a85c' }, box2[4]);
-        text(box2[4], x + 17, 398, s, { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      // 橫條：左邊寫第幾代，條越長＝長脖子的比例越高（直條的標籤放大後會擠在一起）
+      el('line', { x1: BX(4) + 82, y1: 226, x2: BX(4) + 82, y2: 380, stroke: C.mute, 'stroke-width': 1.5 }, box2[4]);
+      [[0.34, '第 1 代'], [0.6, '第 2 代'], [0.9, '很多代']].forEach(([f, s], k) => {
+        const y = 236 + k * 52;
+        el('rect', { x: BX(4) + 84, y, width: 110 * f, height: 30, rx: 4, fill: '#d9a85c' }, box2[4]);
+        text(box2[4], BX(4) + 74, y + 23, s, { 'font-size': 20, 'text-anchor': 'end', fill: C.mute });
       });
       text(box2[4], BX(4) + 105, 206, '長脖子的比例', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       const ar2 = [0, 1, 2, 3].map((i) => { const a = arrow(P2, BX(i) + 212, 335, BX(i + 1) - 2, 335, C.hi, 3, 10); a.setAttribute('opacity', 0); return a; });
@@ -172,7 +174,7 @@
         const pg = g(P3, { opacity: 0 });
         const x = PX[i];
         el('rect', { x, y: 70, width: 360, height: 470, rx: 16, ...FRAME }, pg);
-        S.pill(pg, x + 180, 104, name, { size: 24, color: C.ink, edge: '#4a6272' });
+        S.pill(pg, x + 180, 98, name, { size: 24, color: C.ink, edge: '#4a6272' });
         trunk(pg, x + 90, 134, 180, 300, dark, i + 3);
         const spots = [[130, 190, -20], [222, 222, 15], [150, 300, 8], [240, 330, -10], [126, 390, 25], [210, 410, -5]];
         spots.forEach(([dx, dy, r], k) => B.moth(at(pg, x + dx, dy, 0.78, r), k < nDark));
@@ -265,8 +267,8 @@
         notes: [
           '拉馬克（法國）在 1809 年提出。現在知道，只有生殖細胞中遺傳物質的改變才會遺傳給後代；身體在一生中因使用或鍛鍊而產生的改變，不會遺傳。補充：演化學說在高中會再詳細學習。',
           '達爾文（英國）在 1859 年出版《物種起源》提出天擇說。＊示意：長頸鹿的數量和脖子長度都是示意；真實的變化要經過非常多代。',
-          '天擇作用在「族群」上：個體一生中不會因為需要而改變特徵，改變的是下一代中各種特徵所占的比例。',
-          '＊示意：長條的長短只表示多或少。英國工業革命時，煤煙燻黑樹幹（樹上淺色的地衣也死了），深色樺尺蛾變得很常見；空氣污染改善後，淺色的蛾又變多。',
+          '演化發生在「族群」：個體一生中不會因為需要而改變特徵；天擇改變的是下一代中各種特徵所占的比例。',
+          '＊示意：長條的長短只表示多或少。英國工業革命時，煤煙燻黑樹幹（樹上淺色的地衣也死了），深色樺尺蛾變得很常見；空氣汙染改善後，淺色的蛾又變多。',
           '＊示意：細菌畫得很大，顏色只是為了區分有沒有抗藥性。昆蟲對殺蟲劑產生抗藥性也是同樣的道理。抗生素要依照醫師指示使用，不可以濫用。',
         ],
         steps: [

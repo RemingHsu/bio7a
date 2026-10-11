@@ -18,7 +18,7 @@
     { title: '燈的遠近', predict: { q: '燈越靠近水蘊草（光越強），每分鐘的氣泡數會怎樣？先預測：', opts: ['越多', '越少', '不會改變'], ans: 0 },
       text: '在 3 種距離各數 1 分鐘的氣泡，比較看看：', acts: [15, 30, 60].map((d) => ({ label: `燈在 ${d} cm`, set: { d, light: 1, water: 'soda' }, then: 'count', did: (s) => s.data.some((r) => r.water === 'soda' && r.light && r.d === d) })), done: (s) => new Set(s.data.filter((r) => r.water === 'soda' && r.light).map((r) => r.d)).size >= 3,
       why: '燈越近、光越強，光合作用越旺盛，氣泡越多。' },
-    { title: '哪些要相同？', quiz: { q: '這個實驗要比較「燈的距離」對氣泡數的影響。下列哪一項必須保持相同？', opts: ['燈的距離', '水的種類、水蘊草的量和水溫', '每分鐘的氣泡數'], ans: 1, hint: '燈的距離是我們故意改變的（操縱變因），氣泡數是我們要觀察的（應變變因）。' },
+    { title: '哪些要相同？', quiz: { q: '這個實驗要比較「燈的距離」對氣泡數的影響。下列哪一項必須保持相同？', opts: ['燈的距離', '水的種類、水蘊草的量和水溫', '每分鐘的氣泡數'], ans: 1, hints: ['如果每一次的燈都放在同樣的距離，還看得出距離有沒有影響嗎？', '', '氣泡數要做完實驗才數得到。這是能事先保持相同的條件嗎？'] },
       why: '只改變燈的距離（操縱變因），觀察氣泡數（應變變因）；水的種類、水蘊草的量、水溫等都要相同（控制變因），實驗才公平。' },
     { title: '缺少二氧化碳', text: '把水換成<b>煮沸後冷卻的開水</b>（水中的二氧化碳被趕走了），燈一樣放 30 cm，和小蘇打水比較。', acts: [{ label: '換水，30 cm 數 1 分鐘', set: { d: 30, light: 1, water: 'boiled' }, then: 'count', did: (s) => s.data.some((r) => r.water === 'boiled' && r.light) }],
       done: (s) => s.data.some((r) => r.water === 'boiled' && r.light && s.data.some((q) => q.water === 'soda' && q.light && q.d === r.d)),
@@ -35,7 +35,7 @@
     mount(box) {
       box.innerHTML = `
 <style>
-  .labP { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 0.9rem; align-items: start; }
+  .labP { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 0.9rem; align-items: start; min-width: 0; }
   .labP .col { display: grid; gap: 0.9rem; min-width: 0; }
   .labP .pad { padding: 1rem 1.25rem; }
   .labP .seg-ctl button:disabled, .labP .ctl:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -88,7 +88,8 @@
       // ---------- 燒杯、水蘊草、漏斗、試管 ----------
       el('rect', { x: 602, y: 210, width: 316, height: 290, fill: 'rgba(95,184,255,0.16)' }, root);
       el('path', { d: 'M 594,190 L 602,198 L 602,494 Q 602,502 610,502 L 910,502 Q 918,502 918,494 L 918,190', fill: 'none', stroke: '#cfe8ff', 'stroke-width': 4 }, root);
-      const waterLbl = text(root, 760, 540, '', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
+      // 靠左對齊從 694 開始：燈很近（15 cm）時，距離的標示在 606～676，字放大後置中會疊在一起
+      const waterLbl = text(root, 694, 540, '', { 'font-size': 22, fill: C.mute });
       for (let i = 0; i < 5; i++) {
         const x = PLANT_X - 50 + i * 25;
         el('path', { d: `M ${x},496 C ${x - 8},450 ${x + 8},400 ${x - 3 + (i % 2) * 6},350`, fill: 'none', stroke: '#4fae4a', 'stroke-width': 4 }, root);
@@ -252,7 +253,7 @@
       const actsHtml = (m) => `<div class="acts">${m.acts.map((a, i) => {
         const did = a.did && a.did(st), ok = !counting && (!a.ready || a.ready(st));
         return `<button class="ctl ${did ? '' : 'primary'}" type="button" data-a="${i}" aria-pressed="${!!did}" ${ok ? '' : 'disabled'}>${a.label}${did ? ' ✓' : ''}</button>`;
-      }).join('')}</div>${m.acts.some((a) => a.ready) ? `<p class="m-hint">試管中的氣體：${st.gas >= GAS_TEST ? '夠了，可以測試' : '還不夠，等一下…'}</p>` : ''}`;
+      }).join('')}</div>${m.acts.some((a) => a.ready) ? `<p class="m-hint">試管中的氣體：${st.gas >= GAS_TEST ? '夠了，可以測試' : '還不夠，等一下……'}</p>` : ''}`;
       function doAct(a) {
         if (a.set) { Object.assign(st, a.set); sync(); }
         if (a.then === 'count') startCount();
@@ -279,7 +280,7 @@
           needShown = ready;
           if (!ready) html += `<p class="m-text">${m.needText}</p>${m.acts ? actsHtml(m) : ''}`;
           html += `<p class="m-text">${m.quiz.q}</p><div class="opts">${m.quiz.opts.map((o, k) => `<button class="opt ${done && k === m.quiz.ans ? 'right' : !done && k === picked ? 'wrong' : ''}" type="button" data-k="${k}" ${done || !ready ? 'disabled' : ''}>${o}</button>`).join('')}</div>`;
-          if (!done && picked >= 0) html += `<div class="fb bad"><strong>再想想看</strong>${m.quiz.hint}</div>`;
+          if (!done && picked >= 0) html += `<div class="fb bad"><strong>再想想看</strong>${m.quiz.hints ? m.quiz.hints[picked] : m.quiz.hint}</div>`;
           if (done) html += `<div class="fb ok"><strong>答對了</strong>${m.why}</div>`;
         } else {
           html += `<p class="m-text">${m.text}</p>`;

@@ -22,7 +22,7 @@
     { title: '換一種物質', run: { sub: 'go', n: 3 },
       predict: { q: '如果換成<b>容易被分解或排出</b>的物質，水鳥體內也會累積很多嗎？先預測：', opts: ['會，和剛才一樣越來越多', '不會，每一層都只留下一點點'], ans: 1 },
       text: '按「吃！」看看結果。',
-      why: '容易分解或排出的物質，吃進去以後大部分很快就離開身體，每一層都只留下一點點，<b>不會</b>沿著食物鏈累積。會發生生物放大的，是<b>難分解、不易排出</b>的物質，例如 DDT、汞、鎘。' },
+      why: '容易分解或排出的物質，吃進去以後大部分很快就離開身體，每一層都只留下一點點，<b>不會</b>沿著食物鏈累積。會發生生物放大作用的，是<b>難分解、不易排出</b>的物質，例如 DDT、汞、鎘。' },
     { title: '生活中的應用', quiz: { q: '海洋中的汞會發生生物放大作用。下列哪一種魚，體內可能累積最多的汞？', opts: ['小型魚，例如沙丁魚', '大型的肉食性魚，例如鮪魚、旗魚、鯊魚', '每一種魚都差不多'], ans: 1, hint: '想一想：這種魚在食物鏈的哪一層？牠一生要吃下多少其他的魚？' },
       why: '鮪魚、旗魚、鯊魚是海洋食物鏈上層的大型魚，一生吃下大量的魚，體內的汞比較多。所以衛生單位建議孕婦和幼兒少吃或避免這類大型魚。人類也在食物鏈的上層，減少汙染物排放，就是保護自己。' },
   ];
@@ -54,7 +54,7 @@
         <p class="footnote">＊示意：紅點的數量和倍數都是示意。每一層只畫一個代表的個體，假設牠吃下 3 個下一層的生物；真實的生物一生要吃下多得多。真實的 DDT 例子中，從水到吃魚的鳥，濃度可以相差數百萬倍以上（約）。</p>
       </div>
     </div>
-    <div class="card pad c-table"><h3>結果記錄（每個個體體內的量＊）</h3><div class="table-wrap" id="labS1-table"></div></div>
+    <div class="card pad c-table"><h3>結果紀錄（每個個體體內的量＊）</h3><div class="table-wrap" id="labS1-table"></div></div>
   </div>
   <div class="col">
     <div class="card pad c-mis" id="labS1-mission"></div>
@@ -101,7 +101,8 @@
         const [x1, x2] = [[262, 340], [512, 600], [820, 960]][i], y = 306;
         el('line', { x1, y1: y, x2: x2 - 10, y2: y, stroke: C.ink2, 'stroke-width': 3 }, root);
         el('path', { d: `M ${x2},${y} l -14,-8 l 0,16 Z`, fill: C.ink2 }, root);
-        return text(root, (x1 + x2) / 2, y - 12, '', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
+        // 第三段：字放大後會碰到水鳥的虛線框，往左挪一點；字加一圈水色描邊，預測時的虛線框穿過字的地方會被蓋住
+        return text(root, i === 2 ? 878 : (x1 + x2) / 2, y - 12, '', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2, stroke: '#27648f', 'stroke-width': 6, 'stroke-linejoin': 'round', 'paint-order': 'stroke' });
       });
       // ---------- 下方：每個個體體內的量 ----------
       const badges = LV.map((l) => {
@@ -150,7 +151,7 @@
         counts[0] = START;
         for (let k = 1; k < 4; k++) counts[k] = keep(k, counts[k - 1] * n);
         eatLbl.forEach((t) => { t.textContent = `吃 ${n} 個＊`; });
-        $('status').innerHTML = sub === 'stay' ? '有毒物質（難分解、不易排出）沿著食物鏈移動中…' : '有毒物質（容易分解或排出）沿著食物鏈移動中…';
+        $('status').innerHTML = sub === 'stay' ? '有毒物質（難分解、不易排出）沿著食物鏈移動中……' : '有毒物質（容易分解或排出）沿著食物鏈移動中……';
         tl = gsap.timeline({ onComplete: finish });
         // 1. 浮游植物從水中吸收
         const P0 = spots(0, counts[0]);
@@ -242,7 +243,7 @@
         let html = `<div class="mission-top"><h2>任務 ${mi + 1}：${m.title}</h2>${dots()}</div>`;
         if (m.predict) {
           html += `<p class="m-text">${m.predict.q}</p><div class="opts">${m.predict.opts.map((o, k) => `<button class="opt" type="button" data-p="${k}" aria-pressed="${pred === k}" ${pred >= 0 ? 'disabled' : ''}>${o}</button>`).join('')}</div>`;
-          if (pred >= 0 && !done) html += `<p class="m-text">${m.text}</p><div class="acts"><button class="ctl primary eat" type="button" id="labS1-eat" ${busy ? 'disabled' : ''}>${busy ? '吃吃吃…' : '吃！'}</button></div>`;
+          if (pred >= 0 && !done) html += `<p class="m-text">${m.text}</p><div class="acts"><button class="ctl primary eat" type="button" id="labS1-eat" ${busy ? 'disabled' : ''}>${busy ? '吃吃吃……' : '吃！'}</button></div>`;
           if (done) html += `<div class="fb ${pred === m.predict.ans ? 'ok' : 'bad'}"><strong>${pred === m.predict.ans ? '預測正確' : '和預測不一樣'}</strong>${m.why}</div>`;
         } else {
           html += `<p class="m-text">${m.quiz.q}</p><div class="opts">${m.quiz.opts.map((o, k) => `<button class="opt ${done && k === m.quiz.ans ? 'right' : !done && k === picked ? 'wrong' : ''}" type="button" data-k="${k}" ${done ? 'disabled' : ''}>${o}</button>`).join('')}</div>`;

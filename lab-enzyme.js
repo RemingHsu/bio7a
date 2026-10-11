@@ -44,7 +44,7 @@
     mount(box) {
       box.innerHTML = `
 <style>
-  .labE { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 0.9rem; align-items: start; }
+  .labE { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 0.9rem; align-items: start; min-width: 0; }
   .labE .col { display: grid; gap: 0.9rem; min-width: 0; }
   .labE .pad { padding: 1rem 1.25rem; }
   .labE .seg-ctl button:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -109,9 +109,9 @@
       el('circle', { cx: 320, cy: 546, r: 15, fill: '#ff5f74' }, root);
       const col = el('rect', { x: 316, y: 300, width: 8, height: 240, fill: '#ff5f74' }, root);
       const tLbl = text(root, 320, 182, '', { 'font-size': 26, 'text-anchor': 'middle', fill: C.ink, class: 'mono' });
-      text(root, 220, 616, '水浴', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(root, 122, 556, '水浴', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }); // 放在水裡左下角：放大後放在底座下面會被舞台下緣切掉
       text(root, 200, 182, '澱粉液', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
-      const addLbl = text(root, 200, 152, '', { 'font-size': 22, 'text-anchor': 'middle', fill: ENZ });
+      const addLbl = text(root, 200, 144, '', { 'font-size': 22, 'text-anchor': 'middle', fill: ENZ });
 
       // ---------- 放大圖 ----------
       const ZX = 600, ZY = 250, ZR = 140;
@@ -143,12 +143,13 @@
         const bad = el('path', { d: 'M -18,-6 C -20,-20 0,-22 8,-14 C 20,-18 24,-2 14,6 C 22,16 2,22 -6,14 C -20,18 -24,4 -18,-6 Z', fill: '#7a8a92', opacity: 0 }, eg);
         return { g: eg, ok, bad, x: ZX - 60 + rnd() * 120, y: ZY - 80 + rnd() * 160, a: rnd() * 6.28 };
       });
-      [[ZX - 120, '澱粉', 'chain'], [ZX - 10, '麥芽糖', 'pair'], [ZX + 96, '酵素', 'enz']].forEach(([x, s, kind]) => {
+      // 圖例：x 是文字的開頭，小圖放在文字左邊（字放大到 24 後重新排過間距，避免小圖碰到字）
+      [[ZX - 126, '澱粉', 'chain'], [ZX - 25, '麥芽糖', 'pair'], [ZX + 103, '酵素', 'enz']].forEach(([x, s, kind]) => {
         const lg = g(root);
-        if (kind === 'chain') [0, 1, 2].forEach((i) => el('circle', { cx: x - 30 + i * 13, cy: 420, r: 6, fill: SUG }, lg));
-        if (kind === 'pair') [0, 1].forEach((i) => el('circle', { cx: x - 24 + i * 13, cy: 420, r: 6, fill: SUG }, lg));
-        if (kind === 'enz') el('path', { d: `M ${x - 20},420 l 10,-7 a 12,12 0 1,0 0,14 Z`, fill: ENZ }, lg);
-        text(lg, x - 2, 428, s, { 'font-size': 22, fill: C.ink2 });
+        if (kind === 'chain') [0, 1, 2].forEach((i) => el('circle', { cx: x - 38 + i * 13, cy: 420, r: 6, fill: SUG }, lg));
+        if (kind === 'pair') [0, 1].forEach((i) => el('circle', { cx: x - 25 + i * 13, cy: 420, r: 6, fill: SUG }, lg));
+        if (kind === 'enz') el('path', { d: `M ${x - 18},420 l 10,-7 a 12,12 0 1,0 0,14 Z`, fill: ENZ }, lg);
+        text(lg, x, 428, s, { 'font-size': 22, fill: C.ink2 });
       });
       const clock = text(root, ZX, 500, '', { 'font-size': 34, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
 

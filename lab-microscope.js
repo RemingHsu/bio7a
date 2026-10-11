@@ -18,7 +18,7 @@
     { ctl: ['iris'], title: '高倍也要夠亮', text: '換成高倍後視野變暗了。調整光圈，讓亮度回到 50% 以上。', done: (s) => s.obj === 2 && s.bright >= 0.5,
       why: '高倍時進入眼睛的光變少，所以視野變暗，要把光圈開大。' },
     { ctl: [], title: '想一想', quiz: { q: '用 100 倍看到一排 8 個細胞剛好排滿視野直徑。換成 400 倍，這一排大約能看到幾個？', opts: ['2 個', '4 個', '32 個'], ans: 0 },
-      why: '倍率變成 4 倍，視野直徑變成原來的 1/4，所以 8 ÷ 4 ＝ 2 個。（如果是整個視野塞滿細胞，面積變成 1/16。）' },
+      why: '倍率變成原來的 4 倍，視野直徑變成原來的 1/4，所以 8 ÷ 4 ＝ 2 個。（如果是整個視野塞滿細胞，面積變成 1/16。）' },
   ];
 
   S.registerLab({
@@ -95,7 +95,7 @@
       el('circle', { cx: VC.x, cy: VC.y, r: VC.r, fill: 'none', stroke: '#2b4252', 'stroke-width': 14 }, root);
       text(root, VC.x, 700, '從目鏡看到的視野', { 'font-size': 24, fill: C.mute, 'text-anchor': 'middle' });
       const warn = g(root, { opacity: 0 });
-      el('rect', { x: 560, y: 300, width: 600, height: 120, rx: 16, fill: 'rgba(13,24,34,0.92)', stroke: '#ff6b6b', 'stroke-width': 3 }, warn);
+      el('rect', { x: 540, y: 300, width: 640, height: 120, rx: 16, fill: 'rgba(13,24,34,0.92)', stroke: '#ff6b6b', 'stroke-width': 3 }, warn);
       const warnT1 = text(warn, 860, 350, '', { 'font-size': 28, 'font-weight': 700, fill: '#ff8f8f', 'text-anchor': 'middle' });
       const warnT2 = text(warn, 860, 392, '', { 'font-size': 22, fill: C.ink, 'text-anchor': 'middle' });
 
@@ -192,7 +192,7 @@
         let html = `<div class="mission-top"><h2>任務 ${mi + 1}：${m.title}</h2>${dots()}</div>`;
         if (m.quiz) {
           html += `<p class="m-text">${m.quiz.q}</p><div class="opts">${m.quiz.opts.map((o, k) => `<button class="opt ${done && k === m.quiz.ans ? 'right' : !done && k === picked ? 'wrong' : ''}" type="button" data-k="${k}" ${done ? 'disabled' : ''}>${o}</button>`).join('')}</div>`;
-          if (!done && picked >= 0) html += `<div class="fb bad"><strong>再想想看</strong>倍率變成 4 倍時，視野的直徑會怎麼變？</div>`;
+          if (!done && picked >= 0) html += `<div class="fb bad"><strong>再想想看</strong>倍率變成原來的 4 倍時，視野的直徑會怎麼變？</div>`;
         } else html += `<p class="m-text">${m.text}</p>`;
         if (done) html += `<div class="fb ok"><strong>完成</strong>${m.why}</div><button class="ctl primary" type="button" id="labM-next">${mi === MISSIONS.length - 1 ? '看結果' : '下一個任務'}</button>`;
         else if (!m.quiz) html += `<p class="m-hint">完成後會自動打勾。</p>`;

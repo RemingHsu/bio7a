@@ -38,14 +38,14 @@
       panel(P0, 40, 70, 420, 520, '世界人口', C.ink2);
       const YR = (y) => 110 + ((y - 1800) / 225) * 300, PV = (v) => 520 - v * 4.4; // v：億人
       [0, 20, 40, 60, 80].forEach((v) => { el('line', { x1: 110, y1: PV(v), x2: 420, y2: PV(v), stroke: '#22384a', 'stroke-width': 1.5 }, P0); text(P0, 100, PV(v) + 7, String(v), { 'font-size': 20, 'text-anchor': 'end', fill: C.mute }); });
-      [1800, 1900, 2000].forEach((y) => text(P0, YR(y), 552, String(y), { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }));
+      [1800, 1900, 2000].forEach((y) => text(P0, YR(y), 558, String(y), { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }));
       text(P0, 64, 134, '億人', { 'font-size': 20, fill: C.mute });
       text(P0, 410, 580, '年', { 'font-size': 20, fill: C.mute });
       const POP = [[1800, 10], [1850, 12], [1900, 16], [1950, 25], [1975, 41], [2000, 61], [2022, 80]];
       const popLine = el('path', { d: 'M ' + POP.map(([y, v]) => `${YR(y).toFixed(1)},${PV(v).toFixed(1)}`).join(' L '), fill: 'none', stroke: C.hi, 'stroke-width': 5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, P0);
       const popEnd = g(P0, { opacity: 0 });
       el('circle', { cx: YR(2022), cy: PV(80), r: 7, fill: C.hi }, popEnd);
-      text(popEnd, YR(2022) - 12, PV(80) - 2, '約 80 億', { 'font-size': 22, 'text-anchor': 'end', fill: C.hi, 'font-weight': 700 });
+      text(popEnd, YR(2022) - 12, PV(80) - 10, '約 80 億', { 'font-size': 22, 'text-anchor': 'end', fill: C.hi, 'font-weight': 700 });
       // 右：俯視的森林被開發
       const AX = 490, AY = 70, AW = 670, AH = 520;
       el('rect', { x: AX, y: AY, width: AW, height: AH, rx: 16, ...FRAME }, P0);
@@ -129,7 +129,8 @@
       B.sun(at(P2, 120, 140, 0.9));
       // 大氣中的溫室氣體層
       el('rect', { x: 42, y: 230, width: 796, height: 70, fill: 'rgba(184,196,204,0.10)' }, P2);
-      text(P2, 56, 330, '大氣中的溫室氣體', { 'font-size': 22, fill: C.co2 });
+      text(P2, 56, 334, '大氣中的溫室氣體', { 'font-size': 22, fill: C.co2 });
+      const rayLayer = g(P2); // 陽光畫在氣體分子後面，才不會穿過 CO₂ 的字
       const GP = Array.from({ length: 11 }, (_, i) => [130 + i * 64, i % 2 ? 282 : 250]);
       GP.filter((_, i) => i % 4 === 1).forEach(([x, y]) => mol(P2, x, y, 'CO₂', C.co2));
       const gasAdd = GP.filter((_, i) => i % 4 !== 1).map(([x, y]) => { const m = mol(P2, x, y, 'CO₂', C.co2); m.style.opacity = 0; return m; });
@@ -145,7 +146,7 @@
       lines(P2, 660, 566, ['砍伐森林'], { size: 22, fill: C.ink });
       lines(P2, 660, 596, ['吸收 CO₂ 的植物變少'], { size: 20, fill: C.mute });
       // 陽光與熱
-      const sunRays = [0, 1].map((i) => el('line', { x1: 172 + i * 22, y1: 182 + i * 4, x2: 556 + i * 28, y2: 512, stroke: C.hi, 'stroke-width': 4, 'stroke-dasharray': '14 10' }, P2));
+      const sunRays = [0, 1].map((i) => el('line', { x1: 172 + i * 22, y1: 182 + i * 4, x2: 556 + i * 28, y2: 512, stroke: C.hi, 'stroke-width': 4, 'stroke-dasharray': '14 10' }, rayLayer));
       // 熱：從地面往上，一部分穿出大氣，一部分被溫室氣體留住、再回到地面
       const heat = (x, back) => {
         const q = g(P2, { opacity: 0 });
@@ -159,7 +160,7 @@
       const heatBack = [520, 620, 680, 730, 470].map((x) => heat(x, true));
       text(P2, 700, 150, '熱', { 'font-size': 22, fill: '#ff8f7a', 'font-weight': 700 });
       const th = B.thermo(at(P2, 96, 470, 0.8)); th.set(0.3);
-      const thL = text(P2, 96, 520, '', { 'font-size': 20, 'text-anchor': 'middle', fill: '#ff8f8f' });
+      const thL = text(P2, 96, 548, '', { 'font-size': 20, 'text-anchor': 'middle', fill: '#ff8f8f' });
       const hot = { u: 0 };
       // 右：影響
       const fx = g(P2, { opacity: 0 });
@@ -270,7 +271,7 @@
       const bubbles = [];
       for (let i = 0; i < 10; i++) bubbles.push(el('circle', { cx: 260 + i * 44, cy: 420 + (i % 3) * 50, r: 6, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 2 }, P4));
       const fishes = [[330, 470, 1], [520, 430, -1], [600, 530, 1]].map(([x, y, d]) => { const q = at(P4, x, y, 1); const inner = at(q, 0, 0, 0.3); if (d < 0) inner.setAttribute('transform', 'scale(-0.3,0.3)'); B.smallFish(inner); return q; });
-      const deadFish = [[330, 352], [520, 350], [610, 354]].map(([x, y]) => { const q = at(P4, x, y, 1); const inner = g(q, { transform: 'scale(0.3,-0.3)' }); B.fish(inner, { back: '#8a949c', mid: '#b8c0c6', belly: '#e0e4e6', fin: '#9aa4ab', edge: '#4a545c' }); q.style.opacity = 0; return q; });
+      const deadFish = [[300, 352], [420, 350], [540, 354]].map(([x, y]) => { const q = at(P4, x, y, 1); const inner = g(q, { transform: 'scale(0.3,-0.3)' }); B.fish(inner, { back: '#8a949c', mid: '#b8c0c6', belly: '#e0e4e6', fin: '#9aa4ab', edge: '#4a545c' }); q.style.opacity = 0; return q; });
       const o2meter = g(P4);
       text(o2meter, 680, 380, '水中的氧', { 'font-size': 20, 'text-anchor': 'end', fill: '#cfe8ff' });
       el('rect', { x: 600, y: 392, width: 80, height: 14, rx: 7, fill: '#16293a', stroke: '#cfe8ff', 'stroke-width': 1.5 }, o2meter);
@@ -285,7 +286,8 @@
       lines(P4, 950, 352, ['海龜可能把塑膠袋', '當成水母吃下'], { size: 22, gap: 30, fill: C.ink });
       const micro = g(P4, { opacity: 0 });
       const rm = S.rng(51);
-      for (let i = 0; i < 26; i++) el('rect', { x: 790 + rm() * 300, y: 450 + rm() * 70, width: 3 + rm() * 5, height: 3 + rm() * 4, fill: ['#ff8f7a', '#8fd0ff', '#ffd166', '#ffffff'][i % 4], transform: `rotate(${(rm() * 90).toFixed(0)} ${790 + 150} 480)` }, micro);
+      // 每一粒各自繞自己的中心轉（繞同一點轉會散到下面的字上）
+      for (let i = 0; i < 26; i++) { const x = 790 + rm() * 300, y = 450 + rm() * 70, w = 3 + rm() * 5, h = 3 + rm() * 4; el('rect', { x, y, width: w, height: h, fill: ['#ff8f7a', '#8fd0ff', '#ffd166', '#ffffff'][i % 4], transform: `rotate(${(rm() * 90).toFixed(0)} ${(x + w / 2).toFixed(1)} ${(y + h / 2).toFixed(1)})` }, micro); }
       B.smallFish(at(micro, 1060, 480, 0.3));
       lines(micro, 950, 560, ['塑膠微粒（小於 5 mm）', '被小生物吃下，進入食物鏈'], { size: 22, gap: 30, fill: C.hi });
       tl.addLabel('s4');
@@ -350,9 +352,9 @@
       B.bigFish(at(P6, 812, 250, 0.9));
       B.wader(at(P6, 1030, 268, 0.62));
       NAMES.forEach((s, i) => text(P6, COLX[i], 396, s, { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700 }));
-      [0, 1, 2, 3].forEach((i) => arrow(P6, COLX[i] + (i ? 70 : 96), 250, COLX[i + 1] - (i === 3 ? 80 : 70), 250, C.ink2, 4, 14));
-      text(P6, 241, 232, '吸收', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
-      [463, 685, 913].forEach((x) => text(P6, x, 232, '被吃', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }));
+      [0, 1, 2, 3].forEach((i) => arrow(P6, COLX[i] + (i === 3 ? 110 : i ? 70 : 96), 250, COLX[i + 1] - (i === 3 ? 80 : 70), 250, C.ink2, 4, 14));
+      text(P6, 248, 232, '吸收', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      [463, 685, 933].forEach((x) => text(P6, x, 232, '被吃', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }));
       // 下方：每一個個體體內的量
       text(P6, 130, 470, '水中的', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       text(P6, 130, 500, '濃度很低', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
@@ -380,7 +382,7 @@
           '＊世界人口為約略值（聯合國估計）：1800 年約 10 億，2022 年約 80 億。＊示意：右圖的開發情形經過簡化。道路也會造成「路殺」，例如石虎過馬路被車撞。',
           '＊示意：魚的數量和時間都是示意。除了捕撈，過度採集野生植物、獵捕野生動物也屬於過度利用。',
           '＊示意：分子畫得很大。溫室效應本來就存在，使地球保持適合生物生存的溫度；溫室氣體（二氧化碳、甲烷等）增加，使溫室效應增強，才造成全球暖化。',
-          '＊臭氧層在高空（平流層），能吸收大部分的紫外線。1987 年《蒙特婁議定書》限用氟氯碳化物，聯合國的評估預估南極上空的臭氧層約在 2066 年恢復（約）。＊示意：圖中的位置與大小都經過簡化。',
+          '＊臭氧層在高空（平流層），能吸收大部分的紫外線。1987 年《蒙特婁議定書》限用氟氯碳化物；依聯合國的評估，南極上空的臭氧層約在 2066 年恢復（約）。＊示意：圖中的位置與大小都經過簡化。',
           '＊示意：時間被縮短，真實的優養化可能要幾天到幾週。塑膠微粒的大小一般指小於 5 mm 的塑膠碎片。',
           '＊這些年份、來源為約略的說法（林業及自然保育署、農業部等資料）。埃及聖䴉自 2019 年起大規模移除，已移除約 1.8 萬隻，數量大幅減少（約）。銀合歡會分泌含羞草素，抑制其他植物生長（補充）。',
           '＊示意：數量是示意。真實的例子中，從水到吃魚的鳥，DDT 的濃度可以相差到數百萬倍以上（約）。因為每一層的消費者一生要吃下許多下一層的生物，這些物質又難以分解、排出，就一層層累積。',

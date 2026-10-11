@@ -4,7 +4,7 @@
   const OXY = '#ff4d5e', DEOX = '#8f6cf2', MUSC_E = '#ffb3bf';
   const STOP = {
     RA: ['右心房', [505, 320]], RV: ['右心室', [512, 422]], PA: ['肺動脈', [510, 212]], LC: ['肺部的微血管', [600, 124]], PV: ['肺靜脈', [780, 240]],
-    LA: ['左心房', [695, 320]], LV: ['左心室', [690, 422]], AO: ['主動脈', [840, 530]], BC: ['全身的微血管', [610, 626]], VC: ['上、下腔靜脈', [380, 480]],
+    LA: ['左心房', [695, 320]], LV: ['左心室', [690, 422]], AO: ['主動脈', [840, 530]], BC: ['全身的微血管', [610, 626]], VC: ['上、下大靜脈', [380, 480]],
   };
   const EDGE = {
     'RA-RV': [[505, 320], [508, 370], [512, 422]],
@@ -37,7 +37,7 @@
         { to: 'VC', opts: ['AO', 'PV', 'PA', 'VC'], hint: '交換完物質的血液，要經過靜脈回到心臟。從全身回來的靜脈是哪一條？' },
         { to: 'RA', opts: ['LA', 'RV', 'RA', 'LV'], hint: '靜脈把血液送回心房。體循環的血液回到心臟的哪一邊？' },
       ],
-      done: '體循環：左心室 → 主動脈 → 全身的微血管 → 上、下腔靜脈 → 右心房。血液在全身的微血管把氧交給細胞，變成<b>缺氧血</b>。' },
+      done: '體循環：左心室 → 主動脈 → 全身的微血管 → 上、下大靜脈 → 右心房。血液在全身的微血管把氧交給細胞，變成<b>缺氧血</b>。' },
     { title: '血管裡是什麼血？', quiz: { q: '肺動脈和肺靜脈裡，分別流著什麼血？', opts: ['肺動脈：充氧血；肺靜脈：缺氧血', '肺動脈：缺氧血；肺靜脈：充氧血', '兩條都是充氧血', '兩條都是缺氧血'], ans: 1,
       hint: '回想剛才的血滴：進入肺部以前是什麼顏色？離開肺部以後呢？' },
       why: '血液在<b>肺部</b>得到氧，所以流向肺的<b>肺動脈</b>是缺氧血，從肺回來的<b>肺靜脈</b>是充氧血。動脈、靜脈是依「離開或流回心臟」來分，不是依含氧多少。' },
@@ -91,7 +91,7 @@
       const defs = el('defs', {}, root);
       const grad = (id, a, b) => { const lg = el('linearGradient', { id, x1: 0, y1: 0, x2: 1, y2: 0 }, defs); el('stop', { offset: 0, 'stop-color': a }, lg); el('stop', { offset: 1, 'stop-color': b }, lg); return `url(#${id})`; };
 
-      // ---------- 循環路線圖（和 3-4 動畫相同的版面） ----------
+      // ---------- 循環路線圖（和 4-4 動畫相同的版面） ----------
       [[505, 116], [695, 116]].forEach(([x, y]) => el('ellipse', { cx: x, cy: y, rx: 115, ry: 78, fill: 'rgba(255,170,190,0.12)', stroke: '#ffb3c8', 'stroke-width': 2 }, root));
       text(root, 600, 34, '肺', { 'font-size': 26, 'text-anchor': 'middle', fill: '#ffb3c8', 'font-weight': 700 });
       const gL = grad('lqLung', DEOX, OXY), gB = grad('lqBody', DEOX, OXY);
@@ -108,12 +108,15 @@
       [[440, 290, 130], [630, 290, 130], [440, 392, 145], [615, 392, 145]].forEach(([x, y, w]) => el('rect', { x, y, width: w, height: 90, rx: 16, fill: '#3a2a3a', stroke: '#6a4a5a', 'stroke-width': 2 }, root));
       const trailG = g(root);
       // 站名
-      const LBL = { RA: [505, 368, 'middle'], LA: [695, 368, 'middle'], RV: [512, 470, 'middle'], LV: [688, 470, 'middle'], PA: [510, 252, 'middle'], LC: [600, 172, 'middle'], PV: [800, 246, 'start'], AO: [858, 536, 'start'], BC: [610, 600, 'middle'], VC: [362, 486, 'end'] };
+      // 血管上的站名離黃色圈（半徑 24）遠一點，字放大後才不會碰到
+      const LBL = { RA: [505, 368, 'middle'], LA: [695, 368, 'middle'], RV: [512, 470, 'middle'], LV: [688, 470, 'middle'], PA: [510, 258, 'middle'], LC: [600, 172, 'middle'], PV: [812, 248, 'start'], AO: [870, 538, 'start'], BC: [610, 594, 'middle'], VC: [350, 488, 'end'] };
+      // 字加一圈和底色相同的描邊：血滴走過的線穿過心房的字時，字還是清楚
+      const HALO = { RA: '#3a2a3a', LA: '#3a2a3a', RV: '#3a2a3a', LV: '#3a2a3a', LC: '#2a2a35' };
       const lbl = {}, mark = {};
       ORDER.forEach((k) => {
         const [x, y, a] = LBL[k], chamber = ['RA', 'LA', 'RV', 'LV'].includes(k);
         if (!chamber) mark[k] = el('circle', { cx: STOP[k][1][0], cy: STOP[k][1][1], r: 9, fill: '#0d1822', stroke: '#8aa1ae', 'stroke-width': 3 }, root);
-        lbl[k] = text(root, x, y, STOP[k][0], { 'font-size': chamber ? 26 : 22, 'text-anchor': a, fill: chamber ? '#e8f0f2' : C.ink2, 'font-weight': 700 });
+        lbl[k] = text(root, x, y, STOP[k][0], { 'font-size': chamber ? 26 : 22, 'text-anchor': a, fill: chamber ? '#e8f0f2' : C.ink2, 'font-weight': 700, ...(HALO[k] ? { stroke: HALO[k], 'stroke-width': 6, 'stroke-linejoin': 'round', 'paint-order': 'stroke' } : {}) });
       });
       const legend = g(root);
       el('circle', { cx: 940, cy: 40, r: 10, fill: OXY }, legend); text(legend, 958, 48, '充氧血', { 'font-size': 22, fill: C.ink2 });
@@ -172,7 +175,7 @@
       function draw() {
         if (ti >= TASKS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
-            <div class="fb ok"><strong>重點整理</strong>肺循環：右心室 → 肺動脈 → 肺部的微血管 → 肺靜脈 → 左心房。<br>體循環：左心室 → 主動脈 → 全身的微血管 → 上、下腔靜脈 → 右心房。<br>血液在肺部變成充氧血，在全身的微血管變成缺氧血。</div>
+            <div class="fb ok"><strong>重點整理</strong>肺循環：右心室 → 肺動脈 → 肺部的微血管 → 肺靜脈 → 左心房。<br>體循環：左心室 → 主動脈 → 全身的微血管 → 上、下大靜脈 → 右心房。<br>血液在肺部變成充氧血，在全身的微血管變成缺氧血。</div>
             <p class="m-hint">打開下面的「自由探索」，可以看血液流完整的一圈。</p>
             <button class="ctl primary" type="button" id="labQ-again">再玩一次</button>`;
           mbox.querySelector('#labQ-again').addEventListener('click', () => { ti = 0; firstOk = []; startTask(); });
@@ -192,7 +195,7 @@
           html += `<p class="m-text">${si === 0 ? T.intro : `血滴現在在<b>${STOP[st.at][0]}</b>，是<b>${st.oxy ? '充氧血' : '缺氧血'}</b>。下一站是？`}</p>`;
           html += `<p class="m-hint">第 ${si + 1} / ${T.steps.length} 站</p><div class="choices">${s.opts.map((k) => `<button class="opt ${picked.includes(k) ? 'wrong' : ''}" type="button" data-s="${k}" ${moving || picked.includes(k) ? 'disabled' : ''}>${STOP[k][0]}</button>`).join('')}</div>`;
           if (picked.length && !moving) html += `<div class="fb bad"><strong>再想想看</strong>${s.hint}</div>`;
-          if (moving) html += `<p class="m-hint">血滴流動中…</p>`;
+          if (moving) html += `<p class="m-hint">血滴流動中……</p>`;
         }
         mbox.innerHTML = html;
         mbox.querySelectorAll('[data-s]').forEach((b) => b.addEventListener('click', () => pick(b.dataset.s)));
@@ -234,8 +237,8 @@
         trailG.innerHTML = '';
         st.at = 'RA'; st.oxy = false; st.trail = [['RA', false]]; place('RA'); trail();
         let i = 0;
-        const next = () => { if (!loopTl) return; const a = ORDER[i % 10], b = ORDER[(i + 1) % 10]; i++; if (i > 10) { loopTl = null; status('血液流完了完整的一圈：肺循環＋體循環。'); return; } travel(a, b, () => setTimeout(next, 150), 1); };
-        loopTl = true; status('從右心房出發，看血液流完整的一圈…'); next();
+        const next = () => { if (!loopTl) return; const a = ORDER[i % 10], b = ORDER[(i + 1) % 10]; i++; if (i > 10) { loopTl = null; status('血液流完了一整圈：肺循環＋體循環。'); return; } travel(a, b, () => setTimeout(next, 150), 1); };
+        loopTl = true; status('從右心房出發，看血液流完整的一圈……'); next();
       }
       function stopLoop() { loopTl = null; }
       $('loop').addEventListener('click', playLoop);

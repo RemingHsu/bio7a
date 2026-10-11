@@ -40,7 +40,7 @@
   .labR .press.go { background: var(--bad); border-color: var(--bad); color: #fff; }
   .labR .table-wrap { overflow-x: auto; }
   .labR .tbl { min-width: 20rem; }
-  .labR .tbl td:nth-child(2) { font-family: var(--font-mono); font-size: 0.8rem; }
+  .labR .tbl td:nth-child(2) { font-family: var(--font-mono); font-size: 0.9rem; }
   @media (max-width: 900px) {
     .labR { display: flex; flex-direction: column; align-items: stretch; }
     .labR .col { display: contents; }
@@ -86,7 +86,7 @@
       const chainG = g(scr);
       let cx = 0;
       const chain = [['眼（受器）', '#62a8ff'], ['感覺神經', '#62a8ff'], ['大腦', '#e8a0b4'], ['運動神經', '#ff9a5c'], ['手指肌肉（動器）', '#ff9a5c']];
-      const widths = chain.map(([s]) => S.textWidth(s, 22) + 26), total = widths.reduce((a, b) => a + b, 0) + 40 * (chain.length - 1);
+      const widths = chain.map(([s]) => S.textWidth(s, S.effSize(chainG, 22)) + 26), total = widths.reduce((a, b) => a + b, 0) + 40 * (chain.length - 1);
       cx = 600 - total / 2;
       chain.forEach(([s, c], i) => {
         S.pill(chainG, cx + widths[i] / 2, 500, s, { size: 22, color: c, edge: c });
@@ -106,7 +106,7 @@
       for (let cm = 0; cm <= RULER_CM; cm++) {
         const y = RBOT - cm * PXCM;
         el('line', { x1: 570, y1: y, x2: 570 + (cm % 5 ? 10 : 22), y2: y, stroke: '#5a4a20', 'stroke-width': cm % 5 ? 1.5 : 2.5 }, ruler);
-        if (cm % 5 === 0 && cm > 0 && cm < RULER_CM) text(ruler, 612, y + 7, String(cm), { 'font-size': 20, 'text-anchor': 'middle', fill: '#3a2a10', 'font-weight': 700 });
+        if (cm % 5 === 0 && cm > 0 && cm < RULER_CM) text(ruler, 610, y + 7, String(cm), { 'font-size': 20, 'text-anchor': 'middle', fill: '#3a2a10', 'font-weight': 700 });
       }
       const catchLine = el('line', { x1: 500, y1: RBOT, x2: 700, y2: RBOT, stroke: C.hi, 'stroke-width': 2, 'stroke-dasharray': '6 6', opacity: 0 }, rul);
       const fl = el('rect', { x: 516, y: RBOT - 18, width: 46, height: 36, rx: 16, fill: C.skin }, rul);
@@ -150,7 +150,7 @@
         text(p, 70, y + 9, name, { 'font-size': 26, 'font-weight': 700, fill: k === 'r' ? C.hi : '#e8a0b4' });
         let x = 250;
         ch.forEach(([s, c], i) => {
-          const w = S.textWidth(s, 22) + 26;
+          const w = S.textWidth(s, S.effSize(p, 22)) + 26; // 和 S.pill 一樣用放大後的字級算寬度
           S.pill(p, x + w / 2, y, s, { size: 22, color: c, edge: c });
           if (i < ch.length - 1) { el('line', { x1: x + w + 6, y1: y, x2: x + w + 26, y2: y, stroke: C.ink2, 'stroke-width': 2.5 }, p); el('path', { d: `M ${x + w + 32},${y} l -9,-6 l 0,12 Z`, fill: C.ink2 }, p); }
           x += w + 38;
@@ -169,7 +169,7 @@
       };
       function labelPress() {
         const k = curKind();
-        const L = { idle: k === 'ruler' ? '準備' : '開始', wait: '等一下…', go: '按！', nogo: '按！', rwait: '注意看尺…', rfall: '接住！' }[st.phase];
+        const L = { idle: k === 'ruler' ? '準備' : '開始', wait: '等一下……', go: '按！', nogo: '按！', rwait: '注意看尺……', rfall: '接住！' }[st.phase];
         box.querySelectorAll('.press').forEach((b) => { b.textContent = L; b.classList.toggle('go', st.phase === 'go' || st.phase === 'nogo' || st.phase === 'rfall'); });
       }
       function setPhase(p) { st.phase = p; labelPress(); }
@@ -328,7 +328,7 @@
       function feedback(m) {
         if (m.kind === 'simple') {
           const a = avg(R.simple.slice(base.simple));
-          return `<div class="fb ok"><strong>你的平均：${f2(a)} 秒</strong>從眼睛看到、訊息經神經傳到大腦，大腦再命令手指的肌肉收縮，都需要時間。一般人看到後按下按鈕，大約要 0.2～0.3 秒＊。</div>`;
+          return `<div class="fb ok"><strong>你的平均：${f2(a)} 秒</strong>從眼睛看到、訊息經神經傳到大腦，大腦再命令手指的肌肉收縮，都需要時間。一般人看到後按下按鈕，約 0.2～0.3 秒＊。</div>`;
         }
         const a1 = avg(R.simple), a2 = avg(R.choice.slice(base.choice)), d = a2 - a1;
         const res = d > 0.02 ? 0 : d < -0.02 ? 2 : 1;

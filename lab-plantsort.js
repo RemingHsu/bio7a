@@ -14,10 +14,10 @@
   // 植物：ans 是每個問題的正確答案；hint 是答錯時的提示（不直接說出答案）
   const PX = 210, PY = 520; // 植物的地面中央
   const PLANTS = [
-    { k: 'moss', name: '土馬騌', obs: '長在潮濕的地上，只有幾公分高＊', ans: { vasc: 'no' },
+    { k: 'moss', name: '土馬騣', obs: '長在潮溼的地上，只有幾公分高＊', ans: { vasc: 'no' },
       draw: (p) => D.moss(p, PX + 20, PY - 20, 1.38), mini: (p, x, y) => D.moss(p, x, y, 0.24, { spores: false }),
-      hint: { vasc: '維管束可以把水分送到高處。土馬騌長得高嗎？它是用什麼固著在土裡的？' },
-      why: '土馬騌<b>沒有維管束</b>，所以長得很矮，用假根固著，靠孢子繁殖 → <b>蘚苔植物</b>。' },
+      hint: { vasc: '維管束可以把水分送到高處。土馬騣長得高嗎？它是用什麼固著在土裡的？' },
+      why: '土馬騣<b>沒有維管束</b>，所以長得很矮，用假根固著，靠孢子繁殖 → <b>蘚苔植物</b>。' },
     { k: 'fern', name: '腎蕨', obs: '葉子很長，嫩葉捲曲；葉背有褐色的小點', ans: { vasc: 'yes', seed: 'no' },
       draw: (p) => D.fern(p, PX + 15, PY - 60, 0.8), mini: (p, x, y) => D.fern(p, x, y, 0.13, { under: false, fiddle: false }),
       clue: { seed: (p) => { D.pinnaSori(p, 0, 0, 0.36); text(p, 0, 52, '葉背（放大）', { 'font-size': 20, fill: C.mute, 'text-anchor': 'middle' }); } },
@@ -35,11 +35,11 @@
     { k: 'lily', name: '百合', obs: '開白色喇叭形的花，葉子細長', ans: { vasc: 'yes', seed: 'yes', flower: 'yes', mono: 'mono' },
       draw: (p) => D.lily(p, PX, PY + 20, 1.04), mini: (p, x, y) => D.lily(p, x, y, 0.2, { ground: false }),
       clue: { mono: (p) => { D.flowerTop(p, -40, -40, 0.55, 6, { fill: '#fbfbf4', edge: '#c8c8b8', center: '#c8782a' }); D.leafPar(p, -60, 50, 0.5, -10); text(p, 0, 100, '花（正面）和葉', { 'font-size': 20, fill: C.mute, 'text-anchor': 'middle' }); } },
-      hint: { vasc: '看看細長的葉子上一條條的葉脈——葉脈裡是什麼構造？', seed: '百合開花以後，會結出什麼？', flower: '頂端那朵白色喇叭形的是什麼構造？', mono: '數一數花被片是幾的倍數？葉脈是網狀還是平行的？' },
+      hint: { vasc: '看看細長的葉子上一條條的葉脈——葉脈裡是什麼構造？', seed: '百合開花以後，會結出什麼？', flower: '頂端那朵白色喇叭形的是什麼構造？', mono: '數一數花被片有幾片，是幾的倍數？葉脈是網狀還是平行的？' },
       why: '百合<b>有花</b>，種子包在果實裡 → <b>被子植物</b>。', why2: '百合的葉是<b>平行脈</b>，花被片 6 片（3 片花瓣和 3 片花萼長得很像）是 <b>3 的倍數</b> → <b>單子葉植物</b>。' },
   ];
   const EXTRA = [
-    { k: 'liver', name: '地錢', obs: '扁平地貼在潮濕的地面上', ans: { vasc: 'no' },
+    { k: 'liver', name: '地錢', obs: '扁平地貼在潮溼的地面上', ans: { vasc: 'no' },
       draw: (p) => { D.liverwort(p, PX, PY - 140, 1.5); }, mini: (p, x, y) => D.liverwort(p, x, y - 20, 0.24),
       hint: { vasc: '地錢長得高嗎？它有沒有真正的根、莖、葉？' }, why: '地錢<b>沒有維管束</b>，扁平地貼著地面生長 → <b>蘚苔植物</b>。' },
     { k: 'rape', name: '油菜', obs: '開黃色的花，葉子寬大', ans: { vasc: 'yes', seed: 'yes', flower: 'yes', mono: 'di' },
@@ -60,7 +60,7 @@
   .labZ1 .col { display: grid; gap: 0.9rem; min-width: 0; }
   .labZ1 .pad { padding: 1rem 1.25rem; }
   .labZ1 .crumbs { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.6rem; }
-  .labZ1 .crumbs span { font-size: 0.85rem; padding: 0.15em 0.6em; border-radius: 999px; border: 1px solid var(--good); color: var(--good); }
+  .labZ1 .crumbs span { font-size: 0.92rem; padding: 0.15em 0.6em; border-radius: 999px; border: 1px solid var(--good); color: var(--good); }
   .labZ1 .table-wrap { overflow-x: auto; }
   .labZ1 .free-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
   @media (max-width: 900px) {
@@ -98,11 +98,23 @@
       el('rect', { x: 20, y: 20, width: 590, height: 560, rx: 16, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, root);
       const nameT = text(root, 40, 64, '', { 'font-size': 30, 'font-weight': 700, fill: C.ink });
       const obsT = text(root, 40, 100, '', { 'font-size': 20, fill: C.mute });
+      // 觀察說明太長（字放大後會超出左邊的框）就在標點後面分成兩行
+      const setObs = (s) => {
+        obsT.textContent = '';
+        const sz = S.effSize(obsT, 20), max = 550;
+        let lines = [s];
+        if (S.textWidth(s, sz) > max) {
+          let cut = -1;
+          for (let i = 0; i < s.length; i++) if ('，：、'.includes(s[i]) && S.textWidth(s.slice(0, i + 1), sz) <= max) cut = i + 1;
+          if (cut > 0) lines = [s.slice(0, cut), s.slice(cut)];
+        }
+        lines.forEach((ln, i) => { const t = el('tspan', { x: 40, dy: i ? sz * 1.3 : null }, obsT); t.textContent = ln; });
+      };
       const plantW = g(root);
       const clueG = g(root);
 
       // ---------- 右：檢索表 ----------
-      const BX = { moss: 700, fern: 818, gym: 936, ang: 1100 }, BW = 110, BY = 420, BH = 160;
+      const BX = { moss: 694, fern: 816, gym: 938, ang: 1102 }, BW = 116, BY = 420, BH = 160; // 框寬 116：類別名稱放大到 24 後，左右留一點空
       const key = g(root);
       const edgeEls = {};
       const edge = (id, d, lbl, lx, ly, yes) => {
@@ -110,17 +122,17 @@
         text(key, lx, ly, lbl, { 'font-size': 20, 'text-anchor': 'middle', fill: yes ? '#8be07a' : '#ff9a8a', 'font-weight': 700 });
         edgeEls[id] = e;
       };
-      edge('vasc-no', `M ${BX.moss},98 L ${BX.moss},${BY}`, '沒有', BX.moss - 26, 150, false);
+      edge('vasc-no', `M ${BX.moss},98 L ${BX.moss},${BY}`, '沒有', BX.moss - 30, 150, false); // 字放大後離線遠一點
       edge('vasc-yes', 'M 850,80 L 900,80 L 900,152', '有', 875, 68, true);
-      edge('seed-no', `M ${BX.fern},188 L ${BX.fern},${BY}`, '不會', BX.fern - 26, 240, false);
+      edge('seed-no', `M ${BX.fern},188 L ${BX.fern},${BY}`, '不會', BX.fern - 30, 240, false);
       edge('seed-yes', 'M 980,170 L 1030,170 L 1030,246', '會', 1005, 158, true);
-      edge('flower-no', `M ${BX.gym},282 L ${BX.gym},${BY}`, '沒有', BX.gym - 26, 330, false);
+      edge('flower-no', `M ${BX.gym},282 L ${BX.gym},${BY}`, '沒有', BX.gym - 30, 330, false);
       edge('flower-yes', `M ${BX.ang},282 L ${BX.ang},${BY}`, '有', BX.ang + 20, 330, true);
       const qNode = {};
       [['vasc', '有維管束嗎？', 770, 80], ['seed', '有種子嗎？', 900, 170], ['flower', '有花和果實嗎？', 1030, 264]].forEach(([k, s, x, y]) => {
-        const w = s.length * 22 + 28, n = g(key);
-        const r = el('rect', { x: x - w / 2, y: y - 18, width: w, height: 36, rx: 18, fill: '#0d1822', stroke: '#4a6272', 'stroke-width': 2.5 }, n);
-        text(n, x, y + 8, s, { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink, 'font-weight': 700 });
+        const w = s.length * 24 + 30, n = g(key);
+        const r = el('rect', { x: x - w / 2, y: y - 20, width: w, height: 40, rx: 20, fill: '#0d1822', stroke: '#4a6272', 'stroke-width': 2.5 }, n);
+        text(n, x, y + 8, s, { 'font-size': 24, 'text-anchor': 'middle', fill: C.ink, 'font-weight': 700 });
         qNode[k] = r;
       });
       const boxG = {};
@@ -152,7 +164,7 @@
         const inner = g(plantW);
         pl.draw(inner);
         nameT.textContent = pl.name;
-        obsT.textContent = '觀察：' + pl.obs;
+        setObs('觀察：' + pl.obs);
         showClue();
       }
       function showClue() {

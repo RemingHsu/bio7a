@@ -208,18 +208,18 @@
       const step0 = [];
       const g01 = g(P0, { opacity: 0 });
       arrow(g01, 208, 200, 284, 200); arrow(g01, 208, 470, 284, 470);
-      text(g01, 246, 184, '減數分裂', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
-      text(g01, 246, 454, '減數分裂', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
+      text(g01, 246, 176, '減數分裂', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
+      text(g01, 246, 446, '減數分裂', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
       const spm = B1.sperm(g01, { s: 1.1 });
       S.place(spm, { x: 380, y: 200 });
       [[-6, 0], [6, 0]].forEach(([dx], i) => S.place(B1.rod(g01, i ? 12 : 20, FA, 6), { x: 384 + dx, y: 200 }));
       B1.egg(g01, 360, 470, 56);
       [[-10, 40, MO], [10, 24, MO]].forEach(([dx, L, c]) => S.place(B1.rod(g01, L, c, 11), { x: 360 + dx, y: 470 }));
       text(g01, 380, 262, '精子（雄配子）', { 'font-size': 24, 'text-anchor': 'middle', fill: FA, 'font-weight': 700 });
-      text(g01, 360, 564, '卵（雌配子）', { 'font-size': 24, 'text-anchor': 'middle', fill: MO, 'font-weight': 700 });
+      text(g01, 360, 572, '卵（雌配子）', { 'font-size': 24, 'text-anchor': 'middle', fill: MO, 'font-weight': 700 });
       step0.push(g01);
       const g02 = g(P0, { opacity: 0 });
-      arrow(g02, 452, 230, 510, 300); arrow(g02, 430, 440, 510, 380);
+      arrow(g02, 474, 232, 512, 298); arrow(g02, 430, 440, 510, 380);
       text(g02, 470, 336, '受精', { 'font-size': 24, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
       cellWith(g02, 600, 340, 84, [[-36, 52, FA, 13], [-18, 52, MO, 13], [18, 32, FA, 13], [36, 32, MO, 13]]);
       text(g02, 600, 456, '受精卵', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
@@ -227,10 +227,11 @@
       step0.push(g02);
       const g03 = g(P0, { opacity: 0 });
       arrow(g03, 694, 340, 750, 340);
-      text(g03, 722, 318, '細胞分裂', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
+      text(g03, 722, 298, '細胞', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      text(g03, 722, 323, '分裂', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
       const emb = [[0, 0], [-22, -14], [22, -14], [-22, 14], [22, 14], [0, -26], [0, 26], [-34, 0], [34, 0]];
       emb.forEach(([dx, dy]) => el('circle', { cx: 816 + dx, cy: 340 + dy, r: 18, fill: '#2a3a2e', stroke: '#9fe0c8', 'stroke-width': 2 }, g03));
-      text(g03, 816, 410, '發育成新個體', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
+      text(g03, 810, 410, '發育成新個體', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
       step0.push(g03);
       const box0 = g(P0, { opacity: 0 });
       el('rect', { x: 892, y: 120, width: 284, height: 440, rx: 16, ...FRAME }, box0);
@@ -295,7 +296,7 @@
       const P2 = g(root, { opacity: 0 });
       el('rect', { x: 30, y: 96, width: 700, height: 560, rx: 16, ...FRAME }, P2);
       text(P2, 380, 142, '雞蛋的構造（縱切面）', { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700 });
-      const EX = 390, EY = 400;
+      const EX = 350, EY = 400;
       const eggD = (k) => `M ${EX - 190 * k},${EY} C ${EX - 190 * k},${EY - 128 * k} ${EX - 70 * k},${EY - 146 * k} ${EX + 20 * k},${EY - 140 * k} C ${EX + 130 * k},${EY - 130 * k} ${EX + 172 * k},${EY - 60 * k} ${EX + 172 * k},${EY} C ${EX + 172 * k},${EY + 60 * k} ${EX + 130 * k},${EY + 130 * k} ${EX + 20 * k},${EY + 140 * k} C ${EX - 70 * k},${EY + 146 * k} ${EX - 190 * k},${EY + 128 * k} ${EX - 190 * k},${EY} Z`;
       el('path', { d: eggD(1), fill: '#f2e6cf', stroke: '#fff6e6', 'stroke-width': 3 }, P2);
       el('path', { d: eggD(0.95), fill: 'rgba(220,235,240,0.55)', stroke: '#c9d6dc', 'stroke-width': 2 }, P2);
@@ -307,11 +308,11 @@
       el('ellipse', { cx: EX, cy: EY - 52, rx: 13, ry: 6, fill: '#ffffff' }, P2);
       const eggL = [
         [EX - 156, EY - 142, 172, 196, '蛋殼：保護（有氣孔）', '#fff6e6'],
-        [EX + 160, EY - 70, 610, 196, '殼膜', '#c9d6dc'],
+        [EX + 160, EY - 70, 640, 345, '殼膜', '#c9d6dc'],
         [EX - 150, EY + 40, 130, 600, '氣室', '#9fc0d6'],
         [EX + 100, EY + 70, 600, 600, '蛋白：提供養分、水分', '#dfe8ec'],
-        [EX + 40, EY + 30, 640, 520, '卵黃：提供養分', '#ffd877'],
-        [EX + 100, EY, 650, 440, '繫帶：固定卵黃', '#fffbe8'],
+        [EX + 40, EY + 30, 624, 520, '卵黃：提供養分', '#ffd877'],
+        [EX + 100, EY, 624, 440, '繫帶：固定卵黃', '#fffbe8'],
         [EX + 8, EY - 54, 630, 270, '小白點（胚盤）', '#ffffff'],
       ].map(([tx, ty, x, y, s, c]) => S.callout(P2, tx, ty, x, y, s, c, { size: 22 }));
       el('rect', { x: 746, y: 96, width: 424, height: 560, rx: 16, ...FRAME }, P2);
@@ -361,7 +362,7 @@
       text(P3, 890, 534, '幼鳥孵出後還會餵食照顧', { 'font-size': 24, 'text-anchor': 'middle' });
       const care3 = g(P3, { opacity: 0 });
       text(care3, 890, 590, '蝦、蟹把卵帶在身上保護；', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
-      text(care3, 890, 620, '哺乳類用乳汁哺育幼兒', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      text(care3, 890, 620, '哺乳類用乳汁哺育幼體', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
       const sum3 = g(P3, { opacity: 0 });
       S.pill(sum3, 600, 52, '照顧越完善，子代數目通常越少，但存活率較高', { size: 24, color: C.hi, edge: C.hi });
       tl.addLabel('s3');
@@ -408,17 +409,22 @@
       S.pill(tagI, impG[0] + 190, impG[1] - 110, '著床', { size: 24, color: C.hi, edge: C.hi });
       el('line', { x1: impG[0] + 20, y1: impG[1] - 8, x2: impG[0] + 160, y2: impG[1] - 96, stroke: C.hi, 'stroke-width': 2 }, tagI);
       const card = g(P4, { opacity: 0 });
-      el('rect', { x: 880, y: 96, width: 290, height: 250, rx: 16, ...FRAME }, card);
+      el('rect', { x: 880, y: 96, width: 290, height: 340, rx: 16, ...FRAME }, card);
       text(card, 1025, 140, '產生配子的器官', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
       text(card, 904, 196, '男性：睪丸', { 'font-size': 24, fill: FA, 'font-weight': 700 });
       text(card, 904, 230, '→ 產生精子', { 'font-size': 22, fill: C.ink2 });
       text(card, 904, 286, '女性：卵巢', { 'font-size': 24, fill: MO, 'font-weight': 700 });
       text(card, 904, 320, '→ 產生卵', { 'font-size': 22, fill: C.ink2 });
+      const horm = g(card, { opacity: 0 });
+      el('line', { x1: 904, y1: 346, x2: 1146, y2: 346, stroke: '#2b4252', 'stroke-width': 2 }, horm);
+      text(horm, 1025, 382, '兩者也分泌性激素', { 'font-size': 23, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
+      text(horm, 1025, 414, '（第五章學過）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       tl.addLabel('s4');
       S.hide(tl, P3, 's4', 0.4);
       S.show(tl, P4, 's4+=0.3', 0.4);
       lab4.forEach((l, i) => S.show(tl, l, `s4+=${0.6 + i * 0.4}`, 0.3));
       S.show(tl, card, 's4+=1.6', 0.4);
+      S.show(tl, horm, 's4+=2.4', 0.4);
       const ovA = [UX - 186, UY - 8];
       const spPath = (i, k) => {
         // 從子宮頸往上，經過子宮腔，進入左側輸卵管
@@ -488,7 +494,7 @@
       const lab5 = [
         S.callout(P5, WX + 170, WY - 150, 690, 120, '胎盤', '#ff9aa8', { size: 24 }),
         S.callout(P5, WX + 92, WY - 70, 690, 200, '臍帶', '#e8a0b0', { size: 24 }),
-        S.callout(P5, WX - 150, WY + 150, 186, 668, '羊水（羊膜內）：減少震動', '#9fd0ff', { size: 22 }),
+        S.callout(P5, WX - 150, WY + 150, 186, 668, '羊水：保護胎兒、減少震動', '#9fd0ff', { size: 22 }),
         S.callout(P5, WX - 228, WY - 60, 92, 100, '子宮', '#ff9aa8', { size: 24 }),
       ];
       // 右側：物質交換、懷孕時間
@@ -497,12 +503,15 @@
       text(ex5, 980, 138, '經胎盤交換物質', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700 });
       S.pill(ex5, 980, 186, '母體的血液', { size: 22, color: '#ff9aa8', edge: '#ff9aa8' });
       S.pill(ex5, 980, 404, '胎兒的血液', { size: 22, color: SKIN, edge: SKIN });
+      // 胎盤裡的一層薄膜把兩邊的血液隔開：物質穿過薄膜交換，血液不混在一起
+      el('rect', { x: 826, y: 292, width: 308, height: 14, rx: 7, fill: 'rgba(217,112,127,0.35)', stroke: '#d9707f', 'stroke-width': 2, 'stroke-dasharray': '10 5' }, ex5);
       arrow(ex5, 846, 214, 846, 374, C.sugar, 5); arrow(ex5, 1114, 374, 1114, 214, C.co2, 5);
-      text(ex5, 862, 280, '養分', { 'font-size': 22, fill: C.sugar });
-      text(ex5, 862, 310, '氧', { 'font-size': 22, fill: C.sugar });
-      text(ex5, 1100, 280, '二氧化碳', { 'font-size': 22, fill: C.co2, 'text-anchor': 'end' });
-      text(ex5, 1100, 310, '等廢物', { 'font-size': 22, fill: C.co2, 'text-anchor': 'end' });
-      text(ex5, 980, 352, '血液不直接相通', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(ex5, 862, 246, '養分', { 'font-size': 22, fill: C.sugar });
+      text(ex5, 862, 276, '氧', { 'font-size': 22, fill: C.sugar });
+      text(ex5, 1100, 246, '二氧化碳', { 'font-size': 22, fill: C.co2, 'text-anchor': 'end' });
+      text(ex5, 1100, 276, '等廢物', { 'font-size': 22, fill: C.co2, 'text-anchor': 'end' });
+      text(ex5, 980, 330, '隔著胎盤的薄膜', { 'font-size': 20, 'text-anchor': 'middle', fill: '#ff9aa8' });
+      text(ex5, 980, 362, '血液不直接相通', { 'font-size': 23, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
       const dots5 = [0, 1, 2, 3].map((i) => el('circle', { r: 7, fill: i % 2 ? C.co2 : C.sugar, opacity: 0 }, ex5));
       const time5 = g(P5, { opacity: 0 });
       el('rect', { x: 790, y: 480, width: 380, height: 176, rx: 16, ...FRAME }, time5);
@@ -525,19 +534,19 @@
         tl,
         notes: [
           '＊示意：以 2 對染色體為例，藍色代表來自父方、粉紅色代表來自母方；精子畫得比實際大很多。有性生殖要經過減數分裂和受精，無性生殖通常不經過。',
-          '＊示意：卵和精子都畫得很大。青蛙也是體外受精：雄蛙抱住雌蛙，雌蛙在水中排卵，雄蛙同時排出精子（假交配）。體內受精的動物，受精的環境比較不受干擾。',
-          '＊卵黃和卵黃上的小白點，合起來是卵細胞（補充）。補充：少數動物（例如孔雀魚、某些鯊魚）的卵在母體內孵化後才產出，有些書稱為卵胎生。',
-          '＊企鵝由雄企鵝或雌、雄輪流孵卵，幼鳥孵出後雙親共同餵食。動物照顧子代越完善，產生的子代數目通常越少，存活率卻越高。',
-          '＊示意：只畫出女性體內的生殖器官（正面看），卵、精子、受精卵都畫得很大。受精卵一面進行細胞分裂、一面移到子宮，大約一週＊後著床。',
-          '＊懷孕約 38 週＊是從受精算起；若從最後一次月經的第一天算起，約 40 週。胎兒和母體的血液不直接相通，在胎盤交換物質。分娩時子宮收縮，胎兒產出後，胎盤和臍帶也會排出。',
+          '＊示意：卵和精子都畫得很大。青蛙也是體外受精：雄蛙抱住雌蛙，雌蛙在水中排卵，雄蛙同時排出精子，稱為抱接（有些書稱假交配）。體內受精的動物，受精的環境比較不受干擾。',
+          '卵黃和卵黃上的小白點（胚盤）合起來是一個卵細胞。母雞沒有交配也會下蛋，但這種蛋沒有受精，孵不出小雞（市售的雞蛋大多是這種）。補充：孔雀魚的卵在母體內孵化，產出的是小魚，有些書稱為卵胎生。',
+          '有些企鵝由雄企鵝孵卵，有些由雌、雄輪流孵卵；幼鳥孵出後雙親共同餵食。動物照顧子代越完善，產生的子代數目通常越少，存活率卻越高。',
+          '＊示意：只畫出女性體內的生殖器官（正面看），卵、精子、受精卵都畫得很大。受精卵一面進行細胞分裂、一面移到子宮，大約一週＊後埋入子宮內膜，稱為著床。性激素使青春期出現第二性徵（第五章）。',
+          '＊懷孕約 38 週＊是從受精算起；若從最後一次月經的第一天算起，約 40 週。胎兒的廢物也經胎盤送給母體排出。胎兒的養分和氧來自胎盤（經臍帶），不是來自羊水，羊水能減少震動；母體和胎兒的血液隔著胎盤中的薄膜交換物質，不會混在一起。分娩時子宮收縮，胎兒產出後，胎盤和臍帶也會排出。',
         ],
         steps: [
           '<b>有性生殖</b>：雙親經減數分裂產生<b>精子</b>和<b>卵</b>，兩者結合（<b>受精</b>）成為受精卵，再經細胞分裂發育成新個體。子代有父母雙方的遺傳物質。',
           '<b>體外受精</b>：卵和精子在水中結合，例如多數魚類、兩生類。<b>體內受精</b>：精子進入雌性體內和卵結合，例如鳥類、爬蟲類、哺乳類、昆蟲。',
           '<b>卵生</b>：胚胎在母體外發育，養分來自卵（例如雞蛋的<b>卵黃</b>和<b>蛋白</b>）；<b>胎生</b>：胚胎在母體子宮內發育，例如多數哺乳類。',
           '許多動物有<b>求偶</b>行為，例如鳴叫、舞蹈、氣味、鮮豔的顏色；有些還會<b>護卵、育幼</b>，提高子代存活的機會。',
-          '人類：<b>睪丸</b>產生精子，<b>卵巢</b>產生卵。精子和卵在<b>輸卵管</b>受精；受精卵一面分裂、一面移到<b>子宮</b>，埋入子宮內膜，稱為<b>著床</b>。',
-          '胎兒在子宮內發育，經由<b>胎盤</b>和<b>臍帶</b>從母體得到養分和氧，並把廢物送給母體排出。約 38 週＊後，胎兒產出，稱為<b>分娩</b>。',
+          '人類：<b>睪丸</b>產生精子、<b>卵巢</b>產生卵，也都分泌<b>性激素</b>。精子和卵在<b>輸卵管</b>受精，受精卵移到<b>子宮</b>著床。',
+          '胎兒經<b>胎盤</b>和<b>臍帶</b>從母體得到養分和氧，兩者的血液<b>不直接相通</b>。<b>羊水</b>保護胎兒。約 38 週＊後產出（<b>分娩</b>）。',
         ],
       };
     },

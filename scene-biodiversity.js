@@ -193,7 +193,7 @@
       const node = (x, y, s, k) => { const q = g(P4); S.pill(q, x, y, s, { size: 26, color: COL[k], edge: COL[k] }); q.cx = x; q.cy = y; return q; };
       const L = { grass: node(170, 540, '草', 'p'), rabbit: node(170, 380, '兔', 'h'), hawk: node(170, 210, '老鷹', 't') };
       const R = {
-        grass: node(600, 550, '草', 'p'), tree: node(1000, 550, '樹（果實）', 'p'),
+        grass: node(600, 550, '草', 'p'), tree: node(1000, 550, '樹', 'p'),
         rabbit: node(540, 420, '兔', 'h'), mouse: node(770, 420, '鼠', 'h'), hopper: node(1030, 420, '蚱蜢', 'h'),
         snake: node(650, 290, '蛇', 'c'), frog: node(880, 300, '青蛙', 'c'), bird: node(1080, 300, '小鳥', 'c'),
         hawk: node(810, 160, '老鷹', 't'),
@@ -213,7 +213,7 @@
       const xMark = (n) => { const q = g(P4, { opacity: 0 }); el('path', { d: `M ${n.cx - 30},${n.cy - 22} L ${n.cx + 30},${n.cy + 22} M ${n.cx + 30},${n.cy - 22} L ${n.cx - 30},${n.cy + 22}`, stroke: '#ff5f74', 'stroke-width': 4.5, 'stroke-linecap': 'round', opacity: 0.85 }, q); return q; };
       const xL = xMark(L.rabbit), xR = xMark(R.rabbit);
       const ev = g(P4, { opacity: 0 });
-      S.pill(ev, 600, 34, '如果兔子大量減少…', { size: 24, color: '#ff8f9a', edge: '#ff5f74' });
+      S.pill(ev, 600, 34, '如果兔子大量減少……', { size: 24, color: '#ff8f9a', edge: '#ff5f74' });
       const hawkDim = el('rect', { x: 110, y: 186, width: 120, height: 48, rx: 24, fill: '#0d1822', opacity: 0 }, P4);
       const resL = g(P4, { opacity: 0 });
       text(resL, 320, 282, '老鷹沒有', { 'font-size': 22, 'text-anchor': 'middle', fill: '#ff8f9a' });
@@ -245,7 +245,7 @@
       const [tx1, ty] = tw.at(119.95, 23.44), [tx2] = tw.at(122.05, 23.44);
       const tropic = g(mapG, { opacity: 0 });
       el('line', { x1: tx1, y1: ty, x2: tx2, y2: ty, stroke: C.hi, 'stroke-width': 3, 'stroke-dasharray': '10 7' }, tropic);
-      text(tropic, tx1 + 4, ty - 10, '北回歸線', { 'font-size': 20, fill: C.hi });
+      text(tropic, tx1 + 4, ty - 10, '北回歸線', { 'font-size': 20, fill: C.hi, stroke: '#13314a', 'stroke-width': 5, 'stroke-linejoin': 'round', 'paint-order': 'stroke' }); // 深色描邊：壓在海岸線上也看得清楚
       const [yx, yy] = tw.at(120.957, 23.47);
       const peak = g(mapG, { opacity: 0 });
       el('path', { d: `M ${yx},${yy - 12} l 10,16 l -20,0 Z`, fill: '#ffffff', stroke: '#333', 'stroke-width': 1.5 }, peak);
@@ -259,7 +259,7 @@
       const ends = [
         [0, 0, '臺灣獼猴', '特有種', (q) => B.macaque(at(q, 790, 182, 0.85))],
         [1, 0, '帝雉（黑長尾雉）', '特有種', (q) => B.pheasant(at(q, 1100, 200, 0.6))],
-        [0, 1, '臺灣黑熊', '特有亞種', (q) => B.bear(at(q, 800, 468, 0.62))],
+        [0, 1, '臺灣黑熊', '特有亞種', (q) => B.bear(at(q, 800, 462, 0.62))],
         [1, 1, '櫻花鉤吻鮭', '特有亞種', (q) => B.salmon(at(q, 1050, 452, 0.95))],
       ].map(([i, j, name, tag, draw]) => {
         const q = g(P5, { opacity: 0 });

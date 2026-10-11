@@ -33,7 +33,7 @@
     { title: '再找一種', org: 'butterfly' },
     { title: '水裡的生物', org: 'fish' },
     { title: '哪一個特徵分開牠們？', quiz: { q: '在這個檢索表上，「家貓」和「青蛙」是在哪一個問題被分開的？', opts: ['有翅膀嗎？', '有四肢嗎？', '體表有毛嗎？', '有鰭嗎？'], ans: 2, hint: '在檢索表上分別找出家貓和青蛙，從最上面往下走，看看兩條路線在哪一個問題開始分岔。' },
-      why: '家貓和青蛙都<b>沒有翅膀、有四肢</b>，走到「<b>體表有毛嗎？</b>」才分開。兩種生物的路線一起走得越久，共同的特徵越多。' },
+      why: '家貓和青蛙都<b>沒有翅膀、有四肢</b>，走到「<b>體表有毛嗎？</b>」才分開。兩種生物的路線一起走得越久，在這張檢索表用到的特徵中，相同的越多。' },
   ];
 
   S.registerLab({
@@ -90,9 +90,9 @@
           const x1 = n.x + (a === 'yes' ? -24 : 24), y1 = n.y + NH / 2;
           const ln = el('line', { x1, y1, x2: cx, y2: top, stroke: '#4a6272', 'stroke-width': 3, 'stroke-linecap': 'round' }, edgeG);
           const mx = x1 + (cx - x1) * 0.45, my = y1 + (top - y1) * 0.45;
-          const lb = g(edgeG);
-          el('circle', { cx: mx, cy: my, r: 17, fill: C.bg, stroke: a === 'yes' ? YES : NO, 'stroke-width': 2 }, lb);
-          text(lb, mx, my + 8, a === 'yes' ? '是' : '否', { 'font-size': 22, 'text-anchor': 'middle', 'font-weight': 700, fill: a === 'yes' ? YES : NO });
+          const lb = g(edgeG); // 圈的半徑 20：字放大到 24 後，圈裡留一點空
+          el('circle', { cx: mx, cy: my, r: 20, fill: C.bg, stroke: a === 'yes' ? YES : NO, 'stroke-width': 2 }, lb);
+          text(lb, mx, my + 8.5, a === 'yes' ? '是' : '否', { 'font-size': 22, 'text-anchor': 'middle', 'font-weight': 700, fill: a === 'yes' ? YES : NO });
           edges[k + a] = ln;
         });
       });
@@ -211,7 +211,7 @@
       function drawMission() {
         if (mi >= MISSIONS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
-            <div class="fb ok"><strong>檢索表的用法</strong>從最上面開始，每次只看一個特徵，回答「是」或「否」，一步步縮小範圍，最後找到生物的名稱。<br>兩種生物的路線越晚分開，共同的特徵越多。</div>
+            <div class="fb ok"><strong>檢索表的用法</strong>從最上面開始，每次只看一個特徵，回答「是」或「否」，一步步縮小範圍，最後找到生物的名稱。<br>兩種生物的路線越晚分開，在這張表用到的特徵中相同的越多；檢索表是用來查名稱的，不代表親緣關係的遠近。</div>
             <button class="ctl primary" type="button" id="labX2-again">再練習一次</button>`;
           mbox.querySelector('#labX2-again').addEventListener('click', reset);
           $('free').open = true;

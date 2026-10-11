@@ -34,8 +34,15 @@
   };
 
   // 標籤：圓角底 + 文字，(x,y) 是中心
+  // 文字會被放大到最小字級時，外框也要用放大後的字級來算
+  S.effSize = (parent, size) => {
+    if (!S.fontBump || !S.MIN_FONT || !parent || !parent.closest) return size;
+    const min = parent.closest('.lab-stage') ? S.MIN_FONT.lab : parent.closest('#stage') ? S.MIN_FONT.scene : 0;
+    return Math.max(size, min);
+  };
   S.pill = (parent, x, y, str, { size = 26, color = S.C.ink, bg = 'rgba(13,24,34,.82)', edge = S.C.faint, padX = 14 } = {}) => {
     const g = S.g(parent);
+    size = S.effSize(g, size);
     const w = S.textWidth(str, size) + padX * 2, h = size * 1.55;
     S.el('rect', { x: x - w / 2, y: y - h / 2, width: w, height: h, rx: h / 2, fill: bg, stroke: edge, 'stroke-width': 2 }, g);
     S.text(g, x, y + size * 0.36, str, { 'font-size': size, fill: color, 'text-anchor': 'middle', 'font-weight': 700 });
@@ -239,7 +246,8 @@
   // 七下接著七上編成第七～十二章（小節依課本 7下自然的順序）。
   // 七下的內部代號寫成「下1-1」（＝課本 1-1），畫面上顯示成「7-1」（S.secLabel）
   const CHAPTERS = [['1', '第一章', '生命世界與科學方法', '七上'], ['2', '第二章', '生物體的組成', '七上'], ['3', '第三章', '生物體的養分', '七上'], ['4', '第四章', '生物體的運輸', '七上'], ['5', '第五章', '生物體的協調', '七上'], ['6', '第六章', '生物體的恆定', '七上'],
-    ['下1', '第七章', '生殖', '七下'], ['下2', '第八章', '遺傳', '七下'], ['下3', '第九章', '演化與分類', '七下'], ['下4', '第十章', '形形色色的生物', '七下'], ['下5', '第十一章', '生物與環境', '七下'], ['下6', '第十二章', '環境保護與生態平衡', '七下']];
+    ['下1', '第七章', '生殖', '七下'], ['下2', '第八章', '遺傳', '七下'], ['下3', '第九章', '演化與分類', '七下'], ['下4', '第十章', '形形色色的生物', '七下'], ['下5', '第十一章', '生物與環境', '七下'], ['下6', '第十二章', '環境保護與生態平衡', '七下'],
+    ['X', '總複習', '跨章比較', '綜合']];
   const SECTIONS = [['1-1', '生命現象', '1'], ['1-2', '生命起源與生物圈', '1'], ['1-3', '科學方法', '1'], ['1-4', '顯微鏡', '1'], ['總1', '總整理', '1'],
     ['2-1', '細胞', '2'], ['2-2', '擴散與滲透', '2'], ['2-3', '組成層次', '2'], ['總2', '總整理', '2'],
     ['3-1', '食物中的養分', '3'], ['3-2', '酵素', '3'], ['3-3', '光合作用', '3'], ['3-4', '消化與吸收', '3'], ['總3', '總整理', '3'],
@@ -251,9 +259,11 @@
     ['下3-1', '化石', '下3'], ['下3-2', '生物的演化', '下3'], ['下3-3', '生物的分類', '下3'], ['下總3', '總整理', '下3'],
     ['下4-1', '原核、原生與菌物界', '下4'], ['下4-2', '植物界', '下4'], ['下4-3', '動物界', '下4'], ['下總4', '總整理', '下4'],
     ['下5-1', '族群、群集與演替', '下5'], ['下5-2', '生物間的互動', '下5'], ['下5-3', '生態系', '下5'], ['下5-4', '生態系的類型', '下5'], ['下總5', '總整理', '下5'],
-    ['下6-1', '生物多樣性', '下6'], ['下6-2', '人類對環境的衝擊', '下6'], ['下6-3', '保育與永續', '下6'], ['下總6', '總整理', '下6']];
+    ['下6-1', '生物多樣性', '下6'], ['下6-2', '人類對環境的衝擊', '下6'], ['下6-3', '保育與永續', '下6'], ['下總6', '總整理', '下6'],
+    ['X-1', '跨章比較', 'X']];
+  // 「總複習」章（X）：跨章比較（summary-x.js），小節標籤顯示「比」
   const isSum = (k) => k.includes('總');
-  S.secLabel = (k) => (isSum(k) ? '總' : k.replace(/^下(\d+)/, (m, n) => String(+n + 6)));
+  S.secLabel = (k) => (k.startsWith('X') ? '比' : isSum(k) ? '總' : k.replace(/^下(\d+)/, (m, n) => String(+n + 6)));
   const chapOf = (sec) => (SECTIONS.find(([k]) => k === sec) || [])[2];
   const OLD_HASH = { s1: 'scale', s2: 'cell', s3: 'transport', s4: 'levels', a1: 'lab-scale', a2: 'lab-transport' };
   let items = [], curSec = null, curChap = null;
@@ -485,6 +495,25 @@
     fit();
   }
 
+  // 最小字級：舞台是 1200 寬的座標，在筆電上約縮成 0.65～0.75 倍，太小的字一律放大到 MIN（舞台座標）。
+  // 動畫舞台 22、互動舞台 24（互動的舞台比較窄）；個別文字加 data-fs-keep 可保留原字級。
+  S.MIN_FONT = { scene: 22, lab: 24 };
+  S.fontBump = !/[?&]nobump\b/.test(location.search);
+  const bumpText = (t, min) => {
+    if (!S.fontBump || t.hasAttribute('data-fs-keep')) return;
+    const v = parseFloat(t.getAttribute('font-size'));
+    if (v && v < min) { t.setAttribute('data-fs0', v); t.setAttribute('font-size', min); }
+  };
+  S.bumpFonts = (rootEl, min) => rootEl.querySelectorAll('text, tspan').forEach((t) => bumpText(t, min));
+  const watchFonts = (rootEl, minOf) => new MutationObserver((ms) => {
+    for (const m of ms) for (const n of m.addedNodes) {
+      if (n.nodeType !== 1) continue;
+      const min = minOf(n);
+      if (!min) continue;
+      if (n.tagName === 'text' || n.tagName === 'tspan') bumpText(n, min); else S.bumpFonts(n, min);
+    }
+  }).observe(rootEl, { childList: true, subtree: true });
+
   S.start = () => {
     stage = document.getElementById('stage');
     capEl = document.getElementById('caption');
@@ -497,6 +526,15 @@
     labEl = document.getElementById('lab');
     capBar = document.querySelector('.caption-bar');
     ctlBar = document.querySelector('.controls');
+    watchFonts(stage, () => S.MIN_FONT.scene);
+    // 互動：整個版面一次放進來時，找出裡面的舞台；之後在舞台裡新增的文字也一起處理
+    new MutationObserver((ms) => {
+      for (const m of ms) for (const n of m.addedNodes) {
+        if (n.nodeType !== 1) continue;
+        if (n.closest('.lab-stage')) { if (n.tagName === 'text' || n.tagName === 'tspan') bumpText(n, S.MIN_FONT.lab); else S.bumpFonts(n, S.MIN_FONT.lab); }
+        else n.querySelectorAll('.lab-stage').forEach((st) => S.bumpFonts(st, S.MIN_FONT.lab));
+      }
+    }).observe(labEl, { childList: true, subtree: true });
     setupBigView();
     window.addEventListener('resize', fitSoon);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitSoon);
@@ -525,6 +563,8 @@
   // 打開某個動畫並直接播放第 step 步（step 從 0 開始；總整理的圖表用）
   S.openAt = (id, step) => { S.openById(id); if (step > 0 && ctx && scenes[idx] && scenes[idx].id === id) go(step); };
   S.itemsOf = (sec) => items.filter((x) => x.section === sec).map((x) => ({ id: x.id, title: x.title, kind: x.kind }));
+  // 依 id 找任何一個動畫／互動（跨章比較的連結用）
+  S.findItem = (id) => { const x = items.find((it) => it.id === id); return x ? { id: x.id, title: x.title, kind: x.kind, section: x.section } : null; };
   S.stageOnly = (on) => { document.body.classList.toggle('stage-only', on !== false); if (on === false) fit(); };
   // 檢查用：直接跳到某一步的結尾畫面
   S.jump = (i, scene) => {

@@ -1,4 +1,4 @@
-/* 1-6 科學方法：觀察 → 提出問題 → 形成假說 → 設計實驗（實驗組／對照組、三種變因）→ 進行實驗、記錄 → 分析 → 結論 */
+/* 1-3 科學方法：觀察 → 提出問題 → 形成假說 → 設計實驗（實驗組／對照組、三種變因）→ 進行實驗、記錄 → 分析 → 結論 */
 (() => {
   const { el, g, text, C } = S;
   const VAR = { m: ['操縱變因', '#ffb35c'], c: ['控制變因', '#62a8ff'], r: ['應變變因', '#6fce62'] };
@@ -37,8 +37,9 @@
       const nodes = FLOW.map(([n, x, y], i) => {
         const b = g(P0);
         el('rect', { x: x - 115, y: y - 46, width: 230, height: 92, rx: 18, fill: '#122230', stroke: C.membrane, 'stroke-width': 3 }, b);
-        text(b, x - 92, y - 14, `${i + 1}`, { 'font-size': 20, fill: C.mute, class: 'mono' });
-        text(b, x, y + 12, n, { 'font-size': 28, 'font-weight': 700, 'text-anchor': 'middle' });
+        // 編號放左上角、名稱稍微往下，長名稱（進行實驗、記錄）才不會碰到編號
+        text(b, x - 100, y - 16, `${i + 1}`, { 'font-size': 22, fill: C.mute, class: 'mono' });
+        text(b, x, y + 18, n, { 'font-size': 28, 'font-weight': 700, 'text-anchor': 'middle' });
         return b;
       });
       const defs = el('defs', {}, root);
@@ -47,8 +48,9 @@
       const ARW = ['M 290,200 L 330,200', 'M 570,200 L 610,200', 'M 850,200 L 890,200', 'M 1010,250 L 1010,380', 'M 890,430 L 850,430', 'M 610,430 L 570,430'];
       const arrows = ARW.map((d) => el('path', { d, stroke: C.mute, 'stroke-width': 4, fill: 'none', 'marker-end': 'url(#mtArrow)', opacity: 0 }, P0));
       const loop = g(P0, { opacity: 0 });
-      el('path', { d: 'M 400,478 C 400,600 760,600 760,520 L 760,250', stroke: '#ff8f8f', 'stroke-width': 4, fill: 'none', 'stroke-dasharray': '10 8', 'marker-end': 'url(#mtArrow)' }, loop);
-      S.pill(loop, 580, 600, '結果不支持假說 → 修正假說，再實驗', { size: 22, color: '#ff8f8f', edge: '#ff8f8f' });
+      // 從「得到結論」上方走兩排之間的空隙回到「形成假說」，不穿過「分析結果」
+      el('path', { d: 'M 500,384 L 500,331 Q 500,315 516,315 L 684,315 Q 700,315 700,299 L 700,254', stroke: '#ff8f8f', 'stroke-width': 4, fill: 'none', 'stroke-dasharray': '10 8', 'marker-end': 'url(#mtArrow)' }, loop);
+      S.pill(loop, 600, 315, '結果不支持假說 → 修正假說，再實驗', { size: 22, color: '#ff8f8f', edge: '#ff8f8f', bg: '#0d1822' });
 
       tl.addLabel('s0');
       nodes.forEach((n, i) => { tl.fromTo(n, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.35 }, `s0+=${0.2 + i * 0.4}`); if (i) tl.to(arrows[i - 1], { opacity: 1, duration: 0.2 }, `s0+=${0.1 + i * 0.4}`); });
@@ -58,12 +60,12 @@
       const P1 = g(root, { opacity: 0 });
       dish(P1, 320, 360, true); const bWet = bread(P1, 320, 360, 3);
       dish(P1, 760, 360, false); const bDry = bread(P1, 760, 360, 8);
-      text(P1, 320, 500, '放在潮濕的地方', { 'font-size': 24, 'text-anchor': 'middle', fill: C.mute });
+      text(P1, 320, 500, '放在潮溼的地方', { 'font-size': 24, 'text-anchor': 'middle', fill: C.mute });
       text(P1, 760, 500, '放在乾燥的地方', { 'font-size': 24, 'text-anchor': 'middle', fill: C.mute });
       const q1 = g(P1, { opacity: 0 });
       el('rect', { x: 330, y: 560, width: 540, height: 80, rx: 40, fill: '#122230', stroke: C.hi, 'stroke-width': 3 }, q1);
       text(q1, 600, 610, '問題：水分會影響麵包發霉嗎？', { 'font-size': 28, 'font-weight': 700, 'text-anchor': 'middle', fill: C.hi });
-      text(P1, 600, 140, '觀察：潮濕的麵包好像比較快發霉', { 'font-size': 30, 'font-weight': 700, 'text-anchor': 'middle' });
+      text(P1, 600, 140, '觀察：潮溼的麵包好像比較快發霉', { 'font-size': 30, 'font-weight': 700, 'text-anchor': 'middle' });
 
       tl.addLabel('s1');
       S.hide(tl, P0, 's1', 0.4);
@@ -129,8 +131,8 @@
         bars.push([el('rect', { x, y: Y0, width: BW - 4, height: 0, rx: 4, fill: VAR.m[1] }, P4), el('rect', { x: x + BW, y: Y0, width: BW - 4, height: 0, rx: 4, fill: '#7f95a4' }, P4)]);
       }
       const legend = g(P4);
-      el('rect', { x: 940, y: 196, width: 18, height: 18, rx: 3, fill: VAR.m[1] }, legend); text(legend, 966, 212, '實驗組（滴水）', { 'font-size': 20 });
-      el('rect', { x: 940, y: 226, width: 18, height: 18, rx: 3, fill: '#7f95a4' }, legend); text(legend, 966, 242, '對照組（不滴水）', { 'font-size': 20 });
+      el('rect', { x: 940, y: 134, width: 18, height: 18, rx: 3, fill: VAR.m[1] }, legend); text(legend, 966, 151, '實驗組（滴水）', { 'font-size': 22 });
+      el('rect', { x: 940, y: 168, width: 18, height: 18, rx: 3, fill: '#7f95a4' }, legend); text(legend, 966, 185, '對照組（不滴水）', { 'font-size': 22 });
       const grow = (u) => {
         const t = u * 6;
         bars.forEach(([a, b], d) => {
@@ -154,7 +156,7 @@
       const res = g(P5);
       el('rect', { x: 150, y: 140, width: 900, height: 120, rx: 18, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, res);
       text(res, 180, 190, '分析：滴水的麵包發霉面積一天比一天大，從第 2 天起都比不滴水的大。', { 'font-size': 26 });
-      text(res, 180, 232, '結論：實驗結果支持假說：水分多，麵包比較容易發霉。', { 'font-size': 26, fill: C.chloro, 'font-weight': 700 });
+      text(res, 180, 232, '結論：實驗結果支持假說——水分多的麵包比較容易發霉。', { 'font-size': 26, fill: C.chloro, 'font-weight': 700 });
       const tips = g(P5, { opacity: 0 });
       [['每組多放幾片、重複實驗，結論比較可靠', 330], ['結果不支持假說也有價值：修正假說，再設計實驗', 400], ['結論只適用於實驗的條件（例如這種麵包、這個溫度）', 470]].forEach(([t, y]) => {
         el('circle', { cx: 190, cy: y - 8, r: 8, fill: C.hi }, tips);
@@ -179,7 +181,7 @@
         ],
         steps: [
           '科學方法的流程：<b>觀察 → 提出問題 → 形成假說 → 設計實驗 → 進行實驗、記錄 → 分析結果 → 得到結論</b>；結果不支持假說，就修正假說再實驗。',
-          '<b>觀察</b>：放在潮濕地方的麵包好像比較快發霉。於是<b>提出問題</b>：水分會影響麵包發霉嗎？',
+          '<b>觀察</b>：放在潮溼地方的麵包好像比較快發霉。於是<b>提出問題</b>：水分會影響麵包發霉嗎？',
           '<b>形成假說</b>：根據觀察提出一個可以用實驗檢驗的「暫時答案」——水分多的麵包比較容易發霉。實驗結果可能支持它，也可能不支持它。',
           '<b>設計實驗</b>：<b>實驗組</b>滴水、<b>對照組</b>不滴水。改變的條件叫<b>操縱變因</b>；保持相同的叫<b>控制變因</b>；要觀察記錄的結果叫<b>應變變因</b>。',
           '<b>進行實驗並記錄</b>：每天記錄兩組麵包發霉的面積，畫成圖表比較。',

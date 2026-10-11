@@ -1,21 +1,20 @@
-/* 互動模型：蒸散作用實驗 — 兩支枝條插在量筒中（水面加油層），同時放 1 小時，比較水減少多少：有葉／去葉、照光／黑暗、無風／有風、不套袋／套袋 ＋ 任務 */
+/* 互動模型：蒸散作用實驗 — 兩支枝條插在量筒中（水面加油層），同時放 1 小時，比較水減少多少：有葉／去葉、照光／黑暗、無風／有風、不套袋／套袋、凡士林塗在上／下表皮 ＋ 任務 */
 (() => {
   const { el, g, text, C } = S;
-  const XY = C.water, OIL = '#f1c84a', LEAF = '#4fae4a', LEAF_D = '#2f7a3a';
+  const XY = C.water, OIL = '#f1c84a', LEAF = '#4fae4a', LEAF_D = '#2f7a3a', VASC = '#fff1c2';
   const SEC_PER_HOUR = 6; // 動畫 6 秒代表 1 小時＊
   const V0 = 9.0;          // 開始的水量（mL）
   const BASE = 2.4;        // 有葉、照光、無風、不套袋：每小時約減少 2.4 mL（示意）
-  const DEF = { leaf: 1, light: 1, wind: 0, bag: 0, oil: 1 };
-  // 每小時減少的水量（mL，示意）
-  const rateOf = (c) => {
-    let r = c.leaf ? BASE * (c.light ? 1 : 0.2) * (c.wind ? 1.5 : 1) * (c.bag ? 0.3 : 1) : 0.1;
-    if (!c.oil) r += 0.3 * (c.wind ? 1.5 : 1);
-    return r;
-  };
-  const leafRate = (c) => (c.leaf ? BASE * (c.light ? 1 : 0.2) * (c.wind ? 1.5 : 1) * (c.bag ? 0.3 : 1) : 0);
-  const desc = (c) => [c.leaf ? '有葉' : '去葉', c.light ? '照光' : '黑暗', c.wind ? '有風' : '無風', c.bag ? '套袋' : '不套袋'].concat(c.oil ? [] : ['沒有油層']).join('・');
+  const DEF = { leaf: 1, light: 1, wind: 0, bag: 0, oil: 1, vas: 0 };
+  // 凡士林（0 不塗、1 上表皮、2 下表皮、3 兩面）：堵住塗到的那一面的氣孔。多數植物下表皮的氣孔較多（比例是示意＊）
+  const VAS = [1, 0.8, 0.25, 0.05], VAS_N = ['', '凡士林塗上表皮', '凡士林塗下表皮', '凡士林塗兩面'];
+  // 葉片每小時散失的水量（mL，示意）
+  const leafRate = (c) => (c.leaf ? BASE * (c.light ? 1 : 0.2) * (c.wind ? 1.5 : 1) * (c.bag ? 0.3 : 1) * VAS[c.vas || 0] : 0);
+  // 量筒每小時減少的水量：葉片散失＋莖散失一點點＋（沒有油層時）水面直接蒸發
+  const rateOf = (c) => (c.leaf ? leafRate(c) : 0.1) + (c.oil ? 0 : 0.3 * (c.wind ? 1.5 : 1));
+  const desc = (c) => [c.leaf ? '有葉' : '去葉', c.light ? '照光' : '黑暗', c.wind ? '有風' : '無風', c.bag ? '套袋' : '不套袋'].concat(c.leaf && c.vas ? [VAS_N[c.vas]] : [], c.oil ? [] : ['沒有油層']).join('・');
   const fmt = (v) => v.toFixed(1);
-  const KEYS = [['leaf', '葉片', [[1, '有葉'], [0, '去葉']]], ['light', '光線', [[1, '照光'], [0, '黑暗']]], ['wind', '風', [[0, '無風'], [1, '有風']]], ['bag', '塑膠袋', [[0, '不套'], [1, '套袋']]], ['oil', '油層', [[1, '有'], [0, '沒有']]]];
+  const KEYS = [['leaf', '葉片', [[1, '有葉'], [0, '去葉']]], ['light', '光線', [[1, '照光'], [0, '黑暗']]], ['wind', '風', [[0, '無風'], [1, '有風']]], ['bag', '塑膠袋', [[0, '不套袋'], [1, '套袋']]], ['vas', '凡士林', [[0, '不塗'], [1, '上表皮'], [2, '下表皮'], [3, '兩面']]], ['oil', '油層', [[1, '有'], [0, '沒有']]]];
 
   const MISSIONS = [
     { title: '葉的作用', A: { leaf: 1 }, B: { leaf: 0 },
@@ -24,16 +23,16 @@
     { title: '照光與黑暗', A: { light: 1 }, B: { light: 0 },
       q: '兩組都有葉：A 照光，B 放在暗處。哪一組的水減少比較多？先預測：', opts: ['A 照光', 'B 黑暗', '差不多'], ans: 0,
       why: '照光時氣孔張開，蒸散作用旺盛；在黑暗中氣孔大多關閉，水減少得少。' },
-    { title: '有風與無風', A: { wind: 0 }, B: { wind: 1 },
-      q: 'A 無風，B 用電扇吹。哪一組的水減少比較多？先預測：', opts: ['A 無風', 'B 有風', '差不多'], ans: 1,
-      why: '風把葉片附近的水蒸氣吹走，葉片的水分散失得比較快，蒸散作用比較旺盛。' },
     { title: '套上塑膠袋', A: { bag: 0 }, B: { bag: 1 },
-      q: 'B 的枝葉套上透明塑膠袋，袋子裡的濕度會越來越高。哪一組的水減少比較<b>少</b>？先預測：', opts: ['A 不套袋', 'B 套袋', '差不多'], ans: 1,
-      why: '袋子裡的水蒸氣越來越多（濕度高），蒸散作用變慢，水減少得比較少。袋子內側出現的小水珠，是葉散失的水蒸氣凝結成的。' },
-    { title: '為什麼要加油？', quiz: { q: '每個量筒的水面上都加了一層油，目的是什麼？', opts: ['防止水面的水直接蒸發，量到的減少量才是枝條散失的水', '提供枝條養分', '讓枝條站得比較穩'], ans: 0, hint: '想想看：如果水面沒有東西蓋住，水會不會自己從水面跑掉？那量到的結果還準嗎？' },
+      q: 'B 的枝葉套上透明塑膠袋，袋子裡的溼度會越來越高。哪一組的水減少比較<b>少</b>？先預測：', opts: ['A 不套袋', 'B 套袋', '差不多'], ans: 1,
+      why: '袋子裡的水蒸氣越來越多（溼度高），蒸散作用變慢，水減少得比較少。袋子內側出現的小水珠，是葉散失的水蒸氣凝結成的。' },
+    { title: '凡士林塗在哪一面？', A: { vas: 1 }, B: { vas: 2 },
+      q: '凡士林能把氣孔堵住。A 組每片葉都塗在<b>上表皮</b>，B 組都塗在<b>下表皮</b>。放 1 小時後，哪一組的水減少比較<b>少</b>？先預測：', opts: ['A 塗上表皮', 'B 塗下表皮', '差不多'], ans: 1,
+      why: '多數植物<b>下表皮</b>的氣孔比上表皮多。B 組下表皮的氣孔被堵住，水分很難散失，水位下降得少；A 組下表皮的氣孔還開著，水減少得多。' },
+    { title: '為什麼要加油？', quiz: { q: '每個量筒的水面上都加了一層油，目的是什麼？', opts: ['防止水面的水直接蒸發，量到的減少量才是枝條散失的水', '提供枝條養分', '讓枝條站得比較穩'], ans: 0, hint: '量筒裡的水，除了被枝條吸走，還可能從哪裡減少？' },
       why: '油層能防止水從水面直接蒸發（也可以用保鮮膜把量筒口封住）。這樣量筒裡減少的水，才是被枝條吸收、再經由蒸散作用散失的。可以打開「自由探索」，把油層拿掉試試看。' },
-    { title: '公平的比較', quiz: { q: '在「照光 vs 黑暗」的實驗中，下列哪一項必須保持相同？', opts: ['光線', '枝條的種類和葉片多少、水量、溫度', '水減少的量'], ans: 1, hint: '哪一項是我們故意改變的？哪一項是我們要測量的結果？剩下的條件應該怎樣？' },
-      why: '只改變光線（操縱變因），測量水減少的量（應變變因）；枝條的種類、葉片多少、水量、溫度等都要相同（控制變因），比較才公平。' },
+    { title: '公平的比較', quiz: { q: '在「凡士林塗在上表皮或下表皮」的實驗中，下列哪一項必須保持相同？', opts: ['凡士林塗在哪一面', '枝條的種類、葉片的數目和大小、水量、光線', '水減少的量'], ans: 1, hint: '哪一項是我們故意改變的？哪一項是我們要測量的結果？剩下的條件應該怎樣？' },
+      why: '只改變凡士林塗的位置（操縱變因），測量水減少的量（應變變因）；枝條的種類、葉片多少、水量、光線等都要相同（控制變因），比較才公平。' },
   ];
 
   S.registerLab({
@@ -61,7 +60,7 @@
       <div class="lab-stage"><svg viewBox="0 0 1200 600" role="img" aria-label="兩支枝條分別插在加了油層的量筒中，比較水減少多少"></svg></div>
       <div class="pad">
         <p class="status-line" id="labV-status" aria-live="polite"></p>
-        <p class="footnote">＊示意：動畫中 6 秒代表 1 小時；水減少的量是示意的數字，實際會因枝條大小、葉片多少、光線、溫度而不同。燈太近會讓溫度升高，可以用 LED 燈或保持距離。不用油層時，也可以用保鮮膜把量筒口封住（讓枝條穿過）。</p>
+        <p class="footnote">＊示意：動畫中 6 秒代表 1 小時；水減少的量是示意的數字，實際會因枝條大小、葉片多少、光線、溫度而不同；上、下表皮氣孔的多少也因植物而不同。燈太近會讓溫度升高，可以用 LED 燈或保持距離。不用油層時，也可以用保鮮膜把量筒口封住（讓枝條穿過）。</p>
       </div>
     </div>
     <div class="card pad c-table"><h3>實驗紀錄（1 小時後減少的水量）</h3><div class="table-wrap" id="labV-table"></div></div>
@@ -109,7 +108,7 @@
         el('rect', { x: c - 34, y: 240, width: 68, height: 306, fill: 'rgba(207,232,255,0.05)' }, sg);
         o.water = el('rect', { x: c - 32, y: Y(V0), width: 64, height: 0, fill: 'rgba(95,184,255,0.35)' }, sg);
         o.oil = el('rect', { x: c - 32, y: Y(V0) - 8, width: 64, height: 8, fill: OIL, opacity: 0.9 }, sg);
-        o.oilLbl = text(sg, c + 44, Y(V0), '油層', { 'font-size': 20, fill: OIL });
+        o.oilLbl = text(sg, c + 40, Y(V0), '油層', { 'font-size': 20, fill: OIL });
         el('path', { d: `M ${c - 40},236 L ${c - 34},242 L ${c - 34},546 L ${c + 34},546 L ${c + 34},242 L ${c + 40},236`, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 3, 'stroke-linejoin': 'round' }, sg);
         el('rect', { x: c - 58, y: 546, width: 116, height: 12, rx: 4, fill: '#cfe8ff', opacity: 0.55 }, sg);
         for (let i = 0; i <= 20; i++) {
@@ -121,11 +120,27 @@
         el('line', { x1: c, y1: 530, x2: c, y2: 92, stroke: '#4f8a3a', 'stroke-width': 6, 'stroke-linecap': 'round' }, sg);
         o.leaves = g(sg);
         o.scars = g(sg);
+        o.coat = [[], []]; // 葉片上表皮、下表皮的凡士林
         [[-1, 210], [1, 186], [-1, 160], [1, 136], [-1, 112], [1, 96]].forEach(([s, y]) => {
           const lg = S.place(g(o.leaves), { x: c + s * 34, y, r: s * -24 });
           el('path', { d: 'M -32,0 C -16,-13 16,-13 32,0 C 16,13 -16,13 -32,0 Z', fill: LEAF, stroke: LEAF_D, 'stroke-width': 2 }, lg);
+          o.coat[0].push(el('path', { d: 'M -30,-1 C -16,-12 16,-12 30,-1', fill: 'none', stroke: VASC, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0 }, lg));
+          o.coat[1].push(el('path', { d: 'M -30,1 C -16,12 16,12 30,1', fill: 'none', stroke: VASC, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0 }, lg));
           el('line', { x1: c, y1: y + 6, x2: c + s * 7, y2: y + 1, stroke: '#4f8a3a', 'stroke-width': 3, 'stroke-linecap': 'round' }, o.scars);
         });
+        // 葉的切面（放大）：凡士林塗在哪一面
+        o.vasBox = g(sg, { opacity: 0 });
+        const vx = c + 94; // 量筒右邊的「油層」標籤之外（字放大後「油層」到 c+88）
+        el('rect', { x: vx, y: 268, width: 200, height: 144, rx: 10, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, o.vasBox);
+        text(o.vasBox, vx + 10, 296, '上表皮', { 'font-size': 20, fill: '#9fd8c8' });
+        text(o.vasBox, vx + 10, 400, '下表皮', { 'font-size': 20, fill: '#9fd8c8' });
+        for (let k = 0; k < 9; k++) [316, 354].forEach((yy) => el('rect', { x: vx + 10 + k * 20, y: yy, width: 18, height: 12, rx: 3, fill: '#1d3442', stroke: '#7fb7c9', 'stroke-width': 1.5 }, o.vasBox));
+        for (let k = 0; k < 6; k++) { el('rect', { x: vx + 12 + k * 29, y: 330, width: 26, height: 22, rx: 6, fill: '#1c3a2c', stroke: '#6fce62', 'stroke-width': 1.5 }, o.vasBox); el('circle', { cx: vx + 25 + k * 29, cy: 341, r: 4, fill: '#6fce62' }, o.vasBox); }
+        o.vasTop = g(o.vasBox); o.vasBot = g(o.vasBox);
+        el('rect', { x: vx + 9, y: 303, width: 182, height: 11, rx: 5, fill: VASC, opacity: 0.9 }, o.vasTop);
+        text(o.vasTop, vx + 190, 296, '凡士林', { 'font-size': 20, 'text-anchor': 'end', fill: VASC, 'font-weight': 700 });
+        el('rect', { x: vx + 9, y: 368, width: 182, height: 11, rx: 5, fill: VASC, opacity: 0.9 }, o.vasBot);
+        text(o.vasBot, vx + 190, 400, '凡士林', { 'font-size': 20, 'text-anchor': 'end', fill: VASC, 'font-weight': 700 });
         // 塑膠袋與水珠
         o.bag = g(sg);
         el('path', { d: `M ${c - 12},236 C ${c - 120},224 ${c - 118},70 ${c},58 C ${c + 118},70 ${c + 120},224 ${c + 12},236 Z`, fill: 'rgba(220,240,255,0.10)', stroke: '#cfe8ff', 'stroke-width': 2, 'stroke-dasharray': '8 5' }, o.bag);
@@ -134,8 +149,10 @@
         o.beads = Array.from({ length: 14 }, () => { const a = rr() * Math.PI * 2, k = 0.82 + rr() * 0.1; return el('circle', { cx: c + Math.cos(a) * 96 * k, cy: 150 + Math.sin(a) * 78 * k, r: 3 + rr() * 2.5, fill: 'rgba(207,232,255,0.8)', opacity: 0 }, o.bag); });
         // 暗箱
         o.dark = g(sg);
-        el('rect', { x: c - 150, y: 54, width: 300, height: 512, rx: 12, fill: 'rgba(0,0,0,0.62)', stroke: '#4a6272', 'stroke-width': 3 }, o.dark);
-        text(o.dark, c + 140, 86, '放在暗處', { 'font-size': 22, 'text-anchor': 'end', fill: '#8aa1ae' });
+        // 暗箱往右加寬到 c+218：字放大後，右邊的讀數（到 c+206）不會被暗箱的邊線切過
+        el('rect', { x: c - 150, y: 54, width: 368, height: 512, rx: 12, fill: 'rgba(0,0,0,0.62)', stroke: '#4a6272', 'stroke-width': 3 }, o.dark);
+        text(o.dark, c + 206, 86, '放在暗處', { 'font-size': 22, 'text-anchor': 'end', fill: '#8aa1ae' });
+        sg.appendChild(o.vasBox); // 葉的切面是放大圖，畫在暗箱上面，暗箱的框才不會切過「上表皮」等字
         // 水蒸氣
         o.puffs = Array.from({ length: 10 }, (_, k) => ({ e: el('circle', { r: 7, fill: 'rgba(207,232,255,0.12)', stroke: '#cfe8ff', 'stroke-width': 2, 'stroke-dasharray': '4 3', opacity: 0 }, sg), ph: k / 10, x0: c + (k % 2 ? 40 : -40) + ((k * 7) % 5) * 4 }));
         // 讀數
@@ -157,6 +174,12 @@
         o.scars.style.opacity = c.leaf ? 0 : 1;
         o.bag.style.opacity = c.bag ? 1 : 0;
         o.oil.style.opacity = c.oil ? 0.9 : 0;
+        const vas = c.leaf ? c.vas || 0 : 0;
+        o.coat[0].forEach((e) => e.setAttribute('opacity', vas === 1 || vas === 3 ? 0.95 : 0));
+        o.coat[1].forEach((e) => e.setAttribute('opacity', vas === 2 || vas === 3 ? 0.95 : 0));
+        o.vasBox.style.opacity = vas ? 1 : 0;
+        o.vasTop.style.opacity = vas === 1 || vas === 3 ? 1 : 0;
+        o.vasBot.style.opacity = vas === 2 || vas === 3 ? 1 : 0;
         o.oilLbl.style.opacity = c.oil ? 1 : 0;
         o.label.textContent = `${side}：${desc(c)}`;
       }
@@ -196,7 +219,7 @@
       const status = (h) => { $('status').innerHTML = h; };
       function start() {
         run = { t: 0, A: { ...st.A }, B: { ...st.B }, done: false };
-        status('兩組同時開始，觀察量筒的水位…');
+        status('兩組同時開始，觀察量筒的水位……');
         sync(); drawMission();
       }
       function step(dmin) {
@@ -266,7 +289,7 @@
           const ok = firstOk.filter(Boolean).length;
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
             <p class="m-text">第一次就答對 <b>${ok} / ${MISSIONS.length}</b> 個。</p>
-            <div class="fb ok"><strong>實驗重點</strong>水主要經由葉的氣孔散失（蒸散作用）。<br>光線強、風大時蒸散快；黑暗、濕度高時蒸散慢。<br>水面加油層，防止水從水面直接蒸發；只改變一個條件，比較才公平。</div>
+            <div class="fb ok"><strong>實驗重點</strong>水主要經由葉的氣孔散失（蒸散作用）。<br>光線強、風大時蒸散快；黑暗、溼度高時蒸散慢。<br>多數植物下表皮的氣孔較多：凡士林塗在下表皮，水減少得比較少。<br>水面加油層，防止水從水面直接蒸發；只改變一個條件，比較才公平。</div>
             <p class="m-hint">想自己組合條件，可以打開下面的「自由探索」。</p>
             <button class="ctl primary" type="button" id="labV-again">再做一次</button>`;
           mbox.querySelector('#labV-again').addEventListener('click', () => { mi = 0; firstOk.length = 0; setupMission(); });
@@ -286,7 +309,7 @@
             return `<button class="opt ${cls}" type="button" data-p="${k}" aria-pressed="${k === pred}" ${lock ? 'disabled' : ''}>${o}</button>`;
           }).join('')}</div>`;
           if (phase === 'ready') html += `<div class="acts"><button class="ctl primary" type="button" id="labV-run">開始：兩組同時放 1 小時＊</button></div>`;
-          if (phase === 'running') html += `<p class="m-hint">實驗進行中，觀察兩個量筒的水位…</p>`;
+          if (phase === 'running') html += `<p class="m-hint">實驗進行中，觀察兩個量筒的水位……</p>`;
           if (phase === 'free') html += `<div class="fb bad"><strong>注意</strong>你用「自由探索」改了設定。按下面的按鈕，回到這個任務的設定。</div><div class="acts"><button class="ctl primary" type="button" id="labV-back">回到任務設定</button></div>`;
           if (phase === 'result' && result) {
             const okPred = pred === m.ans;

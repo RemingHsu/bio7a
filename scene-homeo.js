@@ -1,4 +1,4 @@
-/* 5-3 體溫與血糖恆定：內溫與外溫動物、外溫動物的行為調節、人體體溫調節、胰島素與升糖素、糖尿病、恆定的調節 */
+/* 6-3 體溫與血糖恆定：內溫與外溫動物（熱的來源、保溫構造）、外溫動物的行為調節、人體體溫調節、胰島素與升糖素（腎上腺素）、糖尿病、恆定的調節（神經與內分泌） */
 (() => {
   const { el, g, text, C } = S;
   const ENDO = '#ff9a5c', ECTO = '#5fb8ff', INS = '#63d4bf', GLUC = '#c9a8ff', GLY = '#d9a066', HEAT = '#ff8a5c';
@@ -50,17 +50,29 @@
       const lineD = (f) => { let d = ''; for (let t = 0; t <= 40; t += 1) d += (t ? 'L' : 'M') + `${cx0(t).toFixed(1)},${cy0(f(t)).toFixed(1)}`; return d; };
       const endo = el('path', { d: lineD((t) => 37 + 0.4 * Math.sin(t / 6)), fill: 'none', stroke: ENDO, 'stroke-width': 4 }, P0);
       const ecto = el('path', { d: lineD((t) => t + 2), fill: 'none', stroke: ECTO, 'stroke-width': 4 }, P0);
-      const lEndo = text(P0, cx0(3), cy0(37) - 18, '內溫動物', { 'font-size': 24, fill: ENDO, 'font-weight': 700, opacity: 0 });
+      const lEndo = text(P0, cx0(3), cy0(37) + 36, '內溫動物', { 'font-size': 24, fill: ENDO, 'font-weight': 700, opacity: 0 });
       const lEcto = text(P0, cx0(24), cy0(26) + 34, '外溫動物', { 'font-size': 24, fill: ECTO, 'font-weight': 700, opacity: 0 });
+      // 卡片：名稱、例子、體溫、熱從哪裡來（＋保溫的構造）
       const cards0 = [
-        [110, '內溫動物（恆溫動物）', ENDO, '鳥類、哺乳類（包括人）', '體溫大致維持恆定'],
-        [380, '外溫動物（變溫動物）', ECTO, '魚類、兩生類、爬蟲類', '體溫隨環境溫度改變'],
-      ].map(([y, h, col, a, b]) => {
+        [70, 290, '內溫動物（恆溫動物）', ENDO, '鳥類、哺乳類（包括人）', '體溫大致維持恆定', '熱：主要來自身體的代謝（呼吸作用）', '保溫：羽毛、毛髮、皮下脂肪'],
+        [390, 250, '外溫動物（變溫動物）', ECTO, '魚類、兩生類、爬蟲類', '體溫隨環境溫度改變', '熱：主要從外界環境吸收', '例如曬太陽'],
+      ].map(([y, h, title, col, a, b, heat, extra]) => {
         const cg = g(P0, { opacity: 0 });
-        el('rect', { x: 690, y, width: 470, height: 220, rx: 16, fill: '#122230', stroke: col, 'stroke-width': 2 }, cg);
-        text(cg, 925, y + 56, h, { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700, fill: col });
-        text(cg, 925, y + 118, a, { 'font-size': 26, 'text-anchor': 'middle' });
-        text(cg, 925, y + 170, b, { 'font-size': 24, 'text-anchor': 'middle', fill: C.ink2 });
+        el('rect', { x: 690, y, width: 470, height: h, rx: 16, fill: '#122230', stroke: col, 'stroke-width': 2 }, cg);
+        text(cg, 925, y + 48, title, { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700, fill: col });
+        text(cg, 925, y + 94, a, { 'font-size': 26, 'text-anchor': 'middle' });
+        text(cg, 925, y + 136, b, { 'font-size': 24, 'text-anchor': 'middle', fill: C.ink2 });
+        el('line', { x1: 714, y1: y + 156, x2: 1136, y2: y + 156, stroke: '#2b4252', 'stroke-width': 1.5 }, cg);
+        // 小圖示：火焰（產熱）／太陽（吸熱）
+        if (col === ENDO) el('path', { d: `M 724,${y + 196} C 712,${y + 184} 718,${y + 172} 726,${y + 164} C 726,${y + 174} 732,${y + 176} 734,${y + 170} C 744,${y + 182} 740,${y + 194} 730,${y + 198} Z`, fill: HEAT }, cg);
+        else { el('circle', { cx: 728, cy: y + 186, r: 9, fill: C.hi }, cg); for (let k = 0; k < 8; k++) { const a2 = (k / 8) * 6.283; el('line', { x1: 728 + Math.cos(a2) * 12, y1: y + 186 + Math.sin(a2) * 12, x2: 728 + Math.cos(a2) * 17, y2: y + 186 + Math.sin(a2) * 17, stroke: C.hi, 'stroke-width': 2.5 }, cg); } }
+        text(cg, 752, y + 194, heat, { 'font-size': 23, fill: C.ink, 'font-weight': 700 });
+        text(cg, 752, y + 232, extra, { 'font-size': 23, fill: col === ENDO ? '#ffd0b0' : C.ink2 });
+        if (col === ENDO) { // 羽毛的小圖示
+          const fx = 732, fy = y + 226;
+          el('path', { d: `M ${fx - 8},${fy + 12} C ${fx - 6},${fy} ${fx},${fy - 10} ${fx + 8},${fy - 14} C ${fx + 8},${fy - 4} ${fx + 2},${fy + 6} ${fx - 8},${fy + 12} Z`, fill: '#e8dcc8', stroke: '#a8987a', 'stroke-width': 1 }, cg);
+          el('line', { x1: fx - 10, y1: fy + 14, x2: fx + 6, y2: fy - 10, stroke: '#8a7a5a', 'stroke-width': 1.5 }, cg);
+        }
         return cg;
       });
       tl.addLabel('s0');
@@ -81,7 +93,7 @@
       el('path', { d: 'M 120,470 C 140,410 260,396 360,404 C 440,410 470,440 480,470 Z', fill: '#5a6670', stroke: '#8aa1ae', 'stroke-width': 2 }, P1);
       lizard(P1, 290, 396, 0.9);
       const th1 = thermo(P1, 510, 420, 160);
-      text(P1, 510, 470, '體溫', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(P1, 510, 480, '體溫', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       const r1a = text(P1, 310, 540, '身體變暖，才能活動', { 'font-size': 26, 'text-anchor': 'middle', opacity: 0 });
       // 右：大石頭下的陰影
       el('circle', { cx: 1090, cy: 190, r: 36, fill: C.hi }, P1);
@@ -89,7 +101,7 @@
       el('path', { d: 'M 700,470 C 720,420 980,410 1030,470 Z', fill: '#0b141c', opacity: 0.8 }, P1);
       const liz2 = lizard(P1, 1000, 456, 0.9);
       const th2 = thermo(P1, 1100, 420, 160);
-      text(P1, 1100, 470, '體溫', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(P1, 1100, 480, '體溫', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       const r1b = text(P1, 890, 540, '避免體溫過高', { 'font-size': 26, 'text-anchor': 'middle', opacity: 0 });
       th1.set(0.25); th2.set(0.85);
       const beh = g(P1, { opacity: 0 });
@@ -120,11 +132,12 @@
         text(sg, x + 30, 534, '肌肉', { 'font-size': 20, fill: C.muscle });
         const ves = el('path', { d: `M ${x + 20},370 C ${x + 140},370 ${x + 160},300 ${x + 270},300 C ${x + 380},300 ${x + 400},370 ${x + 520},370`, fill: 'none', stroke: C.blood, 'stroke-width': 12, 'stroke-linecap': 'round' }, sg);
         text(sg, x + 520, 172, '散出的熱', { 'font-size': 20, 'text-anchor': 'end', fill: HEAT });
-        const heat = [0, 1, 2, 3, 4].map((k) => el('path', { d: `M ${x + 90 + k * 90},240 q -10,-16 0,-32 q 10,-16 0,-32`, fill: 'none', stroke: HEAT, 'stroke-width': 4, 'stroke-linecap': 'round', opacity: 0 }, sg));
+        // 熱氣排在「皮膚」和「散出的熱」兩個標籤之間，不穿過文字
+        const heat = [0, 1, 2, 3, 4].map((k) => el('path', { d: `M ${x + 90 + k * 80},240 q -10,-16 0,-32 q 10,-16 0,-32`, fill: 'none', stroke: HEAT, 'stroke-width': 4, 'stroke-linecap': 'round', opacity: 0 }, sg));
         return { sg, ves, heat, mus };
       };
       const H = skin(40, true), Cd = skin(620, false);
-      const drops2 = [0, 1, 2, 3].map((k) => S.place(g(P2, { opacity: 0 }), { x: 120 + k * 110, y: 238 }));
+      const drops2 = [0, 1, 2, 3].map((k) => S.place(g(P2, { opacity: 0 }), { x: 150 + k * 100, y: 238 }));
       drops2.forEach((d) => el('path', { d: DROP, fill: C.water, transform: 'scale(1.5)' }, d));
       const lab2 = [
         [310, 590, '流汗：汗水蒸發帶走熱', C.water],
@@ -153,7 +166,7 @@
       el('rect', { x: TX0, y: yv(140), width: TX1 - TX0, height: yv(70) - yv(140), fill: 'rgba(255,209,102,0.08)' }, CH);
       text(CH, TX1 - 8, yv(140) + 26, '正常範圍＊', { 'font-size': 20, 'text-anchor': 'end', fill: C.hi });
       [50, 100, 150, 200].forEach((v) => { el('line', { x1: TX0, y1: yv(v), x2: TX1, y2: yv(v), stroke: GRID, 'stroke-width': 1.5 }, CH); text(CH, TX0 - 12, yv(v) + 7, String(v), { 'font-size': 20, 'text-anchor': 'end', fill: C.mute }); });
-      [[18, '18 時'], [21, '21 時'], [24, '0 時'], [27, '3 時'], [30, '6 時']].forEach(([t, s]) => text(CH, xt(t), TY0 + 28, s, { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }));
+      [[18, '18 時'], [21, '21 時'], [24, '0 時'], [27, '3 時'], [30, '6 時']].forEach(([t, s]) => text(CH, xt(t), TY0 + 38, s, { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }));
       text(CH, TX0 - 100, 70, '血糖（mg/dL）＊', { 'font-size': 20, fill: C.ink2 });
       const Gt = (t) => {
         const r = (t - 18.5) / 0.7, b = r <= 0 ? 0 : r * Math.exp(1 - r); // 平滑的飯後曲線
@@ -209,6 +222,9 @@
       const res4 = g(M4, { opacity: 0 });
       arrow(res4, 870, 520, 920, 520, C.ink2, 4, 14);
       S.pill(res4, 1040, 520, '血糖上升 ↑', { size: 28, color: GLUC, edge: GLUC });
+      const adr4 = g(M4, { opacity: 0 });
+      text(adr4, 1040, 584, '腎上腺素也能', { 'font-size': 22, 'text-anchor': 'middle', fill: '#ffb3c8' });
+      text(adr4, 1040, 614, '使血糖上升', { 'font-size': 22, 'text-anchor': 'middle', fill: '#ffb3c8' });
       const flow = (dots) => (u) => dots.forEach((d, i) => { const k = (u * 3 + i / 4) % 1; d.setAttribute('cx', S.lerp(262, 400, k)); d.setAttribute('cy', 520 + Math.sin(k * 9 + i) * 5); d.style.opacity = u <= 0 || u >= 1 ? 0 : Math.sin(k * Math.PI); });
       tl.addLabel('s3');
       S.hide(tl, P2, 's3', 0.4);
@@ -229,6 +245,7 @@
       S.drive(tl, (u) => { free4.forEach((f, i) => { const k = S.smoothstep(i * 0.2, i * 0.2 + 0.5, u); f.setAttribute('transform', `translate(${S.lerp(600 + i * 30, 556 + i * 32, k)},${S.lerp(504, 566, k)})`); f.style.opacity = k > 0 ? 1 : 0; }); gly4.style.opacity = 1 - 0.4 * u; }, 2, 's4+=2.4', 'none');
       S.show(tl, flatLbl, 's4+=3.4', 0.3);
       S.show(tl, res4, 's4+=4', 0.4);
+      S.show(tl, adr4, 's4+=4.6', 0.4);
 
       // ===== 5 糖尿病 =====
       const P5 = g(root, { opacity: 0 });
@@ -250,7 +267,7 @@
       el('rect', { x: 800, y: 110, width: 360, height: 520, rx: 16, ...FRAME }, side5);
       text(side5, 980, 160, '原因', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700 });
       text(side5, 980, 204, '胰島素分泌不足，', { 'font-size': 22, 'text-anchor': 'middle' });
-      text(side5, 980, 236, '或身體對胰島素的反應變差', { 'font-size': 22, 'text-anchor': 'middle' });
+      text(side5, 980, 236, '（補充）或身體對胰島素反應變差', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       text(side5, 980, 300, '結果', { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700 });
       text(side5, 980, 342, '血糖長期過高', { 'font-size': 22, 'text-anchor': 'middle', fill: ENDO });
       el('path', { d: 'M 930,400 L 930,560 L 1030,560 L 1030,400' }, el('clipPath', { id: 'ho5cup' }, el('defs', {}, side5)));
@@ -297,32 +314,35 @@
       });
       const ac6 = g(P6, { opacity: 0 });
       S.pill(ac6, 900, 590, '就像冷氣機：太熱就開，夠涼就停', { size: 26, color: C.hi, edge: C.hi });
+      const sys6 = g(P6, { opacity: 0 });
+      S.pill(sys6, 330, 640, '由神經系統和內分泌系統協調', { size: 24, color: '#9fd8ff', edge: '#9fd8ff' });
       tl.addLabel('s6');
       S.hide(tl, P5, 's6', 0.4);
       S.show(tl, P6, 's6+=0.3', 0.4);
       nodes6.forEach((n, i) => { S.show(tl, n, `s6+=${0.6 + i * 0.8}`, 0.4); S.show(tl, arcs6[i], `s6+=${1 + i * 0.8}`, 0.3); });
       S.show(tl, ex6, 's6+=4', 0.5);
+      S.show(tl, sys6, 's6+=3.6', 0.4);
       S.show(tl, ac6, 's6+=5', 0.5);
 
       return {
         tl,
         notes: [
-          '＊示意：線只表示趨勢，不是真實數據。內溫動物也稱為恆溫動物，外溫動物也稱為變溫動物。',
+          '＊示意：線只表示趨勢，不是真實數據。內溫動物也稱為恆溫動物，外溫動物也稱為變溫動物。羽毛、毛髮和皮下脂肪能減少體熱散失。',
           '＊示意：溫度計只表示體溫的高低。內溫動物也會用行為幫忙調節體溫，例如人會加衣服、搧風、找陰涼的地方。',
           '＊示意：皮膚剖面簡化了。人的體溫約 37 °C，由腦協調這些反應（補充：體溫調節中樞）。冷的時候起雞皮疙瘩，是毛髮旁的小肌肉收縮（補充）。',
           '＊示意：數值和曲線都是示意。健康的人空腹血糖約 70～100 mg/dL，飯後會暫時升高，通常不超過約 140 mg/dL。胰島是胰臟中能分泌激素的細胞群，屬於內分泌系統（5-2）。',
-          '＊示意：曲線是示意。睡覺時很久沒有吃東西，靠肝糖分解維持血糖。腎上腺素也能使血糖上升（補充）。',
+          '＊示意：曲線是示意。很久沒吃東西（例如睡了一整晚），靠肝糖分解維持血糖。腎上腺分泌的腎上腺素（例如緊張、緊急時）也能使血糖上升（見 5-2）。',
           '＊示意：曲線不是真實數據。血糖太高時，腎臟來不及把葡萄糖全部送回血液，葡萄糖就會出現在尿中。糖尿病要就醫治療，並注意飲食和運動。',
           '這種「偏離 → 察覺 → 調節 → 回到正常」的過程，高中稱為回饋（負回饋）作用（補充）。恆定不是固定不變，而是在正常範圍內小幅變動。',
         ],
         steps: [
-          '依體溫能否維持穩定，動物分成兩類：<b>內溫動物</b>（鳥類、哺乳類）體溫大致維持恆定；<b>外溫動物</b>（魚類、兩生類、爬蟲類）的體溫會隨環境溫度改變。',
+          '<b>內溫動物</b>（鳥類、哺乳類）的熱主要來自身體的<b>代謝</b>，體溫大致恆定；<b>外溫動物</b>（魚類、兩生類、爬蟲類）主要從<b>外界</b>吸收熱，體溫隨環境溫度改變。',
           '外溫動物主要靠<b>行為</b>調節體溫：天冷時曬太陽，身體變暖才能活動；太熱時躲到<b>陰涼處</b>或洞穴中。',
           '人是內溫動物，體溫約 37 °C。<b>熱</b>的時候：流汗、皮膚血管<b>擴張</b>，增加散熱。<b>冷</b>的時候：皮膚血管<b>收縮</b>減少散熱，肌肉<b>顫抖</b>產生熱。',
           '飯後，葡萄糖被吸收進入血液，<b>血糖上升</b>。胰臟中的<b>胰島</b>分泌<b>胰島素</b>，使葡萄糖進入細胞，並在<b>肝臟</b>合成<b>肝糖</b>儲存，血糖下降。',
-          '很久沒有吃東西，血糖逐漸下降。胰島分泌<b>升糖素</b>，使肝臟把<b>肝糖分解</b>成葡萄糖送入血液，血糖上升，維持在正常範圍。',
-          '<b>糖尿病</b>：胰島素分泌<b>不足</b>，或身體對胰島素的反應變差，血糖降不下來、長期<b>過高</b>，尿中可能出現<b>葡萄糖</b>。',
-          '恆定的調節：體內狀態<b>偏離</b>正常範圍時，身體察覺後做出<b>反應</b>，讓它<b>回到正常範圍</b>。就像冷氣機：太熱就開，夠涼就停。',
+          '很久沒有吃東西，血糖逐漸下降。胰島分泌<b>升糖素</b>，使肝臟把<b>肝糖分解</b>成葡萄糖送入血液，血糖上升。<b>腎上腺素</b>也能使血糖上升。',
+          '<b>糖尿病</b>：胰島素分泌<b>不足</b>（補充：或身體對胰島素的反應變差），血糖降不下來、長期<b>過高</b>，尿中可能出現<b>葡萄糖</b>。',
+          '恆定的調節：體內狀態<b>偏離</b>正常範圍時，身體察覺後做出<b>反應</b>，讓它<b>回到正常範圍</b>。這些調節靠<b>神經系統</b>和<b>內分泌系統</b>協調。',
         ],
       };
     },

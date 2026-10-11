@@ -14,7 +14,7 @@
       draw: (p) => D.whale(p, AX + 10, AY + 10, 1.05), mini: (p) => D.whale(p, 0, 0, 0.19, { spout: false }),
       cues: [['blow', 470, 190, '噴氣孔'], ['tail', 520, 470, '水平的尾鰭']],
       hint: { vert: '想一想：鯨魚的身體構造比較像魚和人，還是像水母和烏賊？', q2: '看看線索：鯨魚用鰓還是用肺呼吸？小鯨是從卵孵出來，還是直接生出來？' },
-      why: '鯨魚有脊椎骨，用<b>肺</b>呼吸、胎生、用<b>乳汁</b>哺育幼兒 → <b>哺乳類</b>，不是魚類。' },
+      why: '鯨魚有脊椎骨，用<b>肺</b>呼吸、胎生、用<b>乳汁</b>哺育幼體 → <b>哺乳類</b>，不是魚類。' },
     { k: 'star', name: '海星', obs: ['生活在海中，身體是五條腕組成的星形', '用腹面許多細小的管足慢慢移動'], vert: false, q2: 'echi',
       draw: (p) => D.starfish(p, AX, AY + 10, 1.4, 10), mini: (p) => D.starfish(p, 0, 0, 0.3),
       cues: [['arm', 520, 250, '腕']],
@@ -24,12 +24,12 @@
       draw: (p) => D.bat(p, AX + 10, AY + 20, 1.1), mini: (p) => D.bat(p, 0, 0, 0.19),
       cues: [['finger', 150, 190, '翅膀是皮膜，指骨很長'], ['fur', 470, 480, '身上有毛']],
       hint: { vert: '想一想：蝙蝠的身體構造比較像鳥和老鼠，還是像昆蟲？', q2: '鳥類有羽毛、會產卵。蝙蝠身上長的是羽毛嗎？小蝙蝠是怎麼出生的？' },
-      why: '蝙蝠有毛、胎生、用<b>乳汁</b>哺育幼兒 → <b>哺乳類</b>；牠是哺乳類中會飛的動物，不是鳥類。' },
+      why: '蝙蝠有毛、胎生、用<b>乳汁</b>哺育幼體 → <b>哺乳類</b>；牠是哺乳類中會飛的動物，不是鳥類。' },
     { k: 'cuttle', name: '烏賊', obs: ['用很多隻腕捕捉食物', '殼退化，藏在身體裡面'], vert: false, q2: 'moll',
       draw: (p) => D.cuttle(p, AX + 40, AY, 1.2), mini: (p) => D.cuttle(p, 6, 0, 0.26),
       cues: [['arm', 120, 470, '腕']],
       hint: { vert: '烏賊摸起來軟軟的，身體裡只有一片退化的殼。牠有一節一節的脊椎骨嗎？', q2: '烏賊的殼退化了。想一想：蝸牛、文蛤也有殼，牠們屬於哪一類？' },
-      why: '烏賊沒有脊椎骨，身體<b>柔軟、不分節</b>，殼退化在身體裡 → <b>軟體動物</b>，不是魚。' },
+      why: '烏賊沒有脊椎骨，身體<b>柔軟、不分節</b>，殼退化、藏在身體裡 → <b>軟體動物</b>，不是魚。' },
     { k: 'spider', name: '蜘蛛', obs: ['身體外面有硬硬的外骨骼', '會結網捕捉昆蟲'], vert: false, q2: 'arth', insect: 'no',
       draw: (p) => D.spider(p, AX, AY + 10, 1.2), mini: (p) => D.spider(p, 0, -14, 0.22),
       cues: [], legs: true,
@@ -45,15 +45,15 @@
     { k: 'jelly', name: '水母', obs: ['生活在海中', '傘狀的身體下面有許多觸手'], vert: false, q2: 'cnid', draw: (p) => D.jelly(p, AX, AY - 100, 1.1), mini: (p) => D.jelly(p, 0, -20, 0.22), cues: [['tentacle', 120, 470, '觸手']], hint: { vert: '水母的身體軟軟的、像傘。牠有脊椎骨嗎？', q2: '想一想：水母和珊瑚、海葵是同一類。牠們的觸手碰到會怎樣？' }, why: '水母沒有脊椎骨，觸手上有<b>刺絲胞</b> → <b>刺絲胞動物</b>。' },
     { k: 'plan', name: '渦蟲', obs: ['生活在溪流的石頭下', '頭部有兩個眼點'], vert: false, q2: 'flat', draw: (p) => D.planarian(p, AX, AY, 1.6), mini: (p) => D.planarian(p, 0, 0, 0.32), cues: [], hint: { vert: '渦蟲的身體又軟又扁。牠有脊椎骨嗎？', q2: '從側面看渦蟲，身體是圓滾滾的，還是很薄？' }, why: '渦蟲沒有脊椎骨，身體<b>扁平</b> → <b>扁形動物</b>。' },
     { k: 'snail', name: '蝸牛', obs: ['背著螺旋形的殼', '用腹足慢慢爬'], vert: false, q2: 'moll', draw: (p) => D.snail(p, AX - 10, AY + 90, 1.3), mini: (p) => D.snail(p, -4, 20, 0.26), cues: [], hint: { vert: '蝸牛的身體軟軟的。牠有脊椎骨嗎？', q2: '想一想：蝸牛和烏賊、文蛤是同一類。' }, why: '蝸牛身體柔軟、有殼 → <b>軟體動物</b>。' },
-    { k: 'worm', name: '蚯蚓', obs: ['住在潮濕的土裡', '靠身體伸縮爬行'], vert: false, q2: 'anne', draw: (p) => D.worm(p, AX, AY, 1.3), mini: (p) => D.worm(p, 0, 0, 0.24), cues: [['clitellum', 300, 200, '環帶']], hint: { vert: '蚯蚓的身體軟軟的。牠有脊椎骨嗎？', q2: '仔細看蚯蚓的身體表面：是一圈一圈的嗎？' }, why: '蚯蚓身體由許多<b>環節</b>組成 → <b>環節動物</b>。' },
+    { k: 'worm', name: '蚯蚓', obs: ['住在潮溼的土裡', '靠身體伸縮爬行'], vert: false, q2: 'anne', draw: (p) => D.worm(p, AX, AY, 1.3), mini: (p) => D.worm(p, 0, 0, 0.24), cues: [['clitellum', 300, 200, '環帶']], hint: { vert: '蚯蚓的身體軟軟的。牠有脊椎骨嗎？', q2: '仔細看蚯蚓的身體表面：是一圈一圈的嗎？' }, why: '蚯蚓身體由許多<b>環節</b>組成 → <b>環節動物</b>。' },
     { k: 'bee', name: '蜜蜂', obs: ['身體外面有外骨骼', '有翅膀和觸角'], vert: false, q2: 'arth', insect: 'yes', draw: (p) => D.bee(p, AX, AY, 1.15), mini: (p) => D.bee(p, 0, 0, 0.22), cues: [], hint: { vert: '蜜蜂的身體外面有外骨骼。身體裡面有脊椎骨嗎？', q2: '蜜蜂和蝦、蟹、蜘蛛一樣有外骨骼。牠們屬於哪一類？', insect: '數一數：有幾對腳？身體分成幾部分？' }, why: '蜜蜂有外骨骼、身體和腳分節 → <b>節肢動物</b>。', why2: '蜜蜂身體分成頭、胸、腹，<b>3 對腳</b>、1 對觸角、2 對翅 → <b>昆蟲</b>。' },
     { k: 'crab', name: '螃蟹', obs: ['有硬殼（外骨骼）', '5 對腳，第 1 對是螯足'], vert: false, q2: 'arth', insect: 'no', draw: (p) => D.crab(p, AX, AY + 20, 1.2), mini: (p) => D.crab(p, 0, 0, 0.22), cues: [], hint: { vert: '螃蟹的硬殼是外骨骼。身體裡面有脊椎骨嗎？', q2: '螃蟹和蜜蜂、蜘蛛一樣有外骨骼。牠們屬於哪一類？', insect: '昆蟲有 3 對腳。螃蟹有幾對腳？' }, why: '螃蟹有外骨骼、腳分節 → <b>節肢動物</b>。', why2: '螃蟹有 5 對腳 → 屬於<b>甲殼類</b>，不是昆蟲。' },
     { k: 'centi', name: '蜈蚣', obs: ['身體有許多體節', '每節有 1 對腳'], vert: false, q2: 'arth', insect: 'no', draw: (p) => D.centipede(p, AX + 30, AY, 1.1), mini: (p) => D.centipede(p, 0, 0, 0.22), cues: [], hint: { vert: '蜈蚣有外骨骼。身體裡面有脊椎骨嗎？', q2: '蜈蚣和蜜蜂、螃蟹一樣有外骨骼。牠們屬於哪一類？', insect: '昆蟲有 3 對腳。蜈蚣有幾對腳？' }, why: '蜈蚣有外骨骼、腳分節 → <b>節肢動物</b>。', why2: '蜈蚣有許多對腳 → 屬於<b>多足類</b>，不是昆蟲。' },
     { k: 'fish', name: '吳郭魚', obs: ['用鰓呼吸', '身上有鱗片'], vert: true, q2: 'fish', draw: (p) => D.fish(p, AX, AY, 1.35), mini: (p) => D.fish(p, 2, 0, 0.24), cues: [['gill', 120, 470, '鰓蓋']], hint: { vert: '想一想：魚的背部有沒有一節一節的骨頭？', q2: '吳郭魚用什麼呼吸？身上有什麼？' }, why: '吳郭魚用鰓呼吸、有鱗片 → <b>魚類</b>。' },
-    { k: 'frog', name: '青蛙', obs: ['皮膚濕潤', '幼體（蝌蚪）用鰓呼吸'], vert: true, q2: 'amph', draw: (p) => D.frog(p, AX, AY + 80, 1.6), mini: (p) => D.frog(p, 0, 18, 0.3), cues: [], hint: { vert: '想一想：青蛙的身體構造比較像魚，還是像蚯蚓？', q2: '線索：幼體在水中用鰓呼吸，成體用肺和皮膚呼吸。' }, why: '青蛙幼體用鰓、成體用肺和皮膚呼吸 → <b>兩生類</b>。' },
+    { k: 'frog', name: '青蛙', obs: ['皮膚溼潤', '幼體（蝌蚪）用鰓呼吸'], vert: true, q2: 'amph', draw: (p) => D.frog(p, AX, AY + 80, 1.6), mini: (p) => D.frog(p, 0, 18, 0.3), cues: [], hint: { vert: '想一想：青蛙的身體構造比較像魚，還是像蚯蚓？', q2: '線索：幼體在水中用鰓呼吸，成體用肺和皮膚呼吸。' }, why: '青蛙幼體用鰓、成體用肺和皮膚呼吸 → <b>兩生類</b>。' },
     { k: 'lizard', name: '蜥蜴', obs: ['體表有鱗片', '產有卵殼的卵'], vert: true, q2: 'rept', draw: (p) => D.lizard(p, AX - 20, AY, 1.2), mini: (p) => D.lizard(p, -4, 0, 0.22), cues: [], hint: { vert: '想一想：蜥蜴的身體構造比較像蛇和鱷魚，還是像蚯蚓？', q2: '線索：用肺呼吸、有鱗片、卵有卵殼。' }, why: '蜥蜴有鱗片、用肺呼吸、卵有卵殼 → <b>爬蟲類</b>。' },
     { k: 'bird', name: '麻雀', obs: ['身上有羽毛', '前肢變成翅膀'], vert: true, q2: 'bird', draw: (p) => D.bird(p, AX + 10, AY + 100, 1.4), mini: (p) => D.bird(p, 0, 24, 0.3), cues: [], hint: { vert: '想一想：麻雀的翅膀裡有骨頭嗎？背部呢？', q2: '線索：有羽毛。' }, why: '麻雀有羽毛、前肢變成翅膀 → <b>鳥類</b>。' },
-    { k: 'rabbit', name: '兔', obs: ['身上有毛', '小兔在母兔的身體裡發育後才出生'], vert: true, q2: 'mamm', draw: (p) => D.rabbit(p, AX, AY + 120, 1.4), mini: (p) => D.rabbit(p, 0, 32, 0.28), cues: [], hint: { vert: '想一想：兔子的身體構造比較像人，還是像昆蟲？', q2: '兔子身上長的是毛還是羽毛？小兔是怎麼出生的？' }, why: '兔有毛、用乳汁哺育幼兒 → <b>哺乳類</b>。' },
+    { k: 'rabbit', name: '兔', obs: ['身上有毛', '小兔在母兔的身體裡發育後才出生'], vert: true, q2: 'mamm', draw: (p) => D.rabbit(p, AX, AY + 120, 1.4), mini: (p) => D.rabbit(p, 0, 32, 0.28), cues: [], hint: { vert: '想一想：兔子的身體構造比較像人，還是像昆蟲？', q2: '兔子身上長的是毛還是羽毛？小兔是怎麼出生的？' }, why: '兔有毛、用乳汁哺育幼體 → <b>哺乳類</b>。' },
   ];
 
   S.registerLab({
@@ -65,7 +65,7 @@
   .labZ2 .col { display: grid; gap: 0.9rem; min-width: 0; }
   .labZ2 .pad { padding: 1rem 1.25rem; }
   .labZ2 .crumbs { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.6rem; }
-  .labZ2 .crumbs span { font-size: 0.85rem; padding: 0.15em 0.6em; border-radius: 999px; border: 1px solid var(--good); color: var(--good); }
+  .labZ2 .crumbs span { font-size: 0.92rem; padding: 0.15em 0.6em; border-radius: 999px; border: 1px solid var(--good); color: var(--good); }
   .labZ2 .acts.many .ctl { flex: 1 1 8em; font-size: 1rem; padding: 0.55em 0.7em; }
   .labZ2 .table-wrap { overflow-x: auto; }
   .labZ2 .free-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -110,10 +110,10 @@
       const bx = {};
       const side = (title, col, y) => { text(root, 630, y, title, { 'font-size': 24, fill: col, 'font-weight': 700 }); };
       side('脊椎動物', VER, 78);
-      const vHead = el('rect', { x: 620, y: 52, width: 112, height: 36, rx: 8, fill: 'none', stroke: VER, 'stroke-width': 0 }, root);
+      const vHead = el('rect', { x: 620, y: 52, width: 116, height: 36, rx: 8, fill: 'none', stroke: VER, 'stroke-width': 0 }, root);
       VG.forEach(([k, n], i) => { const cx = 676 + i * 111; bx[k] = { cx, y: 96, w: 106, h: 140, col: VER, n }; });
       side('無脊椎動物', INV, 280);
-      const iHead = el('rect', { x: 620, y: 254, width: 136, height: 36, rx: 8, fill: 'none', stroke: INV, 'stroke-width': 0 }, root);
+      const iHead = el('rect', { x: 620, y: 254, width: 142, height: 36, rx: 8, fill: 'none', stroke: INV, 'stroke-width': 0 }, root);
       IG.forEach(([k, n], i) => { const cx = 715 + (i % 3) * 186; bx[k] = { cx, y: 298 + Math.floor(i / 3) * 142, w: 180, h: 134, col: INV, n }; });
       Object.values(bx).forEach((b) => {
         b.g = g(root);
@@ -204,7 +204,7 @@
           const ok = first.filter(Boolean).length;
           mbox.innerHTML = `<div class="mission-top"><h2>六種動物都分好了</h2>${dots}</div>
             <p class="m-text">第一次就答對：<b>${ok} / ${ANIMALS.length}</b> 種</p>
-            <div class="fb ok"><strong>容易弄錯的動物</strong>鯨魚、蝙蝠是哺乳類（用肺呼吸、用乳汁哺育幼兒）；海馬是魚類。<br>海星是棘皮動物、烏賊是軟體動物，都不是魚。<br>蜘蛛有 4 對腳，是節肢動物中的蛛形類，不是昆蟲。</div>
+            <div class="fb ok"><strong>容易弄錯的動物</strong>鯨魚、蝙蝠是哺乳類（用肺呼吸、用乳汁哺育幼體）；海馬是魚類。<br>海星是棘皮動物、烏賊是軟體動物，都不是魚。<br>蜘蛛有 4 對腳，是節肢動物中的蛛形類，不是昆蟲。</div>
             <button class="ctl primary" type="button" id="labZ2-again">再做一次</button>`;
           mbox.querySelector('#labZ2-again').addEventListener('click', reset);
           $('free').open = true;

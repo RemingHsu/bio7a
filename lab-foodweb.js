@@ -31,7 +31,7 @@
       why: '草 → 野兔 → 老鷹：老鷹是<b>次級</b>消費者；草 → 蚱蜢 → 青蛙 → 蛇 → 老鷹：老鷹是<b>四級</b>消費者。同一種生物在不同的食物鏈中，級別可能不同。', show: 'chains' },
     { type: 'predict', title: '蛇變少了', q: '如果<b>蛇</b>被大量捕捉、數量變少，短時間內<b>青蛙</b>的數量會怎樣？點選你的預測：', opts: ['增加', '減少', '不變'], ans: 0,
       why: '青蛙的天敵（蛇）變少，被吃掉的青蛙減少，所以青蛙<b>增加</b>；青蛙多了，吃掉更多蚱蜢，蚱蜢可能<b>減少</b>。食物網中一種生物改變，會連帶影響其他生物。' },
-    { type: 'quiz', title: '能量傳到哪裡？', q: '草的能量約 10000 單位＊。沿著 草 → 蚱蜢 → 青蛙，傳到<b>青蛙</b>的能量大約是多少？', opts: ['約 1000 單位', '約 100 單位', '約 10 單位'], ans: 1,
+    { type: 'quiz', title: '能量傳到哪裡？', q: '草的能量約 10000 單位＊。沿著「草 → 蚱蜢 → 青蛙」，傳到<b>青蛙</b>的能量大約是多少？', opts: ['約 1000 單位', '約 100 單位', '約 10 單位'], ans: 1,
       hint: '能量每往上傳一層，大約只剩下原來的 10%。先算算蚱蜢得到多少。',
       why: '草 10000 → 蚱蜢約 1000 → 青蛙約 100 單位。每一層的能量大部分在生命活動中以<b>熱</b>的形式散失，只有約 10% 傳到下一層。', show: 'energy' },
   ];
@@ -144,7 +144,7 @@
         return list.map(([k, v], i) => {
           const cx = PX + 24 + gap * (i + 0.5);
           const r = el('rect', { x: cx - bw / 2, y: BAR.y0 - v, width: bw, height: v, rx: 4, fill: '#5f93ad' }, panel);
-          text(panel, cx, BAR.y0 + 32 + (n > 4 && i % 2 ? 30 : 0), ORG[k].name, { 'font-size': n > 4 ? 22 : 24, 'text-anchor': 'middle', fill: C.ink });
+          text(panel, cx, BAR.y0 + 32 + (n > 4 && i % 2 ? 34 : 0), ORG[k].name, { 'font-size': n > 4 ? 22 : 24, 'text-anchor': 'middle', fill: C.ink });
           const a = text(panel, cx, BAR.y0 - v - 12, '', { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700 });
           return { k, r, a, cx, v };
         });
@@ -156,7 +156,8 @@
         anim = gsap.timeline();
         panel.innerHTML = '';
         ptitle('能量（單位＊）');
-        [['草', '10000', 260, '#4f9a4a'], ['蚱蜢', '約 1000', 170, '#c88a3a'], ['青蛙', '約 100', 90, '#c86a3a']].forEach(([n, v, w, col], i) => {
+        // 框的寬度：字放大到 24 後，最上層「約 100」左右還有空
+        [['草', '10000', 260, '#4f9a4a'], ['蚱蜢', '約 1000', 180, '#c88a3a'], ['青蛙', '約 100', 110, '#c86a3a']].forEach(([n, v, w, col], i) => {
           const y = 470 - i * 110, cg = g(panel, { opacity: 0 });
           el('rect', { x: PX + PW / 2 - w / 2, y, width: w, height: 70, rx: 8, fill: col }, cg);
           text(cg, PX + PW / 2, y + 30, n, { 'font-size': 24, 'text-anchor': 'middle', fill: '#fff', 'font-weight': 700 });
@@ -189,7 +190,7 @@
       function tap(k) {
         const m = MISSIONS[mi];
         if (m && (m.type !== 'tap' || done)) { status(done ? '按任務卡上的「下一個任務」繼續。' : '這個任務請在任務卡上作答。'); return; }
-        if (!m) { status(`${ORG[k].name}（${ROLE[k]}）：吃 ${k === 'grass' ? '（自己製造養分）' : names(eats(k))}；被 ${names(eatenBy(k))} 吃。`); return; }
+        if (!m) { status(`${ORG[k].name}（${ROLE[k]}）：${k === 'grass' ? '自己製造養分' : `吃${names(eats(k))}`}；${eatenBy(k).length ? `被${names(eatenBy(k))}吃` : '這個食物網中沒有吃牠的生物'}。`); return; }
         if (m.targets.includes(k)) {
           if (found.has(k)) { wrongTap = 'again'; drawMission(); return; }
           found.add(k); known.add(k); flash(k, UP); wrongTap = null;
@@ -278,11 +279,11 @@
           onComplete: () => bs.forEach((b) => { const d = b.k === k || preds.includes(b.k) ? '↓' : prey.includes(b.k) ? '↑' : ''; b.a.textContent = d; b.a.setAttribute('fill', d === '↑' ? UP : DN); marks[b.k].textContent = d; marks[b.k].setAttribute('fill', d === '↑' ? UP : DN); }) });
         orgG[k].style.opacity = 0.35;
         let msg = `<b>${ORG[k].name}</b>大量減少：`;
-        if (prey.length) msg += `牠吃的 <b>${names(prey)}</b> 天敵變少，可能<b>增加</b>；`;
-        if (preds.length) msg += `吃牠的 <b>${names(preds)}</b> 食物變少，可能<b>減少</b>`;
-        else msg += '牠沒有天敵在這個食物網中';
-        if (k === 'grass') msg = '<b>草</b>大量減少：直接吃草的 <b>蚱蜢、野兔</b> 食物不足，可能<b>減少</b>，接著整個食物網都會受影響。';
-        if (k === 'hawk') msg = '<b>老鷹</b>大量減少：牠吃的 <b>蛇、野兔</b> 天敵變少，可能<b>增加</b>。';
+        if (prey.length) msg += `牠吃的<b>${names(prey)}</b>少了天敵，可能<b>增加</b>；`;
+        if (preds.length) msg += `吃牠的<b>${names(preds)}</b>少了食物，可能<b>減少</b>`;
+        else msg += '這個食物網中沒有牠的天敵';
+        if (k === 'grass') msg = '<b>草</b>大量減少：直接吃草的<b>蚱蜢、野兔</b>少了食物，可能<b>減少</b>，接著整個食物網都會受影響。';
+        if (k === 'hawk') msg = '<b>老鷹</b>大量減少：牠吃的<b>蛇、野兔</b>少了天敵，可能<b>增加</b>。';
         status(msg + '（只畫出直接的影響）');
       }
       box.querySelectorAll('#labL1-pick button').forEach((b) => b.addEventListener('click', () => freeRun(b.dataset.k)));

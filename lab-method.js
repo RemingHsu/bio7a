@@ -26,7 +26,7 @@
       noise: 4,
       concl: ['滴水的發霉面積比較大，支持假說', '不滴水的發霉比較多，不支持假說', '兩組差不多，看不出水分有影響'],
       judge: (a, b, design) => (Math.abs(a - b) < 5 ? 2 : (design.A.wet ? b > a : a > b) ? 0 : 1),
-      why: '黴菌生長需要水分，潮濕的麵包比較容易發霉，結果支持假說。放冰箱、加防腐劑也能減緩發霉，但那些要另外設計實驗來檢驗。',
+      why: '黴菌生長需要水分，潮溼的麵包比較容易發霉，結果支持假說。放冰箱、加防腐劑也能減緩發霉，但那些要另外設計實驗來檢驗。',
       draw: 'bread',
     },
     {
@@ -107,7 +107,7 @@
       const VHINT = { m: '問題想知道的就是這個條件，所以要刻意改變它（操縱變因）。', c: '這個條件也會影響結果，但不是問題要問的，所以兩組要保持相同（控制變因）。', r: '這是實驗最後要測量、記錄的結果（應變變因）。' };
       let si = 0, phase = 'vars', picks = {}, checked = false, design = null, results = null, picked = -1;
       const scoreFirst = [];
-      let vis = null, anim = null;
+      let vis = null, anim = null, tmr = null, dead = false; // dead：已離開這個互動，計時器不要再改畫面
 
       function drawStage() {
         stage.innerHTML = '';
@@ -118,8 +118,9 @@
         const upA = DRAW[sc.draw](stage, 330), upB = DRAW[sc.draw](stage, 870);
         const lab = (x, t) => S.pill(stage, x, 520, t, { size: 24, color: C.ink, edge: '#3d5666' });
         lab(330, 'A 組'); lab(870, 'B 組');
-        const valA = text(stage, 330, 200, '', { 'font-size': 26, 'text-anchor': 'middle', class: 'mono', fill: C.hi });
-        const valB = text(stage, 870, 200, '', { 'font-size': 26, 'text-anchor': 'middle', class: 'mono', fill: C.hi });
+        // 數值放在圖的右邊：豆芽長高、氣球脹大時不會蓋到數字
+        const valA = text(stage, 330 + 110, 330, '', { 'font-size': 26, class: 'mono', fill: C.hi });
+        const valB = text(stage, 870 + 110, 330, '', { 'font-size': 26, class: 'mono', fill: C.hi });
         vis = { upA, upB, valA, valB };
         const z = {}; SC[si].factors.forEach(([k]) => { z[k] = 0; });
         upA(0, z); upB(0, z);
@@ -166,7 +167,7 @@
           const manipName = sc.factors.find(([k]) => k === sc.manip)[1];
           html += `<p class="m-text">設計 A、B 兩組實驗。哪一個條件要讓兩組<b>不同</b>？</p><div class="opts">${sc.factors.map(([k, nm, opts]) => `<button class="opt ${dPick === k ? 'wrong' : ''}" type="button" data-f="${k}">${nm}（${opts[0]} ／ ${opts[1]}）</button>`).join('')}<button class="opt ${dPick === 'all' ? 'wrong' : ''}" type="button" data-f="all">三個條件都改，差異比較明顯</button></div>`;
           if (dPick === 'all') html += `<div class="fb bad"><strong>有 3 個條件不同</strong>就算結果有差異，也無法判斷是哪一個條件造成的。只能改變一個條件。</div>`;
-          else if (dPick) html += `<div class="fb bad"><strong>改錯條件了</strong>你改變的是「${sc.factors.find(([k]) => k === dPick)[1]}」，但問題想知道的是「${manipName}」。</div>`;
+          else if (dPick) html += `<div class="fb bad"><strong>改錯條件了</strong>你改變的是「${sc.factors.find(([k]) => k === dPick)[1]}」。再讀一次問題：問題想知道的是哪一個條件有沒有影響？</div>`;
         } else {
           html += `<p class="m-hint">比較兩組的平均結果，哪一個結論正確？</p><div class="opts">${sc.concl.map((c, k) => `<button class="opt ${picked === k ? (k === results.right ? 'right' : 'wrong') : ''}" type="button" data-k="${k}" ${picked === results.right ? 'disabled' : ''}>${c}</button>`).join('')}</div>`;
           if (picked >= 0 && picked !== results.right) html += `<div class="fb bad"><strong>再看一次數據</strong>比較 A、B 兩組的「平均」，哪一組比較大？再對照假說。</div>`;
@@ -178,7 +179,8 @@
           const ans = sc.vars[vi][1];
           if (b.dataset.k !== ans) { vWrong = b.dataset.k; varsFirst = false; flow(); return; }
           vOk = true; vWrong = null; flow();
-          setTimeout(() => { if (phase !== 'vars') return; vOk = false; vi++; if (vi >= sc.vars.length) phase = 'design'; flow(); }, 1100);
+          clearTimeout(tmr);
+          tmr = setTimeout(() => { if (dead || phase !== 'vars') return; vOk = false; vi++; if (vi >= sc.vars.length) phase = 'design'; flow(); }, 1100);
         }));
         fl.querySelectorAll('.opt[data-f]').forEach((b) => b.addEventListener('click', () => {
           const f = b.dataset.f;
@@ -198,8 +200,8 @@
         const manipName = sc.factors.find(([k]) => k === sc.manip)[1];
         if (scoreFirst[si] === undefined) scoreFirst[si] = diffs.length === 1 && diffs[0][0] === sc.manip;
         if (!diffs.length) { design.msg = ['兩組完全一樣', `沒有改變任何條件，就沒辦法知道「${manipName}」有沒有影響。`]; flow(); return; }
-        if (diffs.length > 1) { design.msg = [`有 ${diffs.length} 個條件不同`, `${diffs.map((d) => d[1]).join('、')}都不一樣。就算結果有差異，也無法判斷是哪一個造成的。只能改變「${manipName}」。`]; flow(); return; }
-        if (diffs[0][0] !== sc.manip) { design.msg = ['改錯條件了', `你改變的是「${diffs[0][1]}」，但問題想知道的是「${manipName}」。`]; flow(); return; }
+        if (diffs.length > 1) { design.msg = [`有 ${diffs.length} 個條件不同`, `${diffs.map((d) => d[1]).join('、')}都不一樣。就算結果有差異，也無法判斷是哪一個造成的。只能改變問題想知道的那一個條件。`]; flow(); return; }
+        if (diffs[0][0] !== sc.manip) { design.msg = ['改錯條件了', `你改變的是「${diffs[0][1]}」。再讀一次問題：問題想知道的是哪一個條件有沒有影響？`]; flow(); return; }
         const rnd = () => (Math.random() - 0.5) * 2 * sc.noise;
         const A = [0, 1, 2].map(() => Math.max(0, sc.outcome(design.A) + rnd())), B = [0, 1, 2].map(() => Math.max(0, sc.outcome(design.B) + rnd()));
         const a = (A[0] + A[1] + A[2]) / 3, b = (B[0] + B[1] + B[2]) / 3;
@@ -221,7 +223,7 @@
         table(); flow();
       }
       start();
-      return { unmount() { if (anim) anim.kill(); } };
+      return { unmount() { dead = true; clearTimeout(tmr); if (anim) anim.kill(); } };
     },
   });
 })();

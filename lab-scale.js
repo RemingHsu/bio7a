@@ -3,17 +3,17 @@
   const TOOL_COLOR = { 肉眼: '#6fce62', 光學顯微鏡: '#62a8ff', 電子顯微鏡: '#a796ff' };
   const MISSIONS = [
     { level: 1, find: '胃', q: '胃屬於哪一個組成層次？', opts: ['細胞', '組織', '器官'], ans: 2,
-      hint: '想想看：胃是由好幾種組織組成的。', why: '胃由上皮、肌肉、神經、結締等多種組織組成，能完成消化的功能，所以是器官。' },
+      hint: '想想看：胃只由一種組織組成，還是由好幾種組織一起組成？這樣的層次叫什麼？', why: '胃由上皮、肌肉、神經、結締等多種組織組成，能完成消化的功能，所以是器官。' },
     { level: 2, find: '胃壁的切面', q: '胃壁厚約 3 mm，等於多少 μm？', opts: ['3 μm', '300 μm', '3000 μm'], ans: 2,
-      hint: '提示：1 mm = 1000 μm。', why: '1 mm = 1000 μm，所以 3 mm = 3 × 1000 = 3000 μm。' },
+      hint: '提示：1 mm ＝ 1000 μm。', why: '1 mm ＝ 1000 μm，所以 3 mm ＝ 3 × 1000 ＝ 3000 μm。' },
     { level: 3, find: '一個細胞', q: '細胞高約 25 μm。要看清楚它，至少需要什麼工具？', opts: ['肉眼', '光學顯微鏡', '電子顯微鏡'], ans: 1,
       hint: '看右邊大小尺的色帶：25 μm 落在哪一段？', why: '肉眼大約只能分辨 0.1 mm（100 μm）以上的東西，25 μm 要用光學顯微鏡。看右邊大小尺的色帶也能找到答案。' },
     { level: 4, find: '細胞核', q: '細胞高約 25 μm，細胞核寬約 5 μm。細胞的高度大約是細胞核寬度的幾倍？', opts: ['5 倍', '50 倍', '500 倍'], ans: 0,
-      hint: '提示：用 25 除以 5。', why: '25 ÷ 5 = 5，所以細胞的高度大約是細胞核寬度的 5 倍。' },
+      hint: '提示：倍數 ＝ 大的 ÷ 小的。', why: '25 ÷ 5 ＝ 5，所以細胞的高度大約是細胞核寬度的 5 倍。' },
     { level: 5, find: 'DNA', q: 'DNA 寬約 2 nm，等於多少 μm？', opts: ['0.002 μm', '0.2 μm', '2000 μm'], ans: 0,
-      hint: '提示：1 μm = 1000 nm，nm 換成 μm 要除以 1000。', why: '1 μm = 1000 nm，所以 2 nm = 2 ÷ 1000 = 0.002 μm。' },
+      hint: '提示：1 μm ＝ 1000 nm，nm 換成 μm 要除以 1000。', why: '1 μm ＝ 1000 nm，所以 2 nm ＝ 2 ÷ 1000 ＝ 0.002 μm。' },
     { level: 0, find: '人（縮小回去）', q: '人高約 1.6 m，DNA 寬約 2 nm。人的身高大約是 DNA 寬度的幾倍？', opts: ['8000 倍', '800 萬倍', '8 億倍'], ans: 2,
-      hint: '提示：1 m = 1,000,000,000 nm（10 億 nm）。', why: '1.6 m = 1,600,000,000 nm，再除以 2 等於 800,000,000，也就是 8 億倍。' },
+      hint: '提示：1 m ＝ 1,000,000,000 nm（10 億 nm）。', why: '1.6 m ＝ 1,600,000,000 nm，再除以 2 等於 800,000,000，也就是 8 億倍。' },
   ];
 
   const times = (r) => {
@@ -68,7 +68,7 @@
         slider.value = Math.round(st.P * 100);
         const i = Math.min(4, Math.floor(st.P));
         $('out').textContent = r.settled ? LV[r.level].short : `${LV[i].short} → ${LV[i + 1].short}`;
-        $('what').textContent = r.settled ? `${LV[r.level].short}（${LV[r.level].tag.split('｜')[0]}）` : '縮放中…';
+        $('what').textContent = r.settled ? `${LV[r.level].short}（${LV[r.level].tag.split('｜')[0]}）` : '縮放中……';
         $('size').textContent = '≈ ' + S.fmtLen(r.size);
         const tool = W.toolFor(r.size), note = r.settled ? LV[r.level].toolNote : '';
         $('tool').innerHTML = `<span class="tool-chip"><i style="display:inline-block;width:0.6em;height:0.6em;border-radius:50%;margin-right:0.4em;background:${TOOL_COLOR[tool]}"></i>${tool}</span>${note ? `<span class="m-hint" style="display:block;margin:0.2rem 0 0">${note}</span>` : ''}`;
@@ -129,7 +129,7 @@
           const ok = result.filter((r) => r === 'ok').length;
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
             <p class="m-text">一次就答對 <b>${ok} / ${MISSIONS.length}</b> 題。</p>
-            <div class="fb ok"><strong>重點整理</strong>1 m = 1000 mm，1 mm = 1000 μm，1 μm = 1000 nm。<br>器官用肉眼；組織、細胞用光學顯微鏡；DNA 用電子顯微鏡。</div>
+            <div class="fb ok"><strong>重點整理</strong>1 m ＝ 1000 mm，1 mm ＝ 1000 μm，1 μm ＝ 1000 nm。<br>器官用肉眼；組織、細胞用光學顯微鏡；DNA 用電子顯微鏡。</div>
             <button class="ctl primary" type="button" id="labA-again">再挑戰一次</button>`;
           mbox.querySelector('#labA-again').addEventListener('click', () => { mi = 0; phase = 'find'; result.length = 0; drawMission(); goTo(0); });
           return;

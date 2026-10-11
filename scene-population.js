@@ -233,7 +233,7 @@
       const qG = QS.map(([c, r], i) => {
         const q = g(P4, { opacity: 0 });
         el('rect', { x: FX + c * CW, y: FY + r * CW, width: CW, height: CW, fill: 'rgba(255,209,102,0.12)', stroke: C.hi, 'stroke-width': 4 }, q);
-        S.pill(q, FX + c * CW + CW / 2, FY + r * CW + CW + 18, `${qn[i]} 株`, { size: 22, color: C.hi, edge: C.hi });
+        S.pill(q, FX + c * CW + CW / 2, FY + r * CW + CW + 18, `${qn[i]} 株`, { size: 22, color: C.hi, edge: C.hi, bg: 'rgba(13,24,34,0.95)' }); // 底色較不透明：壓在草地上也清楚
         return q;
       });
       const R4 = [
@@ -273,7 +273,7 @@
       const rp5 = S.rng(8);
       for (let k = 0; k < 42; k++) { const c = k % 7, r = Math.floor(k / 7); B.minifish(pans[1], { x: 478 + c * 40 + (rp5() - 0.5) * 16, y: 166 + r * 38 + (rp5() - 0.5) * 12, s: 1.15, flip: rp5() > 0.5, mark: c === (r * 3 + 1) % 7 }); }
       const arr5 = g(P5, { opacity: 0 }); B.arrow(arr5, 384, 236, 428, 236, { color: C.hi, w: 4, head: 14 });
-      text(arr5, 406, 216, '放回', { 'font-size': 20, 'text-anchor': 'middle', fill: C.hi });
+      ['放', '回'].forEach((c, i) => text(arr5, 406, 196 + i * 24, c, { 'font-size': 20, 'text-anchor': 'middle', fill: C.hi })); // 直排：兩個框之間的空隙很窄
       for (let k = 0; k < 40; k++) { const c = k % 8, r = Math.floor(k / 8); B.minifish(pans[2], { x: 856 + c * 38, y: 160 + r * 46, s: 1.1, mark: [3, 9, 18, 22, 29, 36].includes(k) }); }
       const f5 = g(P5, { opacity: 0 });
       el('rect', { x: 120, y: 480, width: 960, height: 200, rx: 18, fill: 'rgba(255,209,102,0.06)', stroke: C.hi, 'stroke-width': 2 }, f5);

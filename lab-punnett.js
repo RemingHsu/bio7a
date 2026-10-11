@@ -64,7 +64,7 @@
       why: 'rr 的配子都帶 r；Rr 的配子一半帶 R、一半帶 r。所以子代一半是 Rr（圓形）、一半是 rr（皺縮）：<b>1：1</b>。' },
     { title: '反推親代（一）', pick: { q: '一株種子圓形的豌豆和 <b>rr</b> 交配，子代<b>全部是圓形</b>。這株圓形豌豆的基因型是？點一下，用棋盤方格驗證：', opts: [['RR', 'RR', 'rr'], ['Rr', 'Rr', 'rr']], show: ['?R', 'rr'], ok: (c) => c.nRound === 4, wrong: '這樣配對會出現皺縮（rr）的子代，和題目「全部是圓形」不一樣。' },
       why: '<b>RR</b> 的配子都帶 R，不論和誰配對，子代都至少有一個 R，所以全部是圓形。只要親代帶有 r，就可能出現皺縮。' },
-    { title: '反推親代（二）', pick: { q: '兩株豌豆交配，子代 圓形：皺縮 ≈ <b>1：1</b>。親代的基因型可能是？點一下驗證：', opts: [['RR × rr', 'RR', 'rr'], ['Rr × rr', 'Rr', 'rr'], ['Rr × Rr', 'Rr', 'Rr'], ['RR × Rr', 'RR', 'Rr']], show: ['??', '??'], ok: (c) => c.nRound === 2, wrong: '看看右邊的結果：圓形和皺縮的比例是 1：1 嗎？' },
+    { title: '反推親代（二）', pick: { q: '兩株豌豆交配，子代的圓形：皺縮 ≈ <b>1：1</b>。親代的基因型可能是？點一下驗證：', opts: [['RR × rr', 'RR', 'rr'], ['Rr × rr', 'Rr', 'rr'], ['Rr × Rr', 'Rr', 'Rr'], ['RR × Rr', 'RR', 'Rr']], show: ['??', '??'], ok: (c) => c.nRound === 2, wrong: '看看右邊的結果：圓形和皺縮的比例是 1：1 嗎？' },
       why: '1：1 表示一半的子代是 rr：一方是 Rr（一半配子帶 r），另一方是 rr（配子都帶 r），所以是 <b>Rr × rr</b>。' },
     { title: '反推親代（三）', pick: { q: '兩株種子圓形的豌豆交配，子代<b>出現了皺縮</b>的種子。這兩株的基因型是？點一下驗證：', opts: [['RR × RR', 'RR', 'RR'], ['RR × Rr', 'RR', 'Rr'], ['Rr × Rr', 'Rr', 'Rr']], show: ['?R', '?R'], ok: (c) => c.nRound < 4, wrong: '這樣配對，子代會出現 rr（皺縮）嗎？看看方格裡有沒有 rr。' },
       why: '子代要表現皺縮，必須是 <b>rr</b>：兩個 r 分別來自父方和母方。所以兩株圓形的親代都帶有 r，都是 <b>Rr</b>。親代都表現顯性，子代卻出現另一種特徵，這種特徵就是隱性。' },
@@ -178,7 +178,7 @@
         clearCells();
         const c = cross(a, b);
         cur = c;
-        $('status').innerHTML = `親代甲 <b class="mono">${a}</b> × 親代乙 <b class="mono">${b}</b>：先寫出配子，再兩兩組合…`;
+        $('status').innerHTML = `親代甲 <b class="mono">${a}</b> × 親代乙 <b class="mono">${b}</b>：先寫出配子，再兩兩組合……`;
         const topG = c.top.map((ch, j) => gamete(layer, GX + CS / 2 + j * CS, 110, ch, 26));
         const leftG = c.left.map((ch, i) => gamete(layer, GX - 50, GY + CS / 2 + i * CS, ch, 26));
         topG.concat(leftG).forEach((x) => { x.style.opacity = 0; });

@@ -175,7 +175,7 @@
       const r2t = g(P2, { opacity: 0 });
       text(r2t, 895, 500, '可能遺傳給子代', { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
       const eff2 = g(P2, { opacity: 0 });
-      S.pill(eff2, 600, 610, '突變大多有害或沒有影響，少數對生物有利', { size: 24, color: C.ink, edge: '#4a6272' });
+      S.pill(eff2, 600, 610, '突變大多有害或沒有影響；少數有利，是演化的原料', { size: 24, color: C.ink, edge: '#4a6272' });
       S.pill(eff2, 600, 668, '人類可以篩選有利的變化來育種（例如不同品種的玉米、鯉魚）', { size: 24, color: C.membrane, edge: C.membrane });
       tl.addLabel('s2');
       S.hide(tl, P1, 's2', 0.4);
@@ -209,14 +209,14 @@
       // 白化症：缺乏黑色素
       const mel = (c, x, y, n) => { el('rect', { x: x - 60, y: y - 28, width: 120, height: 56, rx: 10, fill: n ? '#c99a6a' : '#f6ece2', stroke: '#9c7a44', 'stroke-width': 2 }, c); if (n) for (let i = 0; i < 9; i++) el('circle', { cx: x - 44 + (i % 5) * 22, cy: y - 10 + Math.floor(i / 5) * 20, r: 5, fill: '#5a3a22' }, c); };
       mel(D[0], 500, 180, true); mel(D[0], 660, 180, false);
-      text(D[0], 500, 232, '一般', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }); text(D[0], 660, 232, '白化', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(D[0], 500, 238, '一般', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }); text(D[0], 660, 238, '白化', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       text(D[0], 580, 286, '缺乏黑色素：皮膚、毛髮偏白', { 'font-size': 22, 'text-anchor': 'middle' });
       text(D[0], 580, 318, '眼睛怕光、容易曬傷', { 'font-size': 22, 'text-anchor': 'middle' });
       // 地中海型貧血：紅血球小、容易破
       const rbc = (c, x, y, r, odd) => { if (odd) el('path', { d: S.smoothPath(S.blobPts(x, y, r, r * 0.85, 16, [[3, 0.12, 0.4], [5, 0.08, 1]])), fill: '#d9465c', stroke: '#ff8f9f', 'stroke-width': 1.5 }, c); else { el('ellipse', { cx: x, cy: y, rx: r, ry: r * 0.92, fill: '#d9465c', stroke: '#ff8f9f', 'stroke-width': 1.5 }, c); el('ellipse', { cx: x, cy: y, rx: r * 0.45, ry: r * 0.38, fill: '#b02c44' }, c); } };
       rbc(D[1], 870, 178, 24, false); rbc(D[1], 930, 178, 24, false);
       [[1040, 170], [1072, 186], [1100, 168], [1056, 200]].forEach(([x, y]) => rbc(D[1], x, y, 13, true));
-      text(D[1], 900, 232, '一般', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }); text(D[1], 1070, 232, '小、容易破', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(D[1], 900, 238, '一般', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute }); text(D[1], 1070, 238, '小、容易破', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       text(D[1], 980, 286, '紅血球較小、容易破裂', { 'font-size': 22, 'text-anchor': 'middle' });
       text(D[1], 980, 318, '帶氧的能力變差 → 貧血', { 'font-size': 22, 'text-anchor': 'middle' });
       // 血友病：傷口血液不易凝固
@@ -328,15 +328,15 @@
         notes: [
           '＊示意：染色體上的基因位置是示意。白化的動物缺乏黑色素，眼睛看起來是紅的，是因為看得到血管的顏色。',
           '自然發生的突變機率非常低。X 光檢查時穿防護衣，是為了減少不需要檢查的部位受到照射。',
-          '皮膚長時間被紫外線曬傷，可能使皮膚細胞突變成癌細胞，但這種突變不會遺傳給子女。',
-          '血友病、紅綠色盲的基因在 X 染色體上，所以男性患者比較多（補充）。台灣常見的蠶豆症（G6PD 缺乏症）也是遺傳性疾病，新生兒篩檢會檢查（補充）。',
+          '皮膚長時間被紫外線曬傷，可能使皮膚細胞突變成癌細胞，但這種突變不會遺傳給子女。後天獲得的改變（例如整形、把果蠅的翅剪短）沒有改變精子或卵的遺傳物質，也不會遺傳給子代。有利的突變能一代一代傳下去，是演化的原料（第九章）。',
+          '血友病、紅綠色盲的基因在 X 染色體上，所以男性患者比較多（補充）。臺灣常見的蠶豆症（G6PD 缺乏症）也是遺傳性疾病，新生兒篩檢會檢查（補充）。',
           '＊示意：譜系圖中 □ 代表男性、○ 代表女性，塗色代表患病。致病的等位基因大多是隱性；帶有一個 a 的人（Aa）通常沒有症狀。',
-          '產前檢查例如超音波、抽取羊水檢查胎兒的染色體（羊膜穿刺，補充）。',
+          '產前檢查有超音波、抽取羊水檢查胎兒的染色體（羊膜穿刺，補充）等。',
         ],
         steps: [
           '<b>突變</b>：遺傳物質（基因或染色體）發生改變。例如控制黑色素的基因突變，動物就會<b>白化</b>：缺乏黑色素，毛色變白。',
           '突變在自然狀態下也會發生，但<b>機率很低</b>。接觸<b>紫外線、X 光、核輻射</b>等物理因子，或<b>黃麴毒素</b>等化學物質，突變的機率會大增。',
-          '<b>體細胞</b>的突變只影響自己，不會遺傳；<b>生殖細胞</b>（精子、卵）的突變，才<b>可能遺傳給子代</b>。突變大多有害或沒有影響，少數有利。',
+          '<b>體細胞</b>的突變只影響自己，不會遺傳；<b>生殖細胞</b>（精子、卵）的突變，才<b>可能遺傳給子代</b>。突變大多有害或沒有影響，少數有利，是<b>演化</b>的原料。',
           '<b>遺傳性疾病</b>：原因可能是<b>染色體數目異常</b>（例如<b>唐氏症</b>：第 21 號染色體多一條），或是來自親代的<b>突變基因</b>（白化症、地中海型貧血、血友病、紅綠色盲）。',
           '致病的基因大多是<b>隱性</b>：父母都是 <b>Aa</b>（正常），孩子是 <b>aa</b>（白化症）的機率是 <b>1/4</b>。近親結婚會提高這種機會。',
           '預防遺傳性疾病：<b>遺傳諮詢</b>、<b>婚前健康檢查</b>，懷孕時定期做<b>產前檢查</b>，及早發現、及早治療。',

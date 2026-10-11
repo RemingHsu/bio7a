@@ -110,10 +110,11 @@
       for (let i = 0; i < 12; i++) d2.push(mover(o2(P2), [outside(), inside()], rnd, { amp: 4 }));
       for (let i = 0; i < 10; i++) d2.push(mover(co2(P2), [inside(), outside()], rnd, { amp: 4 }));
       const leg2 = g(P2, { opacity: 0 });
-      const k1 = o2(leg2); k1.setAttribute('transform', 'translate(110,600)');
-      text(leg2, 135, 610, '氧：外多內少 → 進入', { 'font-size': 26, fill: '#ffb0b0' });
-      const k2 = co2(leg2); k2.setAttribute('transform', 'translate(840,600)');
-      text(leg2, 870, 610, '二氧化碳：內多外少 → 離開', { 'font-size': 26, fill: C.co2 });
+      // 圖例放在最下面（細胞外的分子最低到 y≈650），右邊那行要在舞台內
+      const k1 = o2(leg2); k1.setAttribute('transform', 'translate(110,674)');
+      text(leg2, 135, 684, '氧：外多內少 → 進入', { 'font-size': 26, fill: '#ffb0b0' });
+      const k2 = co2(leg2); k2.setAttribute('transform', 'translate(790,674)');
+      text(leg2, 820, 684, '二氧化碳：內多外少 → 離開', { 'font-size': 26, fill: C.co2 });
 
       tl.addLabel('s2');
       S.hide(tl, P1, 's2', 0.4);
@@ -158,7 +159,8 @@
       const bgW = el('rect', { x: 60, y: 120, width: 1080, height: 520, rx: 24, fill: 'rgba(95,184,255,0.10)', stroke: '#2f4c63', 'stroke-width': 2 }, P4);
       const bgS = el('rect', { x: 60, y: 120, width: 1080, height: 520, rx: 24, fill: 'rgba(225,232,236,0.10)', stroke: '#56636b', 'stroke-width': 2, opacity: 0 }, P4);
       const salt = g(P4, { opacity: 0 });
-      for (let i = 0; i < 40; i++) el('rect', { x: 90 + rnd() * 1020, y: 150 + rnd() * 460, width: 7, height: 7, fill: '#f2f5f7', opacity: 0.55, transform: '' }, salt);
+      // 鹽粒不要落在標題（y≈165）和下方標籤（y≈604）上
+      for (let i = 0; i < 40; i++) el('rect', { x: 90 + rnd() * 1020, y: 196 + rnd() * 370, width: 7, height: 7, fill: '#f2f5f7', opacity: 0.55, transform: '' }, salt);
       const tW = text(P4, 600, 90, '放進清水', { 'font-size': 34, 'text-anchor': 'middle', fill: C.water, 'font-weight': 700 });
       const tS = text(P4, 600, 90, '放進濃鹽水', { 'font-size': 34, 'text-anchor': 'middle', fill: '#e6edf0', 'font-weight': 700, opacity: 0 });
       text(P4, 330, 175, '紅血球', { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700 });
@@ -191,10 +193,10 @@
         arr(arrowsIn, cx + Math.cos(a) * r1, cy + Math.sin(a) * r1 * 0.8, cx + Math.cos(a) * r2, cy + Math.sin(a) * r2 * 0.8);
         arr(arrowsOut, cx + Math.cos(a) * r2, cy + Math.sin(a) * r2 * 0.8, cx + Math.cos(a) * r1, cy + Math.sin(a) * r1 * 0.8);
       }));
-      const n4a = S.pill(g(P4, { opacity: 0 }), 330, 590, '吸水脹大，最後破裂', { size: 24, color: C.hi, edge: C.hi });
-      const n4b = S.pill(g(P4, { opacity: 0 }), 870, 590, '細胞壁撐住，不會破', { size: 24, color: C.wall, edge: C.wall });
-      const n5a = S.pill(g(P4, { opacity: 0 }), 330, 590, '失水皺縮', { size: 24, color: '#ff9aa8', edge: '#ff9aa8' });
-      const n5b = S.pill(g(P4, { opacity: 0 }), 870, 590, '細胞膜和細胞壁分開', { size: 24, color: C.membrane, edge: C.membrane });
+      const n4a = S.pill(g(P4, { opacity: 0 }), 330, 604, '吸水脹大，最後破裂', { size: 24, color: C.hi, edge: C.hi });
+      const n4b = S.pill(g(P4, { opacity: 0 }), 870, 604, '細胞壁撐住，不會破', { size: 24, color: C.wall, edge: C.wall });
+      const n5a = S.pill(g(P4, { opacity: 0 }), 330, 604, '失水皺縮', { size: 24, color: '#ff9aa8', edge: '#ff9aa8' });
+      const n5b = S.pill(g(P4, { opacity: 0 }), 870, 604, '細胞膜和細胞壁分開', { size: 24, color: C.membrane, edge: C.membrane });
 
       tl.addLabel('s4');
       S.hide(tl, P3, 's4', 0.4);
@@ -263,7 +265,8 @@
       for (let i = 0; i < 4; i++) { const m = water(F3); const a = (i / 4) * 6.28; leave.push({ m, a: [980 + Math.cos(a) * 18, 400 + Math.sin(a) * 10], b: [980 + Math.cos(a) * 70, 400 + Math.sin(a) * 52] }); }
       const shrinkMic = (u) => { micPath.setAttribute('d', S.smoothPath(S.lerpPts(micA, micB, u))); leave.forEach(({ m, a, b }) => { m.setAttribute('transform', `translate(${S.lerp(a[0], b[0], u).toFixed(1)},${S.lerp(a[1], b[1], u).toFixed(1)})`); m.setAttribute('opacity', u > 0.02 ? 1 : 0); }); };
       shrinkMic(0);
-      text(F3, 980, 240, '細菌、黴菌在濃鹽水或濃糖水中失水', { 'font-size': 20, fill: C.mute, 'text-anchor': 'middle' });
+      text(F3, 980, 214, '細菌、黴菌在濃鹽水', { 'font-size': 22, fill: C.mute, 'text-anchor': 'middle' });
+      text(F3, 980, 243, '或濃糖水中失水', { 'font-size': 22, fill: C.mute, 'text-anchor': 'middle' });
 
       tl.addLabel('s6');
       // 這一步的備註是「＊示意」（不是示意時間），右上角標記跟著換回來
@@ -291,10 +294,10 @@
           '<b>擴散作用</b>：分子會從濃度高的地方往濃度低的地方移動，最後分布均勻；之後分子仍在運動，只是不再有淨移動。例如一滴紅墨水在靜止的水中，要好幾個小時才會慢慢散開。',
           '細胞膜有<b>選擇性</b>：水、氧、二氧化碳等小分子可以通過；澱粉等大分子不能直接通過。',
           '細胞進行呼吸作用會消耗氧、產生二氧化碳，所以<b>氧氣擴散進入</b>細胞，<b>二氧化碳擴散出去</b>。',
-          '<b>滲透作用</b>：水分子通過半透膜（例如細胞膜）的擴散。這個半透膜只讓水通過，蔗糖過不去。兩邊的水都會通過膜，但進入蔗糖水的較多，所以水會往<b>溶質粒子濃度較高（水較少）</b>的蔗糖水那一側淨移動。',
+          '<b>滲透作用</b>：水分子通過半透膜（例如細胞膜）的擴散。這個半透膜只讓水通過，蔗糖過不去。兩邊的水都會通過膜，但水會往<b>比較濃（水比較少）</b>的蔗糖水那一邊移動得比較多。',
           '放進<b>清水</b>：水進入細胞。紅血球會吸水脹大，最後破裂；植物細胞有細胞壁撐住，變得飽滿但不會破。',
           '放進<b>濃鹽水</b>：水離開細胞。紅血球皺縮，植物細胞的細胞膜和細胞壁分開。青菜撒鹽會出水變軟，就是這個道理。',
-          '生活中的例子：肺泡和血液交換氧與二氧化碳是<b>擴散</b>；根毛從土壤吸水、鹽醃糖漬讓細菌黴菌失水而能保存食物，都是<b>滲透</b>。',
+          '生活中的例子：肺泡和血液交換氧與二氧化碳是<b>擴散</b>；根毛從土壤吸水，以及鹽醃、糖漬讓細菌和黴菌失水而能保存食物，都是<b>滲透</b>。',
         ],
       };
     },

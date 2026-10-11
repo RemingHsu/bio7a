@@ -1,4 +1,4 @@
-/* 2-4 消化與吸收：消化管與消化腺、物理性與化學性消化、各段的消化、小腸的吸收（跨尺度）、大腸與排遺 */
+/* 3-4 消化與吸收：消化管與消化腺、物理性與化學性消化、各段的消化、小腸的吸收（跨尺度）、大腸與排遺 */
 (() => {
   const { el, g, text, C } = S;
   const STA = C.sugar, PRO = '#ff8f8f', FAT = '#ffb35c', CAP = '#ff5f74', LAC = '#f3e6b0', ENZ = '#62d0c0';
@@ -44,11 +44,14 @@
         [600, 126, 860, 112, '口腔'], [600, 142, 860, 168, '咽'], [601, 220, 860, 236, '食道'], [650, 285, 860, 330, '胃（有胃腺）'],
         [590, 345, 860, 520, '小腸（有腸腺）'], [657, 320, 860, 410, '大腸'], [602, 396, 860, 640, '肛門'],
       ].map(([bx, by, x, y, s]) => { const [tx, ty] = B2S(bx, by); return S.callout(P0, tx, ty, x, y, s, '#ffc2a8', { size: 24 }); });
+      // 膽囊只儲存膽汁、不是消化腺：用灰色標示，和綠色的消化腺分開，並註明「不是消化腺」
+      const GB = '#cfd8dc';
       const glands = [
         [586, 121, 150, 96, '唾腺'], [570, 270, 150, 300, '肝臟（製造膽汁）'], [578, 302, 150, 420, '膽囊（儲存膽汁）'], [632, 312, 150, 540, '胰臟'],
-      ].map(([bx, by, x, y, s]) => { const [tx, ty] = B2S(bx, by); return S.callout(P0, tx, ty, x, y, s, '#a8e39a', { size: 24 }); });
+      ].map(([bx, by, x, y, s]) => { const [tx, ty] = B2S(bx, by); return S.callout(P0, tx, ty, x, y, s, s.startsWith('膽囊') ? GB : '#a8e39a', { size: 24 }); });
+      S.pill(glands[2], 150, 468, '不是消化腺', { size: 22, color: C.mute, edge: '#4a6272' });
       const heads = g(P0, { opacity: 0 });
-      S.pill(heads, 1060, 40, '消化管：食物經過的管道', { size: 22, color: '#ffc2a8', edge: '#ffc2a8' });
+      S.pill(heads, 1046, 40, '消化管：食物經過的管道', { size: 22, color: '#ffc2a8', edge: '#ffc2a8' });
       S.pill(heads, 170, 40, '消化腺：分泌消化液', { size: 22, color: '#a8e39a', edge: '#a8e39a' });
       tl.addLabel('s0');
       S.show(tl, heads, 's0+=0.2', 0.4);
@@ -59,6 +62,10 @@
       }, 6, 's0+=0.6', 'none');
       [0, 0.05, 0.16, 0.3, 0.5, 0.75, 0.98].forEach((u, i) => S.show(tl, tube[i], `s0+=${0.6 + u * 6}`, 0.3));
       glands.forEach((gl, i) => S.show(tl, gl, `s0+=${6.8 + i * 0.35}`, 0.3));
+      // 咽、食道、大腸：不分泌消化酵素
+      const noEnz = g(P0, { opacity: 0 });
+      [[886, 168], [898, 236], [898, 410]].forEach(([x, y]) => { const w = S.textWidth('不分泌消化酵素', 22) + 28; S.pill(noEnz, x + 12 + w / 2, y, '不分泌消化酵素', { size: 22, color: C.mute, edge: '#4a6272' }); });
+      S.show(tl, noEnz, 's0+=8.4', 0.4);
 
       // ===== 1 物理性與化學性消化 =====
       const P1 = g(root, { opacity: 0 });
@@ -93,9 +100,10 @@
       text(P1, 890, 260, '澱粉（大分子）', { 'font-size': 24, 'text-anchor': 'middle', fill: STA, 'font-weight': 700 });
       const enz = S.place(g(P1), { x: 660, y: 410 });
       el('path', { d: 'M 0,0 L 22,-14 A 26,26 0 1,0 22,14 Z', fill: ENZ, transform: 'rotate(-90)' }, enz);
-      text(enz, 0, 50, '酵素', { 'font-size': 20, 'text-anchor': 'middle', fill: ENZ });
-      const gluLbl = text(P1, 890, 520, '葡萄糖（小分子）', { 'font-size': 24, 'text-anchor': 'middle', fill: STA, 'font-weight': 700, opacity: 0 });
-      text(P1, 890, 600, '小分子才能被吸收', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
+      text(enz, 0, 48, '酵素', { 'font-size': 22, 'text-anchor': 'middle', fill: ENZ });
+      // 切下來的葡萄糖落到酵素標籤下面（y = 492），不和「酵素」重疊
+      const gluLbl = text(P1, 890, 556, '葡萄糖（小分子）', { 'font-size': 24, 'text-anchor': 'middle', fill: STA, 'font-weight': 700, opacity: 0 });
+      text(P1, 890, 606, '小分子才能被吸收', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       tl.addLabel('s1');
       S.hide(tl, P0, 's1', 0.4);
       S.show(tl, P1, 's1+=0.3', 0.4);
@@ -113,7 +121,7 @@
       S.drive(tl, (u) => {
         S.place(enz, { x: S.lerp(660, 700 + 7 * 54, u), y: 410 });
         const cut = Math.floor(u * 8);
-        units.forEach((h, i) => { const done = i < cut; h.setAttribute('transform', `translate(${700 + i * 54},${done ? 460 + (i % 2) * 6 : 330})`); });
+        units.forEach((h, i) => { const done = i < cut; h.setAttribute('transform', `translate(${700 + i * 54},${done ? 492 + (i % 2) * 6 : 330})`); });
         link.setAttribute('x1', 700 + Math.min(7, cut) * 54);
         link.style.opacity = cut >= 7 ? 0 : 1;
       }, 3, 's1+=3.4', 'none');
@@ -149,7 +157,7 @@
       for (let i = 0; i < 6; i++) glu(c2, COLX[2] - 70 + (i % 3) * 70, ROWY[0] - 16 + Math.floor(i / 3) * 34);
       for (let i = 0; i < 7; i++) amino(c2, COLX[2] - 75 + (i % 4) * 50, ROWY[1] - 16 + Math.floor(i / 4) * 34);
       for (let i = 0; i < 3; i++) fattyGly(c2, COLX[2] - 60 + i * 56, ROWY[2]);
-      text(c2, COLX[2], ROWY[2] + 52, '膽汁先乳化，再由酵素分解', { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute });
+      ['膽汁先乳化，', '再由酵素分解'].forEach((t, k) => text(c2, COLX[2], ROWY[2] + 48 + k * 26, t, { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute }));
       // 產物
       const c3 = g(colG[3]);
       [['葡萄糖', STA], ['胺基酸', PRO], ['脂肪酸＋甘油', FAT]].forEach(([s, c], i) => S.pill(c3, COLX[3], ROWY[i], s, { size: 24, color: c, edge: c }));
@@ -260,7 +268,7 @@
       return {
         tl,
         notes: [
-          '＊示意：器官的位置和大小都簡化了。胃腺、腸腺分布在胃和小腸的內壁，圖中沒有畫出。咽是食物和空氣共同經過的通道（補充：吞嚥時，會厭會蓋住喉的入口，避免食物進入氣管）。',
+          '＊示意：器官的位置和大小都簡化了。胃腺、腸腺分布在胃和小腸的內壁，圖中沒有畫出。咽是食物和空氣共同經過的通道（補充：吞嚥時，會厭會蓋住喉的入口，避免食物進入氣管）。咽、食道、大腸屬於消化管，但不分泌消化酵素。',
           '＊示意：分子都畫得很大。膽汁由肝臟製造、儲存在膽囊，不含酵素。',
           '＊示意：分子數目為示意。胃液含有鹽酸，能殺死部分細菌，並讓胃中的酵素在酸性環境下作用（鹽酸本身不能分解蛋白質）。胰液和膽汁經由導管送到小腸的前段；進入小腸後，鹼性的消化液會中和胃酸。科學史：1836 年許旺從胃液中找到能分解蛋白質的物質，命名為胃蛋白酶。',
           '＊長度為約略值。脂溶性的維生素（A、D、E、K）也經由乳糜管吸收；水、無機鹽和水溶性維生素主要經由微血管吸收。',

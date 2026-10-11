@@ -1,10 +1,11 @@
-/* 互動模型：呼吸運動模型 — 鐘形罩模型（瓶內＝胸腔、氣球＝肺、橡皮膜＝橫膈）＋ 人體胸腔示意 ＋ BTB 檢驗呼出的氣體 ＋ 運動後的呼吸 */
+/* 互動模型：呼吸運動模型 — 鐘形罩模型（瓶內＝胸腔、氣球＝肺、橡皮膜＝橫膈）＋ 人體胸腔示意 ＋ BTB 檢驗呼出的氣體 ＋ 種子的呼吸作用（發芽中 vs 煮過，石灰水）＋ 運動後的呼吸 */
 (() => {
   const { el, g, text, C } = S;
   const AIR = '#9fd8ff', LUNG = '#e58a9a', LUNG_E = '#ffc2cc', RIB = '#e8dcc0', DIA = C.muscle;
   const BTB = ['#2f6fd6', '#3fa64a', '#e3c53a'];
   const REST = { rate: 16, depth: 0.55 }, EX = { rate: 30, depth: 1 }; // 每分鐘呼吸次數（約略值＊）
   const EX_SEC = 14, REC_SEC = 8; // 運動後加快的時間、恢復的時間（示意＊）
+  const SEED_SEC = 4; // 倒入清水、把氣體壓進石灰水的時間（示意＊）
   const mix = (a, b, t) => { const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return `rgb(${A.map((v, i) => Math.round(S.lerp(v, B[i], t))).join(',')})`; };
   const btbCol = (u) => (u < 0.5 ? mix(BTB[0], BTB[1], u * 2) : mix(BTB[1], BTB[2], (u - 0.5) * 2));
   const btbName = (u) => (u < 0.3 ? '藍色' : u < 0.75 ? '綠色' : '黃色');
@@ -23,10 +24,13 @@
       why: '拉下橡皮膜就像<b>橫膈下降</b>：胸腔變大，肺跟著脹大，空氣進入，是<b>吸氣</b>。放開橡皮膜就像橫膈上升：胸腔變小，空氣排出，是呼氣。' },
     { title: '人的胸腔', auto: 'rest', quiz: { q: '模型的鐘形罩是硬的，不會變大。人吸氣時，除了橫膈下降，還有什麼讓胸腔變大？', opts: ['肋骨上舉', '肺自己用力脹大', '心臟變大'], ans: 0, hint: '肺沒有肌肉，不能自己脹大。看看中間的人體示意圖：除了橫膈，還有哪個構造跟著呼吸在動？' },
       why: '吸氣時<b>肋骨上舉</b>、<b>橫膈下降</b>，胸腔變大，肺跟著擴張，空氣進入；呼氣時肋骨下降、橫膈上升，胸腔變小，空氣排出。肺本身沒有肌肉。' },
-    { title: '呼出的氣體', predict: { q: '用吸管對藍色的 <b>BTB 溶液</b>吹氣（呼出的氣體），溶液的顏色會怎樣？先預測：', opts: ['由藍色變成黃色', '一直是藍色'], ans: 0 },
+    { title: '呼出的氣體', setup: 'btb', predict: { q: '用吸管對藍色的 <b>BTB 溶液</b>（溴瑞香草藍）吹氣（呼出的氣體），溶液的顏色會怎樣？先預測：', opts: ['由藍色變成黃色', '一直是藍色'], ans: 0 },
       text: '用吸管吹氣，再用打氣筒打入一般空氣做對照：', acts: [{ label: '用吸管吹氣', then: 'blow', did: (s) => s.blown }, { label: '打入空氣（對照）', then: 'pump', did: (s) => s.pumped }], done: (s) => s.blown && s.pumped,
-      why: '呼出的氣體含較多<b>二氧化碳</b>，使 BTB 由藍色經綠色變成<b>黃色</b>；一般空氣中的二氧化碳很少，短時間內幾乎不變色。二氧化碳是細胞進行<b>呼吸作用</b>產生的。' },
-    { title: '運動之後', need: (s) => s.ran, needText: '先原地跑步，再看看模型和人體示意圖的呼吸有什麼變化：', acts: [{ label: '原地跑步 1 分鐘', then: 'run' }],
+      why: '呼出的氣體含較多<b>二氧化碳</b>，二氧化碳溶在水中呈弱酸性，使 BTB 由藍色經綠色變成<b>黃色</b>；一般空氣中的二氧化碳很少，短時間內幾乎不變色。二氧化碳是細胞進行<b>呼吸作用</b>產生的。' },
+    { title: '種子也會呼吸嗎？', setup: 'seed', predict: { q: 'A 瓶裝<b>發芽中的綠豆</b>，B 瓶裝<b>煮過的綠豆（對照組）</b>，兩瓶都密封放置一段時間＊。接著從漏斗倒入清水，把瓶內的氣體壓進<b>澄清石灰水</b>。哪一瓶的石灰水會變混濁？先預測：', opts: ['只有 A（發芽中）', '只有 B（煮過的）', '兩瓶都會', '兩瓶都不會'], ans: 0 },
+      text: '從漏斗倒入清水，把兩瓶裡的氣體壓進石灰水：', acts: [{ label: '從漏斗倒入清水', then: 'pour', did: (s) => s.poured }], done: (s) => s.poured,
+      why: '只有 A 瓶的石灰水變混濁。發芽中的種子是活的，細胞進行<b>呼吸作用</b>，放出<b>二氧化碳</b>；煮過的種子已經死亡，不進行呼吸作用（<b>對照組</b>）。所以植物也會進行呼吸作用。' },
+    { title: '運動之後', setup: 'ex', need: (s) => s.ran, needText: '先原地跑步，再看看模型和人體示意圖的呼吸有什麼變化：', acts: [{ label: '原地跑步 1 分鐘', then: 'run' }],
       quiz: { q: '運動後，呼吸變得又快又深。這主要是因為血液中哪一種氣體變多了？', opts: ['氧', '二氧化碳', '氮'], ans: 1, hint: '運動時，肌肉細胞的呼吸作用變得旺盛。呼吸作用會產生哪些物質？' },
       why: '運動時細胞的呼吸作用旺盛，產生較多<b>二氧化碳</b>。<b>腦幹</b>使呼吸加快、加深，把多餘的二氧化碳排出，也吸進更多氧，維持<b>氣體的恆定</b>。' },
   ];
@@ -53,7 +57,7 @@
       <div class="lab-stage"><svg viewBox="0 0 1200 620" role="img" aria-label="鐘形罩呼吸模型、人體胸腔示意圖和 BTB 溶液試管"></svg></div>
       <div class="pad">
         <p class="status-line" id="labH-status" aria-live="polite"></p>
-        <p class="footnote">＊示意：呼吸次數是約略值（安靜時每分鐘十幾次，因人而異）；運動後加快的時間和 BTB 變色的時間都縮短了。模型的鐘形罩不會變大，所以無法表示肋骨的運動。</p>
+        <p class="footnote">＊示意：呼吸次數是約略值（安靜時每分鐘十幾次，因人而異）；運動後加快的時間和 BTB、石灰水變色的時間都縮短了。模型的鐘形罩不會變大，所以無法表示肋骨的運動。種子實驗也可以用乾燥的種子當對照組（乾種子的呼吸作用很微弱）。</p>
       </div>
     </div>
     <div class="card pad c-log"><h3>實驗紀錄</h3><div class="table-wrap" id="labH-log"></div></div>
@@ -65,8 +69,10 @@
         <input type="range" id="labH-p" min="0" max="100" step="1" value="0"></div>
       <div class="field"><div class="field-head"><span>自動呼吸</span></div>
         <div class="seg-ctl" role="group" aria-label="自動呼吸" id="labH-auto"><button type="button" data-v="off">停止</button><button type="button" data-v="rest">安靜時</button><button type="button" data-v="ex">運動後</button></div></div>
-      <div class="field"><div class="field-head"><span>BTB 溶液</span></div>
+      <div class="field"><div class="field-head"><span>BTB 溶液（溴瑞香草藍）</span></div>
         <div class="btn-row"><button class="ctl" type="button" id="labH-blow">吹氣</button><button class="ctl" type="button" id="labH-pump">打入空氣</button><button class="ctl" type="button" id="labH-fresh">換新的 BTB 溶液</button></div></div>
+      <div class="field"><div class="field-head"><span>種子的呼吸作用</span></div>
+        <div class="btn-row"><button class="ctl" type="button" id="labH-seedgo">倒入清水（種子實驗）</button><button class="ctl" type="button" id="labH-seednew">重新準備種子實驗</button></div></div>
     </details>
   </div>
 </div>`;
@@ -75,7 +81,7 @@
       const pIn = $('p'), pOut = $('p-o');
       el('rect', { x: 0, y: 0, width: 1200, height: 620, fill: C.bg }, svg);
       const root = g(svg);
-      const st = { p: 0, b: 0, auto: 'off', ph: 0, exT: 0, btb: [0, 0], pulled: false, released: false, blown: false, pumped: false, ran: false, busy: false };
+      const st = { p: 0, b: 0, auto: 'off', ph: 0, exT: 0, btb: [0, 0], pulled: false, released: false, blown: false, pumped: false, ran: false, busy: false, poured: false, seedT: -1 };
       const log = [];
       let mv = null;
 
@@ -107,7 +113,7 @@
       const hdia = el('path', { fill: 'none', stroke: DIA, 'stroke-width': 10, 'stroke-linecap': 'round' }, chest);
       [['氣管', 330, 120, 150, AIR], ['肋骨', 172, 268, 250, RIB], ['肺', 240, 380, 350, LUNG], ['橫膈', 172, 520, 450, DIA]].forEach(([s, bx, by, y, c]) => {
         const [tx, ty] = H2S(bx, by);
-        S.callout(root, tx, ty, 505, y, s, c, { size: 20 }).style.opacity = 1;
+        S.callout(root, tx, ty, 498, y, s, c, { size: 20 }).style.opacity = 1; // 字放大後標籤變寬，往左一點，不要貼到肋骨
       });
       const drawChest = (v) => {
         const CX = 330;
@@ -128,7 +134,8 @@
 
       // ---------- BTB 溶液 ----------
       const TXS = [930, 1090];
-      text(root, 1010, 30, 'BTB 溶液', { 'font-size': 24, 'text-anchor': 'middle', fill: C.mute });
+      text(root, 975, 30, 'BTB 溶液', { 'font-size': 24, 'text-anchor': 'middle', fill: C.mute });
+      text(root, 975, 60, '（溴瑞香草藍）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       const tubes = TXS.map((x, i) => {
         const tg = g(root);
         el('path', { d: `M ${x - 30},220 L ${x - 30},450 C ${x - 30},490 ${x + 30},490 ${x + 30},450 L ${x + 30},220 Z` }, el('clipPath', { id: 'labHt' + i }, el('defs', {}, tg)));
@@ -151,6 +158,69 @@
       el('line', { x1: TXS[1] - 16, y1: 60, x2: TXS[1] + 28, y2: 60, stroke: '#cfe8ff', 'stroke-width': 6, 'stroke-linecap': 'round' }, plunger);
       text(root, TXS[1], 524, '打入空氣（對照）', { 'font-size': 22, 'text-anchor': 'middle' });
       text(root, TXS[1] - 30, 132, '打氣筒', { 'font-size': 20, 'text-anchor': 'end', fill: C.mute });
+
+      // ---------- 種子的呼吸作用（蓋住整個舞台的另一個畫面）----------
+      const seedG = g(root, { display: 'none' });
+      el('rect', { x: 0, y: 0, width: 1200, height: 620, fill: C.bg }, seedG);
+      text(seedG, 600, 36, '種子的呼吸作用（示意＊）', { 'font-size': 24, 'text-anchor': 'middle', fill: C.mute });
+      el('line', { x1: 600, y1: 64, x2: 600, y2: 560, stroke: '#2b4252', 'stroke-width': 2, 'stroke-dasharray': '6 8' }, seedG);
+      const LIME0 = 'rgba(220,235,245,0.22)', LIME1 = 'rgba(240,240,236,0.88)';
+      const bean = (p, x, y, r, live) => {
+        const bg = S.place(g(p), { x, y, r });
+        if (live) el('path', { d: 'M 6,1 C 14,6 17,14 12,22', fill: 'none', stroke: '#f4f0dc', 'stroke-width': 3, 'stroke-linecap': 'round' }, bg); // 長出來的白色胚根
+        el('ellipse', { cx: 0, cy: 0, rx: live ? 9 : 10, ry: live ? 6.5 : 7.5, fill: live ? '#5f9e3f' : '#b3ad78', stroke: live ? '#2f6a24' : '#7a744a', 'stroke-width': 1.5 }, bg);
+        if (!live) el('path', { d: 'M -6,-2 C -2,1 2,-1 6,2', fill: 'none', stroke: '#7a744a', 'stroke-width': 1.2 }, bg); // 煮過：種皮脹破、起皺
+        el('ellipse', { cx: -3, cy: -2.5, rx: 3.2, ry: 1.4, fill: '#fff', opacity: 0.3 }, bg);
+        el('line', { x1: 3, y1: -3.5, x2: 7, y2: -1.5, stroke: '#f4f0dc', 'stroke-width': 1.4 }, bg);
+        return bg;
+      };
+      const flaskD = (cx) => `M ${cx - 22},172 L ${cx - 22},232 L ${cx - 110},450 Q ${cx - 114},470 ${cx - 94},470 L ${cx + 94},470 Q ${cx + 114},470 ${cx + 110},450 L ${cx + 22},232 L ${cx + 22},172`;
+      const tubeD = (tx) => `M ${tx - 26},250 L ${tx - 26},446 C ${tx - 26},476 ${tx + 26},476 ${tx + 26},446 L ${tx + 26},250`;
+      const seedSet = [[230, 430, true, 'A：發芽中的綠豆', '#a8e39a'], [770, 970, false, 'B：煮過的綠豆（對照組）', '#e8d8a0']].map(([cx, tx, live, name, col], i) => {
+        const o = { cx, tx, live };
+        // 錐形瓶裡的水（倒入清水後上升）
+        el('path', { d: flaskD(cx) + ' Z' }, el('clipPath', { id: 'labHf' + i }, el('defs', {}, seedG)));
+        o.water = el('rect', { x: cx - 120, y: 470, width: 240, height: 0, fill: 'rgba(95,184,255,0.35)', 'clip-path': `url(#labHf${i})` }, seedG);
+        const rnd = S.rng(i ? 11 : 5);
+        [[458, 9, 20], [444, 7, 20], [432, 4, 22]].forEach(([y, n, gap]) => { for (let k = 0; k < n; k++) bean(seedG, cx - ((n - 1) * gap) / 2 + k * gap + (rnd() - 0.5) * 6, y + (rnd() - 0.5) * 4, (rnd() - 0.5) * 120, live); });
+        el('path', { d: flaskD(cx), fill: 'rgba(207,232,255,0.05)', stroke: '#cfe8ff', 'stroke-width': 3, 'stroke-linejoin': 'round' }, seedG);
+        // 漏斗（長管伸到瓶底附近）與導管
+        el('line', { x1: cx - 8, y1: 138, x2: cx - 8, y2: 420, stroke: '#cfe8ff', 'stroke-width': 6 }, seedG);
+        o.stem = el('line', { x1: cx - 8, y1: 140, x2: cx - 8, y2: 140, stroke: C.water, 'stroke-width': 3 }, seedG);
+        el('path', { d: `M ${cx - 50},88 L ${cx + 34},88 L ${cx - 4},138 L ${cx - 12},138 Z`, fill: 'rgba(207,232,255,0.08)', stroke: '#cfe8ff', 'stroke-width': 3, 'stroke-linejoin': 'round' }, seedG);
+        o.pourL = el('line', { x1: cx - 8, y1: 52, x2: cx - 8, y2: 132, stroke: C.water, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0 }, seedG);
+        const pipe = `M ${cx + 12},176 L ${cx + 12},150 L ${tx},150 L ${tx},440`; // 在漏斗下方轉彎，不和漏斗重疊
+        el('path', { d: pipe, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 8, 'stroke-linejoin': 'round' }, seedG);
+        el('path', { d: pipe, fill: 'none', stroke: C.bg, 'stroke-width': 3, 'stroke-linejoin': 'round' }, seedG);
+        el('rect', { x: cx - 28, y: 158, width: 56, height: 22, rx: 4, fill: '#7a5a3a' }, seedG); // 瓶塞
+        // 試管裡的澄清石灰水
+        el('path', { d: tubeD(tx) + ' Z' }, el('clipPath', { id: 'labHq' + i }, el('defs', {}, seedG)));
+        o.lime = el('rect', { x: tx - 30, y: 330, width: 60, height: 150, fill: LIME0, 'clip-path': `url(#labHq${i})` }, seedG);
+        el('path', { d: `M ${tx - 30},244 L ${tx - 26},250 ` + tubeD(tx).slice(tubeD(tx).indexOf('L')) + ` L ${tx + 30},244`, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 3.5 }, seedG);
+        o.bubs = [0, 1, 2, 3, 4].map(() => el('circle', { cx: tx, cy: 0, r: 5, fill: 'none', stroke: '#e8f6ff', 'stroke-width': 2, opacity: 0 }, seedG));
+        text(seedG, cx, 522, name, { 'font-size': 24, 'text-anchor': 'middle', fill: col, 'font-weight': 700 });
+        text(seedG, tx, 500, '石灰水', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+        o.res = text(seedG, tx, 532, live ? '變混濁' : '仍然澄清', { 'font-size': 22, 'text-anchor': 'middle', fill: live ? '#f2f2f2' : '#9fd8ff', 'font-weight': 700, opacity: 0 });
+        return o;
+      });
+      text(seedG, 600, 596, '兩瓶都已密封放置一段時間＊，再倒入清水把瓶內的氣體壓進石灰水', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      let view = 'model';
+      const showView = (v) => { view = v; seedG.setAttribute('display', v === 'seed' ? 'inline' : 'none'); };
+      const seedBusy = () => st.seedT >= 0 && st.seedT < SEED_SEC;
+      function drawSeed() {
+        const k = st.seedT < 0 ? 0 : S.clamp(st.seedT / SEED_SEC), run = seedBusy();
+        seedSet.forEach((o) => {
+          const lv = 70 * S.smoothstep(0.05, 0.6, k);
+          o.water.setAttribute('y', 470 - lv); o.water.setAttribute('height', lv);
+          o.pourL.setAttribute('opacity', run && k < 0.6 ? 0.9 : 0);
+          o.stem.setAttribute('y2', run || k >= 1 ? 140 + 280 * S.smoothstep(0, 0.12, k) : 140);
+          o.lime.setAttribute('fill', o.live ? mix('#dcebf5', '#f0f0ec', S.smoothstep(0.3, 0.95, k)) : '#dcebf5');
+          o.lime.setAttribute('fill-opacity', o.live ? S.lerp(0.22, 0.88, S.smoothstep(0.3, 0.95, k)).toFixed(2) : 0.22);
+          o.bubs.forEach((b, i) => { const q = (performance.now() / 600 + i / 5) % 1; b.setAttribute('cx', o.tx + Math.sin(q * 10 + i) * 6); b.setAttribute('cy', S.lerp(438, 336, q)); b.setAttribute('opacity', run && k > 0.12 && k < 0.92 ? 0.9 : 0); });
+          o.res.setAttribute('opacity', k >= 1 ? 1 : 0);
+        });
+      }
+      function resetSeed() { st.seedT = -1; st.poured = false; drawSeed(); }
 
       // ---------- 畫面更新 ----------
       let lastB = 0;
@@ -186,6 +256,7 @@
           });
         });
         breath.style.opacity = tubes[0].blowT > 0 ? 1 : 0;
+        if (view === 'seed') drawSeed();
         plunger.setAttribute('transform', `translate(0,${tubes[1].blowT > 0 ? (Math.sin(performance.now() / 120) * 0.5 + 0.5) * 30 : 0})`);
       }
       const breathNow = () => {
@@ -205,6 +276,10 @@
           const { rate, depth } = breathNow();
           st.ph += dt * 2 * Math.PI * (rate / 60);
           st.p = depth * (0.5 - 0.5 * Math.cos(st.ph));
+        }
+        if (seedBusy()) {
+          st.seedT += dt;
+          if (st.seedT >= SEED_SEC) { st.poured = true; status('倒入清水後：<b>A 瓶</b>（發芽中的綠豆）的石灰水變混濁，<b>B 瓶</b>（煮過的綠豆）仍然澄清。'); addLog('種子實驗：倒入清水', 'A（發芽中）變混濁；B（煮過的）仍然澄清'); sync(); checkMission(); drawMission(); }
         }
         tubes.forEach((t, i) => {
           if (t.blowT > 0) {
@@ -242,6 +317,7 @@
         },
         blow() { if (tubes[0].blowT > 0) return; tubes[0].blowT = 3; status('用吸管對 BTB 溶液吹氣……'); sync(); drawMission(); },
         pump() { if (tubes[1].blowT > 0) return; tubes[1].blowT = 3; status('用打氣筒打入一般空氣……'); sync(); drawMission(); },
+        pour() { if (seedBusy()) return; showView('seed'); if (st.seedT >= SEED_SEC) resetSeed(); st.seedT = 0; status('從漏斗倒入清水，瓶內的氣體被壓進石灰水……'); sync(); drawMission(); },
         run() {
           mv = null; st.busy = false;
           st.auto = 'ex'; st.exT = EX_SEC; st.ran = true;
@@ -261,27 +337,29 @@
         $('p').value = Math.round(st.p * 100); $('p-o').textContent = `${Math.round(st.p * 100)}%`;
         $('p').disabled = st.busy;
         box.querySelectorAll('#labH-auto button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === st.auto));
-        const blowing = tubes.some((t) => t.blowT > 0);
-        ['blow', 'pump', 'fresh'].forEach((k) => { $(k).disabled = blowing; });
+        const blowing = tubes.some((t) => t.blowT > 0) || seedBusy();
+        ['blow', 'pump', 'fresh', 'seedgo', 'seednew'].forEach((k) => { $(k).disabled = blowing; });
       }
-      $('p').addEventListener('input', () => { mv = null; st.auto = 'off'; st.busy = false; st.p = +$('p').value / 100; sync(); });
+      $('p').addEventListener('input', () => { showView('model'); mv = null; st.auto = 'off'; st.busy = false; st.p = +$('p').value / 100; sync(); });
       box.querySelectorAll('#labH-auto button').forEach((b) => b.addEventListener('click', () => {
-        mv = null; st.busy = false;
+        showView('model'); mv = null; st.busy = false;
         st.auto = b.dataset.v;
         if (st.auto === 'ex') { st.exT = EX_SEC; status('運動後：呼吸又快又深。'); }
         else if (st.auto === 'rest') status('安靜時的呼吸。');
         else status('停止自動呼吸。可以拖動滑桿，自己拉動橡皮膜。');
         sync(); drawMission();
       }));
-      $('blow').addEventListener('click', () => ACT.blow());
-      $('pump').addEventListener('click', () => ACT.pump());
-      $('fresh').addEventListener('click', () => { st.btb = [0, 0]; status('換上新的藍色 BTB 溶液。'); });
+      $('blow').addEventListener('click', () => { showView('model'); ACT.blow(); });
+      $('pump').addEventListener('click', () => { showView('model'); ACT.pump(); });
+      $('fresh').addEventListener('click', () => { showView('model'); st.btb = [0, 0]; status('換上新的藍色 BTB 溶液。'); });
+      $('seedgo').addEventListener('click', () => ACT.pour());
+      $('seednew').addEventListener('click', () => { showView('seed'); resetSeed(); status('重新準備：A 瓶是發芽中的綠豆，B 瓶是煮過的綠豆，石灰水都是澄清的。'); sync(); });
 
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, needShown = null;
       const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
-      const busyNow = () => st.busy || tubes.some((t) => t.blowT > 0);
+      const busyNow = () => st.busy || tubes.some((t) => t.blowT > 0) || seedBusy();
       const actsHtml = (m) => `<div class="acts">${m.acts.map((a, i) => {
         const did = a.did && a.did(st);
         return `<button class="ctl ${did ? '' : 'primary'}" type="button" data-a="${i}" aria-pressed="${!!did}" ${busyNow() ? 'disabled' : ''}>${a.label}${did ? ' ✓' : ''}</button>`;
@@ -289,7 +367,7 @@
       function drawMission() {
         if (mi >= MISSIONS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
-            <div class="fb ok"><strong>呼吸運動重點</strong>吸氣：肋骨上舉、橫膈下降 → 胸腔變大 → 空氣進入肺。<br>呼氣：肋骨下降、橫膈上升 → 胸腔變小 → 空氣排出。<br>呼出的氣體含較多二氧化碳（BTB 由藍變黃）；運動後二氧化碳增加，呼吸加快加深。</div>
+            <div class="fb ok"><strong>呼吸運動重點</strong>吸氣：肋骨上舉、橫膈下降 → 胸腔變大 → 空氣進入肺。<br>呼氣：肋骨下降、橫膈上升 → 胸腔變小 → 空氣排出。<br>呼出的氣體含較多二氧化碳（BTB 由藍變黃）；發芽中的種子也會呼吸，放出二氧化碳（煮過的種子不會）。<br>運動後二氧化碳增加，呼吸加快加深。</div>
             <button class="ctl primary" type="button" id="labH-again">再練習一次</button>`;
           mbox.querySelector('#labH-again').addEventListener('click', reset);
           $('free').open = true;
@@ -333,14 +411,17 @@
       function enter() {
         const m = MISSIONS[mi];
         if (!m) return;
+        showView(m.setup === 'seed' ? 'seed' : 'model');
         if (m.auto) { mv = null; st.busy = false; st.auto = m.auto; status('模型和人體示意圖正在呼吸（安靜時）。注意看中間的人體示意圖。'); }
-        if (mi === 3) { st.auto = 'off'; mv = null; st.p = 0; st.btb = [0, 0]; status('準備好兩支裝了藍色 BTB 溶液的試管。'); }
-        if (mi === 4) { st.auto = 'rest'; status('先看看安靜時的呼吸：每分鐘約十幾次。'); }
+        if (m.setup === 'btb') { st.auto = 'off'; mv = null; st.p = 0; st.btb = [0, 0]; status('準備好兩支裝了藍色 BTB 溶液的試管。'); }
+        if (m.setup === 'seed') { st.auto = 'off'; mv = null; st.p = 0; resetSeed(); status('A 瓶：發芽中的綠豆；B 瓶：煮過的綠豆（對照組）。兩支試管都裝了澄清石灰水。'); }
+        if (m.setup === 'ex') { st.auto = 'rest'; status('先看看安靜時的呼吸：每分鐘約十幾次。'); }
         sync();
       }
       function reset() {
         mv = null;
-        Object.assign(st, { p: 0, b: 0, auto: 'off', ph: 0, exT: 0, btb: [0, 0], pulled: false, released: false, blown: false, pumped: false, ran: false, busy: false });
+        Object.assign(st, { p: 0, b: 0, auto: 'off', ph: 0, exT: 0, btb: [0, 0], pulled: false, released: false, blown: false, pumped: false, ran: false, busy: false, poured: false, seedT: -1 });
+        showView('model'); drawSeed();
         tubes.forEach((t) => { t.blowT = 0; });
         log.length = 0; drawLog();
         mi = 0; done = false; picked = -1; pred = -1; needShown = null;

@@ -1,4 +1,4 @@
-/* 5-2 排泄與水分恆定：代謝廢物與排泄、泌尿系統（腎臟過濾）、皮膚排汗、水分的恆定、植物和動物的水分調節 */
+/* 6-2 排泄與水分恆定：代謝廢物與排泄、含氮廢物（氨、尿素、尿酸）、泌尿系統（腎臟過濾）、皮膚排汗、水分的恆定、植物（氣孔、泌液作用）和動物的水分調節 */
 (() => {
   const { el, g, text, C } = S;
   const UREA = '#c9a8ff', NH3 = '#ff9fb1', H2O = C.water, SALT = '#e8f0f2', CO2 = C.co2, URINE = '#e8c84a', VEIN = '#7f9cf0';
@@ -84,7 +84,65 @@
       orgs.forEach((o, i) => S.show(tl, o, `s0+=${4.4 + i * 0.4}`, 0.4));
       S.show(tl, not0, 's0+=6', 0.5);
 
-      // ===== 1 泌尿系統與腎臟的過濾 =====
+      // ===== 1 含氮廢物：氨、尿素、尿酸 =====
+      const PN = g(root, { opacity: 0 });
+      const B4 = S.B4, URIC = '#efe8d2';
+      const headN = g(PN, { opacity: 0 });
+      S.pill(headN, 600, 36, '蛋白質分解會產生有毒的氨，不同的動物用不同的方式排出', { size: 22, color: C.ink, edge: '#4a6272' });
+      const KINDS = [
+        ['氨', NH3, '許多水中的動物（例如多數魚類）', ['直接排到水中，', '靠大量的水稀釋'], ['最強', 3], 3],
+        ['尿素', UREA, '人和其他哺乳類', ['在肝臟把氨變成尿素，', '溶在尿液中排出'], ['較弱', 2], 2],
+        ['尿酸', URIC, '鳥類、昆蟲', ['不容易溶在水中，', '混在糞便中排出'], ['最弱', 1], 1],
+      ];
+      const nh3dots = [];
+      const cardsN = KINDS.map(([name, col, who, how, [tox, tn], wn], i) => {
+        const x0 = 40 + i * 380, cx = x0 + 180, cg = g(PN, { opacity: 0 });
+        el('rect', { x: x0, y: 70, width: 360, height: 540, rx: 16, fill: '#122230', stroke: col, 'stroke-width': 2 }, cg);
+        text(cg, cx, 120, name, { 'font-size': 36, 'text-anchor': 'middle', 'font-weight': 700, fill: col });
+        if (i === 0) {
+          el('rect', { x: x0 + 16, y: 140, width: 328, height: 190, rx: 12, fill: 'rgba(95,184,255,0.14)', stroke: 'rgba(95,184,255,0.4)', 'stroke-width': 1.5 }, cg);
+          B4.fish(cg, cx + 14, 238, 0.78);
+          for (let k = 0; k < 8; k++) { const d = el('circle', { cx: 0, cy: 0, r: 6, fill: NH3, stroke: '#0d1822', 'stroke-width': 1.2, opacity: 0 }, cg); nh3dots.push({ d, a: Math.PI * (0.55 + (k % 4) * 0.22), ph: k / 8, x: cx - 46, y: 240 }); }
+        } else if (i === 1) {
+          const hb = S.place(g(cg), { x: cx - 74 - 600 * 0.27, y: 146 - 60 * 0.27, s: 0.27 });
+          S.human(hb, { fill: 'rgba(52,96,122,0.55)', sw: 5 });
+          el('path', { d: 'M 541,262 C 560,252 600,253 620,257 C 628,259 633,262 632,266 C 620,272 604,280 594,288 C 580,298 568,304 557,304 C 546,304 540,294 540,282 Z', fill: '#7a3f31', stroke: '#c9785f', 'stroke-width': 3 }, hb);
+          B4.rabbit(cg, cx + 72, 322, 0.55);
+          S.callout(cg, cx - 74 - 13, 146 + (276 - 60) * 0.27, cx - 134, 300, '肝臟', '#c9785f', { size: 20 }).style.opacity = 1;
+        } else {
+          B4.bird(cg, cx - 60, 316, 0.56);
+          B4.bee(cg, cx + 92, 238, 0.32);
+        }
+        text(cg, cx, 370, who, { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink, 'font-weight': 700 });
+        how.forEach((h, k) => text(cg, cx, 408 + k * 30, h, { 'font-size': 21, 'text-anchor': 'middle', fill: C.ink2 }));
+        el('line', { x1: x0 + 20, y1: 462, x2: x0 + 340, y2: 462, stroke: '#2b4252', 'stroke-width': 1.5 }, cg);
+        const rows = g(cg, { opacity: 0 });
+        text(rows, x0 + 24, 506, '毒性', { 'font-size': 21, fill: C.mute });
+        for (let k = 0; k < tn; k++) el('circle', { cx: x0 + 150 + k * 30, cy: 499, r: 10, fill: '#ff8a7a' }, rows);
+        text(rows, x0 + 336, 506, tox, { 'font-size': 21, 'text-anchor': 'end', fill: '#ff8a7a', 'font-weight': 700 });
+        text(rows, x0 + 24, 562, '排出時', { 'font-size': 21, fill: C.mute });
+        text(rows, x0 + 24, 592, '需要的水', { 'font-size': 21, fill: C.mute });
+        for (let k = 0; k < wn; k++) el('path', { d: DROP, fill: H2O, transform: `translate(${x0 + 150 + k * 30},${568}) scale(1.5)` }, rows);
+        text(rows, x0 + 336, 580, ['最多', '較多', '最少'][i], { 'font-size': 21, 'text-anchor': 'end', fill: H2O, 'font-weight': 700 });
+        cg.rows = rows;
+        return cg;
+      });
+      const sumN = g(PN, { opacity: 0 });
+      S.pill(sumN, 600, 664, '鳥類和昆蟲排尿酸，最節省水分', { size: 24, color: C.hi, edge: C.hi });
+      tl.addLabel('s1');
+      S.hide(tl, P0, 's1', 0.4);
+      S.show(tl, PN, 's1+=0.3', 0.3);
+      S.show(tl, headN, 's1+=0.4', 0.4);
+      cardsN.forEach((c, i) => S.show(tl, c, `s1+=${0.9 + i * 1.1}`, 0.4));
+      S.drive(tl, (u) => nh3dots.forEach(({ d, a, ph, x, y }) => {
+        const k = (u * 3 + ph) % 1, r = 10 + k * 70;
+        d.setAttribute('cx', (x + Math.cos(a) * r).toFixed(1)); d.setAttribute('cy', (y - Math.sin(a) * r * 0.9).toFixed(1));
+        d.style.opacity = u > 0 && u < 1 ? (1 - k).toFixed(2) : 0;
+      }), 4.5, 's1+=1', 'none');
+      cardsN.forEach((c, i) => S.show(tl, c.rows, `s1+=${4.2 + i * 0.3}`, 0.4));
+      S.show(tl, sumN, 's1+=5.4', 0.5);
+
+      // ===== 2 泌尿系統與腎臟的過濾 =====
       const P1 = g(root, { opacity: 0 });
       el('rect', { x: 30, y: 60, width: 580, height: 600, rx: 18, ...FRAME }, P1);
       el('rect', { x: 640, y: 60, width: 530, height: 600, rx: 18, ...FRAME }, P1);
@@ -104,7 +162,7 @@
       el('ellipse', { cx: 330, cy: 438, rx: 48, ry: 38, fill: 'none', stroke: URINE, 'stroke-width': 4 }, sys);
       el('line', { x1: 330, y1: 476, x2: 330, y2: 560, stroke: URINE, 'stroke-width': 7, 'stroke-linecap': 'round' }, sys);
       const uDrops = [0, 1, 2, 3].map(() => el('circle', { cx: 0, cy: 0, r: 5, fill: URINE, opacity: 0 }, sys));
-      const call1 = [[200, 160, 110, 120, '腎臟', KID_E], [276, 300, 110, 300, '輸尿管', URINE], [284, 446, 110, 446, '膀胱', URINE], [330, 530, 110, 560, '尿道', URINE], [318, 100, 500, 90, '主動脈', C.blood], [342, 130, 500, 150, '大靜脈', VEIN]]
+      const call1 = [[200, 160, 110, 120, '腎臟', KID_E], [276, 300, 110, 300, '輸尿管', URINE], [284, 446, 110, 446, '膀胱', URINE], [330, 530, 110, 560, '尿道', URINE], [318, 100, 500, 90, '主動脈', C.blood], [342, 130, 500, 150, '下大靜脈', VEIN]]
         .map(([tx, ty, x, y, s, c]) => S.callout(P1, tx, ty, x, y, s, c, { size: 24 }));
       text(P1, 320, 640, '泌尿系統（示意）', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       // 右：腎臟的過濾（示意）
@@ -123,8 +181,9 @@
       const back1 = g(P1, { opacity: 0 });
       el('path', { d: 'M 940,360 C 990,350 1000,300 990,262', fill: 'none', stroke: C.sugar, 'stroke-width': 3, 'stroke-dasharray': '6 5' }, back1);
       arrow(back1, 992, 276, 990, 254, C.sugar, 3, 10);
-      text(back1, 1010, 330, '有用的物質', { 'font-size': 20, fill: C.sugar });
-      text(back1, 1010, 356, '送回血液', { 'font-size': 20, fill: C.sugar });
+      // 標在腎臟輪廓外面（輪廓右緣 x ≈ 1050），不要壓在輪廓線上
+      text(back1, 1062, 332, '有用物質', { 'font-size': 22, fill: C.sugar });
+      text(back1, 1062, 360, '送回血液', { 'font-size': 22, fill: C.sugar });
       const urine1 = g(P1, { opacity: 0 });
       S.pill(urine1, 905, 530, '尿液：尿素、多餘的水和無機鹽', { size: 22, color: URINE, edge: URINE });
       text(urine1, 905, 580, '→ 輸尿管 → 膀胱 → 尿道 → 排出', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
@@ -160,23 +219,23 @@
         particle(S.place(g(legend1), { x, y: 630 }), k);
         text(legend1, x + 22, 637, n, { 'font-size': 20, fill: C.ink2 });
       });
-      tl.addLabel('s1');
-      S.hide(tl, P0, 's1', 0.4);
-      S.show(tl, P1, 's1+=0.3', 0.4);
-      call1.forEach((c, i) => S.show(tl, c, `s1+=${0.6 + i * 0.3}`, 0.3));
+      tl.addLabel('s2');
+      S.hide(tl, PN, 's2', 0.4);
+      S.show(tl, P1, 's2+=0.3', 0.4);
+      call1.forEach((c, i) => S.show(tl, c, `s2+=${0.6 + i * 0.3}`, 0.3));
       S.drive(tl, (u) => {
         uDrops.forEach((d, i) => {
           const k = (u * 3 + i / 4) % 1, path = ureters[i % 2], L = path.getTotalLength(), q = path.getPointAtLength(L * k);
           d.setAttribute('cx', q.x); d.setAttribute('cy', q.y); d.style.opacity = u > 0 && u < 1 ? 1 : 0;
         });
         bladFill.setAttribute('opacity', 0.2 + 0.4 * u);
-      }, 5, 's1+=1', 'none');
-      S.drive(tl, run1, 6, 's1+=1.2', 'none');
-      S.show(tl, lbl1, 's1+=3', 0.4);
-      S.show(tl, back1, 's1+=4', 0.4);
-      S.show(tl, urine1, 's1+=5', 0.4);
+      }, 5, 's2+=1', 'none');
+      S.drive(tl, run1, 6, 's2+=1.2', 'none');
+      S.show(tl, lbl1, 's2+=3', 0.4);
+      S.show(tl, back1, 's2+=4', 0.4);
+      S.show(tl, urine1, 's2+=5', 0.4);
 
-      // ===== 2 皮膚排汗 =====
+      // ===== 3 皮膚排汗 =====
       const P2 = g(root, { opacity: 0 });
       el('rect', { x: 40, y: 200, width: 660, height: 52, fill: 'rgba(242,179,138,0.45)' }, P2);
       el('rect', { x: 40, y: 252, width: 660, height: 360, fill: 'rgba(201,138,106,0.18)' }, P2);
@@ -213,10 +272,10 @@
       });
       const heat2 = g(P2, { opacity: 0 });
       S.pill(heat2, 960, 500, '汗水蒸發會帶走熱（見 6-3）', { size: 24, color: C.hi, edge: C.hi });
-      tl.addLabel('s2');
-      S.hide(tl, P1, 's2', 0.4);
-      S.show(tl, P2, 's2+=0.3', 0.4);
-      call2.forEach((c, i) => S.show(tl, c, `s2+=${0.6 + i * 0.3}`, 0.3));
+      tl.addLabel('s3');
+      S.hide(tl, P1, 's3', 0.4);
+      S.show(tl, P2, 's3+=0.3', 0.4);
+      call2.forEach((c, i) => S.show(tl, c, `s3+=${0.6 + i * 0.3}`, 0.3));
       const ductL = ductIn.getTotalLength();
       S.drive(tl, (u) => sw2.forEach((o) => {
         const k = (u * 2 + o.ph) % 1;
@@ -225,12 +284,12 @@
         else { const q = ductIn.getPointAtLength(ductL * ((k - 0.3) / 0.7)); x = q.x; y = q.y; }
         o.m.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)}) scale(0.8)`);
         o.m.style.opacity = u <= 0 || u >= 1 ? 0 : Math.min(1, k * 10, (1 - k) * 10, (1 - u) * 20);
-      }), 4.5, 's2+=1', 'none');
-      sweat.forEach((s, i) => S.show(tl, s, `s2+=${2.4 + i * 0.6}`, 0.4));
-      S.show(tl, card2, 's2+=3', 0.5);
-      S.show(tl, heat2, 's2+=4.4', 0.5);
+      }), 4.5, 's3+=1', 'none');
+      sweat.forEach((s, i) => S.show(tl, s, `s3+=${2.4 + i * 0.6}`, 0.4));
+      S.show(tl, card2, 's3+=3', 0.5);
+      S.show(tl, heat2, 's3+=4.4', 0.5);
 
-      // ===== 3 水分的恆定 =====
+      // ===== 4 水分的恆定 =====
       const P3 = g(root, { opacity: 0 });
       const io = g(P3);
       el('rect', { x: 80, y: 60, width: 440, height: 150, rx: 16, ...FRAME }, io);
@@ -271,66 +330,111 @@
         const resT = text(sg, x + 270, 620, res, { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700, fill: i ? '#e8b04a' : '#f3eba6', opacity: 0 });
         return { sg, liq, lv, resT };
       });
-      tl.addLabel('s3');
-      S.hide(tl, P2, 's3', 0.4);
-      S.show(tl, P3, 's3+=0.3', 0.4);
+      tl.addLabel('s4');
+      S.hide(tl, P2, 's4', 0.4);
+      S.show(tl, P3, 's4+=0.3', 0.4);
       scen.forEach(({ sg, liq, lv, resT }, i) => {
-        S.show(tl, sg, `s3+=${1 + i * 1.6}`, 0.4);
-        S.drive(tl, (u) => { liq.setAttribute('y', 560 - lv * u); liq.setAttribute('height', lv * u); }, 1.2, `s3+=${1.5 + i * 1.6}`, 'power1.out');
-        S.show(tl, resT, `s3+=${2.6 + i * 1.6}`, 0.4);
+        S.show(tl, sg, `s4+=${1 + i * 1.6}`, 0.4);
+        S.drive(tl, (u) => { liq.setAttribute('y', 560 - lv * u); liq.setAttribute('height', lv * u); }, 1.2, `s4+=${1.5 + i * 1.6}`, 'power1.out');
+        S.show(tl, resT, `s4+=${2.6 + i * 1.6}`, 0.4);
       });
 
-      // ===== 4 植物的水分調節 =====
+      // ===== 5 植物的水分調節：氣孔開閉、泌液作用、沙漠植物 =====
       const P4 = g(root, { opacity: 0 });
-      el('rect', { x: 40, y: 80, width: 560, height: 570, rx: 18, ...FRAME }, P4);
-      el('rect', { x: 640, y: 80, width: 520, height: 570, rx: 18, ...FRAME }, P4);
-      text(P4, 320, 128, '保衛細胞控制氣孔開閉', { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700 });
-      text(P4, 900, 128, '沙漠植物（例如仙人掌）', { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700 });
+      [[40, 380, '氣孔的開和關'], [440, 360, '泌液作用'], [820, 340, '沙漠植物（仙人掌）']].forEach(([x, w, t]) => {
+        el('rect', { x, y: 80, width: w, height: 570, rx: 18, ...FRAME }, P4);
+        text(P4, x + w / 2, 126, t, { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700 });
+      });
+      // (a) 保衛細胞控制氣孔開閉
       const stoma = (cx, cy, open) => {
-        const sg = S.place(g(P4), { x: cx, y: cy });
+        const sg = S.place(g(P4), { x: cx, y: cy, s: 0.62 });
         const w = open ? 30 : 10;
-        [-1, 1].forEach((s) => el('path', { d: `M 0,-80 C ${s * (w + 70)},-84 ${s * (w + 70)},84 0,80 C ${s * w},60 ${s * w},-60 0,-80 Z`, fill: open ? '#6fce62' : '#5a9a50', stroke: '#2f7a3a', 'stroke-width': 3 }, sg));
+        [-1, 1].forEach((s) => el('path', { d: `M 0,-80 C ${s * (w + 70)},-84 ${s * (w + 70)},84 0,80 C ${s * w},60 ${s * w},-60 0,-80 Z`, fill: open ? '#6fce62' : '#5a9a50', stroke: '#2f7a3a', 'stroke-width': 4 }, sg));
         [-1, 1].forEach((s) => [-40, 0, 40].forEach((y) => el('ellipse', { cx: s * (w + 34), cy: y, rx: 7, ry: 10, fill: '#2f8a3a' }, sg)));
         if (open) el('ellipse', { cx: 0, cy: 0, rx: w - 4, ry: 56, fill: '#0d1822' }, sg);
         return sg;
       };
-      stoma(185, 330, true); stoma(455, 330, false);
+      stoma(135, 300, true); stoma(325, 300, false);
       const vap = g(P4);
-      const vaps = [0, 1, 2].map((i) => S.place(g(vap), { x: 185 + (i - 1) * 16, y: 330 }));
+      const vaps = [0, 1, 2].map((i) => S.place(g(vap), { x: 135 + (i - 1) * 12, y: 290 }));
       vaps.forEach((v) => { el('path', { d: 'M 0,0 q -6,-8 0,-16 q 6,-8 0,-16', fill: 'none', stroke: '#cfe8ff', 'stroke-width': 3, 'stroke-linecap': 'round' }, v); });
-      text(P4, 185, 460, '水分充足', { 'font-size': 24, 'text-anchor': 'middle', fill: C.water, 'font-weight': 700 });
-      text(P4, 185, 494, '氣孔張開', { 'font-size': 24, 'text-anchor': 'middle' });
-      text(P4, 185, 528, '水蒸氣散失（蒸散作用）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(P4, 135, 420, '水分充足', { 'font-size': 24, 'text-anchor': 'middle', fill: C.water, 'font-weight': 700 });
+      text(P4, 135, 454, '氣孔張開', { 'font-size': 22, 'text-anchor': 'middle' });
+      text(P4, 135, 486, '水蒸氣散失', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       const dry = g(P4, { opacity: 0 });
-      text(dry, 455, 460, '缺水', { 'font-size': 24, 'text-anchor': 'middle', fill: '#e8b04a', 'font-weight': 700 });
-      text(dry, 455, 494, '氣孔關閉', { 'font-size': 24, 'text-anchor': 'middle' });
-      text(dry, 455, 528, '減少水分散失', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
-      const arr4 = g(P4, { opacity: 0 }); arrow(arr4, 280, 330, 360, 330, C.ink2, 3, 12);
-      text(P4, 320, 570, '保衛細胞（放大＊）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
-      // 仙人掌
+      text(dry, 325, 420, '缺水', { 'font-size': 24, 'text-anchor': 'middle', fill: '#e8b04a', 'font-weight': 700 });
+      text(dry, 325, 454, '氣孔關閉', { 'font-size': 22, 'text-anchor': 'middle' });
+      text(dry, 325, 486, '減少水分散失', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      const arr4 = g(P4, { opacity: 0 }); arrow(arr4, 206, 300, 254, 300, C.ink2, 3, 12);
+      text(P4, 230, 600, '保衛細胞（放大＊）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      // (b) 泌液作用：空氣潮溼、根吸水多時，水從葉緣或葉尖排出成水珠
+      const gut = g(P4, { opacity: 0 });
+      [[528, 172, 22], [552, 162, 26], [578, 172, 20]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: '#8aa1ae' }, gut));
+      el('rect', { x: 512, y: 172, width: 84, height: 20, rx: 10, fill: '#8aa1ae' }, gut);
+      text(gut, 610, 190, '空氣潮溼', { 'font-size': 20, fill: '#cfe8ff' });
+      el('rect', { x: 456, y: 468, width: 328, height: 64, rx: 10, fill: '#3a2a1c' }, gut);
+      // 水滴放在文字（x 545～655）兩側，不碰到「土壤水分多」
+      [[480, 492], [516, 514], [700, 492], [748, 514], [684, 518]].forEach(([x, y]) => el('path', { d: DROP, fill: H2O, transform: `translate(${x},${y}) scale(0.8)` }, gut));
+      text(gut, 600, 518, '土壤水分多', { 'font-size': 20, 'text-anchor': 'middle', fill: C.water });
+      el('path', { d: 'M 620,470 C 618,430 622,380 620,326', fill: 'none', stroke: '#4f8a3f', 'stroke-width': 8, 'stroke-linecap': 'round' }, gut);
+      const LEAF_N = 9, toothD = (L, W) => {
+        const h = (t) => (W / 2) * Math.pow(Math.sin(Math.PI * t), 0.9), up = [], dn = [];
+        for (let i = 1; i <= LEAF_N; i++) {
+          const t0 = (i - 0.5) / LEAF_N, t1 = i / LEAF_N;
+          up.push(`L ${(L * t0).toFixed(1)},${(-(h(t0) + 5)).toFixed(1)} L ${(L * t1).toFixed(1)},${(-h(t1)).toFixed(1)}`);
+          dn.unshift(`L ${(L * t1).toFixed(1)},${h(t1).toFixed(1)} L ${(L * t0).toFixed(1)},${(h(t0) + 5).toFixed(1)}`);
+        }
+        return { d: `M 0,0 ${up.join(' ')} ${dn.join(' ')} L 0,0 Z`, tip: (i, sg) => [(L * (i - 0.5)) / LEAF_N, sg * (h((i - 0.5) / LEAF_N) + 5)] };
+      };
+      const beads = [];
+      [[616, 362, -150, 150, 78], [624, 332, -30, 150, 78]].forEach(([bx, by, r, L, W]) => {
+        const lg = S.place(g(gut), { x: bx, y: by, r });
+        const T = toothD(L, W);
+        el('path', { d: T.d, fill: '#4fae4a', stroke: '#2f7a3a', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }, lg);
+        el('line', { x1: 2, y1: 0, x2: L - 4, y2: 0, stroke: '#a8e39a', 'stroke-width': 2.5 }, lg);
+        [0.25, 0.45, 0.65].forEach((f) => [-1, 1].forEach((sg) => el('path', { d: `M ${L * f},0 Q ${L * f + 14},${sg * 12} ${L * f + 26},${sg * 26}`, fill: 'none', stroke: '#a8e39a', 'stroke-width': 1.6 }, lg)));
+        const ca = Math.cos((r * Math.PI) / 180), sa = Math.sin((r * Math.PI) / 180);
+        const W2 = (lx, ly) => [bx + lx * ca - ly * sa, by + lx * sa + ly * ca];
+        // 水珠掛在葉緣的鋸齒尖和葉尖（只取朝下的那一邊）
+        const pts = [...[3, 5, 7].map((i) => T.tip(i, 1)), ...[3, 5, 7].map((i) => T.tip(i, -1)), [L, 0]].map(([lx, ly]) => W2(lx, ly));
+        pts.forEach(([wx, wy]) => {
+          const bd = S.place(g(gut), { x: wx, y: wy + 7, s: 0 });
+          el('path', { d: DROP, fill: 'rgba(160,215,255,0.9)', stroke: '#e8f6ff', 'stroke-width': 1 }, bd);
+          el('ellipse', { cx: -2, cy: 3, rx: 1.8, ry: 2.5, fill: '#fff', opacity: 0.8 }, bd);
+          beads.push({ bd, x: wx, y: wy + 7 });
+        });
+      });
+      const gutT = g(P4, { opacity: 0 });
+      text(gutT, 620, 576, '空氣潮溼、根吸水多時，', { 'font-size': 22, 'text-anchor': 'middle' });
+      text(gutT, 620, 610, '水從葉緣或葉尖排出成水珠', { 'font-size': 22, 'text-anchor': 'middle', fill: C.water, 'font-weight': 700 });
+      // (c) 仙人掌
       const cac = g(P4, { opacity: 0 });
-      el('path', { d: 'M 800,560 L 800,230 C 800,180 880,180 880,230 L 880,560 Z', fill: '#4f8a3f', stroke: '#a8e39a', 'stroke-width': 5 }, cac);
-      el('path', { d: 'M 800,400 L 760,400 C 730,400 720,380 720,350 L 720,300 C 720,280 750,280 750,300 L 750,360 L 800,360', fill: '#4f8a3f', stroke: '#a8e39a', 'stroke-width': 5 }, cac);
-      el('path', { d: 'M 880,440 L 920,440 C 950,440 960,420 960,390 L 960,330 C 960,310 930,310 930,330 L 930,400 L 880,400', fill: '#4f8a3f', stroke: '#a8e39a', 'stroke-width': 5 }, cac);
-      [820, 840, 860].forEach((x) => el('line', { x1: x, y1: 210, x2: x, y2: 556, stroke: '#3a6a30', 'stroke-width': 3 }, cac));
+      const cacIn = S.place(g(cac), { x: 342, y: 44, s: 0.7 });
+      el('path', { d: 'M 800,560 L 800,230 C 800,180 880,180 880,230 L 880,560 Z', fill: '#4f8a3f', stroke: '#a8e39a', 'stroke-width': 5 }, cacIn);
+      el('path', { d: 'M 800,400 L 760,400 C 730,400 720,380 720,350 L 720,300 C 720,280 750,280 750,300 L 750,360 L 800,360', fill: '#4f8a3f', stroke: '#a8e39a', 'stroke-width': 5 }, cacIn);
+      el('path', { d: 'M 880,440 L 920,440 C 950,440 960,420 960,390 L 960,330 C 960,310 930,310 930,330 L 930,400 L 880,400', fill: '#4f8a3f', stroke: '#a8e39a', 'stroke-width': 5 }, cacIn);
+      [820, 840, 860].forEach((x) => el('line', { x1: x, y1: 210, x2: x, y2: 556, stroke: '#3a6a30', 'stroke-width': 3 }, cacIn));
       const rs = S.rng(5);
       for (let i = 0; i < 22; i++) {
         const x = 806 + rs() * 68, y = 230 + rs() * 320;
-        [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([dx, dy]) => el('line', { x1: x, y1: y, x2: x + dx * 7, y2: y + dy * 7, stroke: '#f2e6c0', 'stroke-width': 2 }, cac));
+        [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([dx, dy]) => el('line', { x1: x, y1: y, x2: x + dx * 7, y2: y + dy * 7, stroke: '#f2e6c0', 'stroke-width': 2.5 }, cacIn));
       }
-      el('rect', { x: 770, y: 556, width: 140, height: 18, rx: 6, fill: '#b0703c' }, cac);
-      const call4 = [[842, 212, 1060, 200, '葉變成刺', '#f2e6c0'], [866, 300, 1060, 300, '莖肥厚，能儲水', '#a8e39a'], [880, 480, 1060, 400, '表皮角質層厚', '#cfe8ff']].map(([tx, ty, x, y, s, c]) => S.callout(P4, tx, ty, x, y, s, c, { size: 22 }));
-      text(P4, 900, 624, '都能減少水分散失', { 'font-size': 22, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
-      tl.addLabel('s4');
-      S.hide(tl, P3, 's4', 0.4);
-      S.show(tl, P4, 's4+=0.3', 0.4);
-      S.drive(tl, (u) => vaps.forEach((v, i) => { const k = (u * 3 + i / 3) % 1; S.place(v, { x: 185 + (i - 1) * 16, y: 300 - k * 70 }); v.style.opacity = u <= 0 ? 0.8 : Math.min(1, (1 - k) * 3); }), 3.5, 's4+=0.6', 'none');
-      S.show(tl, arr4, 's4+=1.6', 0.3);
-      S.show(tl, dry, 's4+=2', 0.4);
-      S.show(tl, cac, 's4+=3', 0.5);
-      call4.forEach((c, i) => S.show(tl, c, `s4+=${3.6 + i * 0.4}`, 0.3));
+      el('rect', { x: 770, y: 556, width: 140, height: 18, rx: 6, fill: '#b0703c' }, cacIn);
+      const call4 = [[930, 190, 1094, 178, '葉變成刺', '#f2e6c0'], [998, 300, 1094, 300, '莖能儲水', '#a8e39a'], [958, 400, 1094, 410, '角質層厚', '#cfe8ff']].map(([tx, ty, x, y, s, c]) => S.callout(P4, tx, ty, x, y, s, c, { size: 22 }));
+      text(P4, 990, 600, '都能減少水分散失', { 'font-size': 22, 'text-anchor': 'middle', fill: C.hi, 'font-weight': 700 });
+      tl.addLabel('s5');
+      S.hide(tl, P3, 's5', 0.4);
+      S.show(tl, P4, 's5+=0.3', 0.4);
+      S.drive(tl, (u) => vaps.forEach((v, i) => { const k = (u * 3 + i / 3) % 1; S.place(v, { x: 135 + (i - 1) * 12, y: 290 - k * 60 }); v.style.opacity = u <= 0 ? 0.8 : Math.min(1, (1 - k) * 3); }), 3, 's5+=0.6', 'none');
+      S.show(tl, arr4, 's5+=1.4', 0.3);
+      S.show(tl, dry, 's5+=1.8', 0.4);
+      S.show(tl, gut, 's5+=2.6', 0.4);
+      S.drive(tl, (u) => beads.forEach((b, i) => { const k = S.smoothstep(i * 0.06, i * 0.06 + 0.45, u); S.place(b.bd, { x: b.x, y: b.y + 3 * k, s: 1.15 * k }); }), 2.2, 's5+=3', 'none');
+      S.show(tl, gutT, 's5+=4.4', 0.4);
+      S.show(tl, cac, 's5+=4.9', 0.4);
+      call4.forEach((c, i) => S.show(tl, c, `s5+=${5.3 + i * 0.3}`, 0.3));
 
-      // ===== 5 動物的水分調節 =====
+      // ===== 6 動物的水分調節 =====
       const P5 = g(root, { opacity: 0 });
       const FX5 = [40, 330, 620, 910], FW5 = 260;
       const fr5 = FX5.map((x) => { const f = g(P5, { opacity: 0 }); el('rect', { x, y: 90, width: FW5, height: 400, rx: 16, ...FRAME }, f); return f; });
@@ -350,7 +454,7 @@
       const egg = fr5[2];
       el('path', { d: 'M 750,170 C 800,170 830,250 830,320 C 830,380 796,420 750,420 C 704,420 670,380 670,320 C 670,250 700,170 750,170 Z', fill: '#efe6c8', stroke: '#fff7dd', 'stroke-width': 4 }, egg);
       [[720, 260], [770, 300], [736, 350], [790, 360], [760, 230]].forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 5, fill: '#c9b48a' }, egg));
-      // 青蛙（皮膚濕潤）
+      // 青蛙（皮膚溼潤）
       const frog = fr5[3];
       el('path', { d: 'M 1040,200 C 990,200 970,240 972,290 C 974,350 1002,380 1040,380 C 1078,380 1106,350 1108,290 C 1110,240 1090,200 1040,200 Z', fill: '#4f8a3f', stroke: '#a8e39a', 'stroke-width': 3 }, frog);
       [-1, 1].forEach((s) => {
@@ -358,37 +462,39 @@
         el('path', { d: `M ${1040 + s * 60},340 C ${1040 + s * 100},340 ${1040 + s * 104},380 ${1040 + s * 80},400 L ${1040 + s * 104},404`, fill: 'none', stroke: '#4f8a3f', 'stroke-width': 10, 'stroke-linecap': 'round' }, frog);
       });
       [[1010, 260], [1070, 280], [1030, 330]].forEach(([x, y]) => el('path', { d: DROP, fill: H2O, transform: `translate(${x},${y})` }, frog));
-      [['爬蟲類', '鱗片或骨板'], ['昆蟲', '外骨骼'], ['鳥類、爬蟲類的卵', '有卵殼'], ['兩生類', '皮膚濕潤、易失水']].forEach(([n, s], i) => {
+      [['爬蟲類', '鱗片或骨板'], ['昆蟲', '外骨骼'], ['鳥類、爬蟲類的卵', '有卵殼'], ['兩生類', '皮膚溼潤、易失水']].forEach(([n, s], i) => {
         const cx = FX5[i] + FW5 / 2;
         text(fr5[i], cx, 536, n, { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700 });
         text(fr5[i], cx, 574, s, { 'font-size': 24, 'text-anchor': 'middle', fill: i === 3 ? '#e8b04a' : C.hi });
       });
       const sum5 = g(P5, { opacity: 0 });
       S.pill(sum5, 450, 650, '前三種構造都能防止水分散失', { size: 24, color: C.hi, edge: C.hi });
-      S.pill(sum5, 970, 650, '多住在潮濕的地方', { size: 24, color: '#e8b04a', edge: '#e8b04a' });
-      tl.addLabel('s5');
-      S.hide(tl, P4, 's5', 0.4);
-      S.show(tl, P5, 's5+=0.3', 0.2);
-      fr5.forEach((f, i) => S.show(tl, f, `s5+=${0.4 + i * 0.8}`, 0.4));
-      S.show(tl, sum5, 's5+=3.8', 0.5);
+      S.pill(sum5, 970, 650, '多住在潮溼的地方', { size: 24, color: '#e8b04a', edge: '#e8b04a' });
+      tl.addLabel('s6');
+      S.hide(tl, P4, 's6', 0.4);
+      S.show(tl, P5, 's6+=0.3', 0.2);
+      fr5.forEach((f, i) => S.show(tl, f, `s6+=${0.4 + i * 0.8}`, 0.4));
+      S.show(tl, sum5, 's6+=3.8', 0.5);
 
       return {
         tl,
         notes: [
-          '＊示意：細胞和分子都畫得很大。肺排出二氧化碳和水蒸氣，也和氣體的恆定有關（6-1）。糞便是沒有被消化吸收的食物殘渣（2-4），不是細胞代謝產生的廢物，所以排遺不屬於排泄。',
+          '＊示意：細胞和分子都畫得很大。肺排出二氧化碳和水蒸氣，也和氣體的恆定有關（6-1）。糞便是沒有被消化吸收的食物殘渣（3-4），不是細胞代謝產生的廢物，所以排遺不屬於排泄。',
+          '＊示意：動物、水滴和圓點只表示多少的順序。毒性：氨 ＞ 尿素 ＞ 尿酸；排出時需要的水也是氨最多、尿酸最少。鳥糞中白色的部分主要就是尿酸：鳥類的尿酸和糞便從同一個開口一起排出；排出尿酸仍屬於排泄。',
           '＊示意：器官的位置和大小都簡化了；腎臟在腰部後方，左右各一。腎臟裡負責過濾的小單位叫腎元（補充）。健康的人尿中幾乎沒有葡萄糖。',
           '＊示意：皮膚剖面簡化了，汗腺畫得很大。汗嚐起來鹹鹹的，是因為含有無機鹽。',
-          '＊示意：杯中尿液的多少和顏色只是比較。身體缺水時會覺得口渴，提醒我們喝水；腎臟如何調節尿量（由激素控制）是高中內容（補充）。',
-          '＊示意：保衛細胞畫得很大，實際要用顯微鏡才看得到。氣孔關閉時，二氧化碳也比較難進入葉片。植物的根吸收水分，經莖運送到葉（見第四章）。',
+          '＊示意：杯中尿液的多少和顏色只是比較。身體缺水時會覺得口渴，提醒我們喝水；腎臟如何調節尿量，高中會再學。',
+          '＊示意：保衛細胞和水珠都畫得很大。泌液作用常在清晨看到，葉緣的水珠是植物自己排出的，不是露水。',
           '＊示意：動物都簡化了。兩生類的皮膚還能交換氣體（6-1）。',
         ],
         steps: [
           '細胞代謝會產生廢物：<b>二氧化碳</b>、<b>含氮廢物</b>（蛋白質分解產生的氨，在<b>肝臟</b>轉變成<b>尿素</b>），還有多餘的水和無機鹽。把它們排出體外，稱為<b>排泄</b>。',
+          '蛋白質分解產生的<b>氨</b>有毒。許多水中的動物直接把氨排到水中；人和其他哺乳類在<b>肝臟</b>把氨變成<b>尿素</b>；鳥類、昆蟲排出<b>尿酸</b>，需要的水最少。',
           '<b>泌尿系統</b>：腎臟 → 輸尿管 → 膀胱 → 尿道。血液流經<b>腎臟</b>時被過濾，尿素、多餘的水和無機鹽形成<b>尿液</b>，有用的物質送回血液，所以<b>腎靜脈</b>的尿素比腎動脈少。',
           '<b>皮膚</b>也能排泄：<b>汗腺</b>形成的<b>汗液</b>含有水、無機鹽和少量尿素，由汗孔排出。汗水蒸發時還會帶走熱（見 6-3）。',
           '<b>水分的恆定</b>：攝取和排出的水要保持平衡。喝水多，尿量<b>多</b>、顏色淡；流汗多或喝水少，尿量<b>少</b>、顏色深。',
-          '植物主要經由<b>氣孔</b>散失水分（<b>蒸散作用</b>）。缺水時，<b>保衛細胞</b>使氣孔<b>關閉</b>，減少水分散失。沙漠植物的葉變成刺、莖能儲水、表皮的角質層較厚。',
-          '動物也有防止水分散失的構造：爬蟲類有<b>鱗片</b>或骨板、昆蟲有<b>外骨骼</b>，鳥類和爬蟲類的卵有<b>卵殼</b>。兩生類的皮膚濕潤、容易失水，多生活在潮濕的地方。',
+          '缺水時，<b>保衛細胞</b>使<b>氣孔關閉</b>，減少水分散失；空氣潮溼、根吸水多時，水從葉緣或葉尖排出成水珠，叫做<b>泌液作用</b>。沙漠植物的葉變成刺、莖能儲水、角質層較厚。',
+          '動物也有防止水分散失的構造：爬蟲類有<b>鱗片</b>或骨板、昆蟲有<b>外骨骼</b>，鳥類和爬蟲類的卵有<b>卵殼</b>。兩生類的皮膚溼潤、容易失水，多生活在潮溼的地方。',
         ],
       };
     },

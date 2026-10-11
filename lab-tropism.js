@@ -161,7 +161,17 @@
         runs.push(r);
         draw();
         const [sx, sy] = sim.tipS, [rx, ry] = sim.tipR;
-        resS.textContent = `莖：${r.stem}`; resS.setAttribute('x', Math.min(1020, sx + 40)); resS.setAttribute('y', sy - 10);
+        // 莖的結果：避開燈、花盆、莖和根、莖頂的葉子（約 ±60），依序找第一個放得下的位置
+        const sTxt = `莖：${r.stem}`, sw = S.textWidth(sTxt, S.effSize(resS, 24)), Lp = LIGHT[setup.light][2], o = origin();
+        const hit = (a, b) => a[2] > b[0] && a[0] < b[2] && a[3] > b[1] && a[1] < b[3];
+        const boxes = [setup.pot === 'up' ? [474, 376, 726, 556] : [444, 274, 624, 526], [sx - 62, sy - 62, sx + 62, sy + 42]];
+        if (Lp) boxes.push([Lp[0] - 130, Lp[1] - 80, Lp[0] + 80, Lp[1] + 90]);
+        const pts = [];
+        [[o.s, sim.S], [o.r, sim.R]].forEach(([[x, y], arr]) => arr.forEach((a) => { x += SEG * Math.cos(rad(a)); y += SEG * Math.sin(rad(a)); pts.push([x, y]); }));
+        const ok = (b) => b[0] >= 10 && b[2] <= 1190 && b[1] >= 80 && b[3] <= 590 && !boxes.some((q) => hit(b, q)) && !pts.some(([x, y]) => x > b[0] - 8 && x < b[2] + 8 && y > b[1] - 8 && y < b[3] + 8);
+        const cands = [[sx + 66, sy - 10, 'start'], [sx - 66, sy - 10, 'end'], [sx + 66, sy + 40, 'start'], [sx - 66, sy + 40, 'end'], [sx, sy - 70, 'middle'], [sx, sy + 76, 'middle']];
+        const fit = cands.find(([x, y, a]) => { const x0 = a === 'start' ? x : a === 'end' ? x - sw : x - sw / 2; return ok([x0, y - 24, x0 + sw, y + 6]); }) || cands[0];
+        resS.textContent = sTxt; resS.setAttribute('x', fit[0]); resS.setAttribute('y', fit[1]); resS.setAttribute('text-anchor', fit[2]);
         resR.textContent = `根：${r.root}`; resR.setAttribute('x', setup.pot === 'up' ? rx + 120 : rx - 230); resR.setAttribute('y', setup.pot === 'up' ? ry - 20 : ry + 60);
         status(`第 ${DAYS} 天＊：${LIGHT[setup.light][0] === '沒有光（暗處）' ? '在暗處' : `光從${LIGHT[setup.light][0]}照`}、花盆${POT[setup.pot]}${setup.spin ? '、轉盤一直轉' : ''} → 莖<b>${r.stem}</b>，根<b>${r.root}</b>。`);
         log(); checkMission(); drawMission(); syncFree();

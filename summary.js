@@ -3,7 +3,11 @@
    { type: 'table', title, cols: [['欄名', 顏色], …], rows: [['列名', 格1, 格2, …], …], note, link: [id, 第幾步] }
    { type: 'flow', title, nodes: [['名稱', '小字說明', 顏色], …], loop: '回頭的箭頭說明（可省略）', note, link }
    { type: 'svg', title, w, h, draw(svg) { 用 S.el / S.text / S.pill 畫 }, note, link }
-   格子裡可以用 <b>、<small>；link 的「第幾步」從 1 開始（和動畫上的 1 / 7 一樣），互動可以只寫 [id]。 */
+   格子裡可以用 <b>、<small>；link 的「第幾步」從 1 開始（和動畫上的 1 / 7 一樣），互動可以只寫 [id]；可以連到任何一章（S.findItem）。
+   MAP 每一項：[小節代號, 小節名稱, 重點[], 易錯]
+     重點的每一條可以是 '文字'，或 ['文字', ['小點', …]]（下一層條列，可以再巢狀）；易錯可以是 '文字' 或 ['…', '…']。
+     各節重點同時是可以列印的複習講義（「列印講義」按鈕：淺色、隱藏按鈕，自我檢測印成題目＋解答）。
+   MAP 可以是 []（例如 summary-x.js 的跨章比較），就不顯示「各節重點」。 */
 (() => {
   // 作答進度放在每個總整理自己的閉包裡：跳去看動畫再回來，進度還在
   S.summaryLab = ({ id, section, title, heading, done, MAP, QUIZ, CHARTS = [] }) => {
@@ -15,27 +19,41 @@
       mount(box) {
         box.innerHTML = `
 <style>
-    .sumMap { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 0.9rem; }
+    .sumMap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
     .sumCard { padding: 1rem 1.25rem; display: grid; gap: 0.5rem; align-content: start; }
     .sumCard h2 { display: flex; align-items: center; gap: 0.5rem; }
     .sumCard h2 .n { font-family: var(--font-mono); font-size: 0.75em; padding: 0.1em 0.5em; border-radius: 999px; background: var(--bg); color: var(--muted); font-weight: 500; }
-    .sumCard ul { margin: 0; padding-left: 1.1em; display: grid; gap: 0.3rem; font-size: 0.95rem; line-height: 1.55; }
-    .sumCard .trap { font-size: 0.9rem; color: var(--muted); border-left: 3px solid var(--bad); padding-left: 0.6rem; margin: 0.2rem 0; }
+    .sumCard > ul { margin: 0; padding-left: 1.1em; columns: 2 24rem; column-gap: 2.2rem; font-size: 1rem; line-height: 1.65; }
+    .sumCard li { break-inside: avoid; margin: 0 0 0.3rem; }
+    .sumCard li ul { margin: 0.2rem 0 0; padding-left: 1.1em; list-style: circle; font-size: 0.97em; }
+    .sumCard li ul li { margin-bottom: 0.15rem; }
+    .sumCard .trap { font-size: 0.97rem; color: var(--muted); border-left: 3px solid var(--bad); padding-left: 0.6rem; margin: 0.2rem 0; }
+    .sumCard .trap ul { margin: 0.15rem 0 0; padding-left: 1.1em; }
+    .sumHeadRow { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 1rem; }
+    .sumPrintOpt { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.6rem; }
+    .sumPrintOpt label { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.92rem; color: var(--muted); }
+    .sumPrintOpt label { cursor: pointer; }
+    .sumPrintOpt input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); margin: 0; }
+    #sum-printquiz { display: none; }
+    /* 列印用的外框表格：螢幕上不影響版面；列印時 thead/tfoot 在每一頁重複，當作上下留白 */
+    table.pwrap, .pwrap > tbody, .pwrap > tbody > tr, .pwrap > tbody > tr > td { display: contents; }
+    .pwrap > thead, .pwrap > tfoot { display: none; }
     .sumCard .trap b { color: var(--bad); }
     .quizCard { padding: 1rem 1.25rem; }
     .lab h3.sumHead { font-family: var(--font-label); font-size: 1.3rem; font-weight: 700; letter-spacing: 0; margin: 0.8rem 0 0; color: var(--ink); border-left: 4px solid var(--accent); padding-left: 0.6rem; }
     .sumCharts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr)); gap: 0.9rem; }
     .chartCard { padding: 1rem 1.25rem; display: grid; gap: 0.6rem; align-content: start; min-width: 0; }
     .lab .chartCard h3 { margin: 0; font-family: var(--font-label); font-size: 1.2rem; font-weight: 700; letter-spacing: 0; color: var(--ink); }
-    .chartCard .note { font-size: 0.88rem; color: var(--muted); margin: 0; line-height: 1.5; }
+    .chartCard .note { font-size: 0.95rem; color: var(--muted); margin: 0; line-height: 1.5; }
     .tblWrap { overflow-x: auto; }
-    table.cmp { width: 100%; border-collapse: collapse; font-size: 0.95rem; line-height: 1.45; }
+    table.cmp { width: 100%; border-collapse: collapse; font-size: 1rem; line-height: 1.5; }
     table.cmp th, table.cmp td { padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
     table.cmp thead th { font-weight: 700; color: var(--ink); border-bottom: 3px solid var(--c, var(--line)); white-space: nowrap; }
     table.cmp .sw { display: inline-block; width: 0.7em; height: 0.7em; border-radius: 0.2em; background: var(--c); margin-right: 0.4em; vertical-align: 0.02em; }
     table.cmp tbody th { color: var(--muted); font-weight: 500; white-space: nowrap; }
     table.cmp tbody tr:last-child > * { border-bottom: 0; }
-    table.cmp small, .flow small { color: var(--muted); font-size: 0.85em; }
+    table.cmp .swn { white-space: nowrap; }
+    table.cmp small, .flow small { color: var(--muted); font-size: 0.92em; }
     .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0.35rem 0.3rem; }
     .flow .node { background: var(--bg); border: 1px solid var(--line); border-top: 3px solid var(--c, var(--accent)); border-radius: 0.6rem; padding: 0.4rem 0.65rem; display: grid; gap: 0.1rem; align-content: start; flex: 1 1 6.5rem; }
     .flow .node b { font-size: 1rem; }
@@ -43,19 +61,82 @@
     .flow .loop { flex-basis: 100%; font-size: 0.88rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 0.35rem; margin-top: 0.15rem; }
     .svgWrap { overflow-x: auto; }
     .chartCard svg.dia { display: block; width: 100%; min-width: 440px; height: auto; background: #0f1c26; border-radius: 0.6rem; }
+    /* 表格裡少數用淺色字標示的內容（為深色主題設計）：淺色主題和列印時調深，白底上才看得清楚 */
+    :root[data-theme="light"] :is(table.cmp, .flow) [style^="color:#"] { filter: brightness(0.55) saturate(1.4); }
+    @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) :is(table.cmp, .flow) [style^="color:#"] { filter: brightness(0.55) saturate(1.4); } }
+    @media (max-width: 30rem) {
+      table.cmp { font-size: 0.92rem; }
+      table.cmp th, table.cmp td { padding: 0.4rem 0.3rem; }
+      table.cmp thead th, table.cmp tbody th { white-space: normal; }
+      .chartCard, .sumCard { padding: 0.9rem 0.8rem; }
+    }
+    @media print {
+      :root { --bg: #fff !important; --surface: #fff !important; --ink: #111 !important; --muted: #444 !important; --line: #bbb !important; --accent: #0b6b5c !important; --bad: #b03020 !important; }
+      html { font-size: 14px !important; }
+      /* 自己的頁碼放在頁尾；指定了頁邊內容，瀏覽器就不會再印網址、日期 */
+      @page {
+        margin: 12mm 13mm 14mm;
+        @top-left { content: ''; } @top-center { content: ''; } @top-right { content: ''; }
+        @bottom-left { content: ''; } @bottom-right { content: ''; }
+        @bottom-center { content: counter(page) ' / ' counter(pages); font-size: 9pt; color: #555; }
+      }
+      body { background: #fff !important; color: #111 !important; padding: 0 !important; margin: 0 !important; }
+      header, .player, p.hint, .lab .btn-row, .lab button, #sum-quiz, .sumIntro .m-hint { display: none !important; }
+      .lab { display: block !important; padding: 0 !important; }
+      .sumCharts { display: block; }
+      .sumCharts > *, .sumMap > * { opacity: 1 !important; transform: none !important; }
+      .chartCard { break-inside: avoid; margin: 0 0 0.7rem !important; padding: 0.7rem 0.9rem !important; border: 1px solid #bbb !important; box-shadow: none !important; }
+      .chartCard:has(table) { break-inside: auto; }
+      .chartCard h3 { break-after: avoid; }
+      table.cmp tr { break-inside: avoid; }
+      .sumCard { margin: 0 0 0.7rem; border: 1px solid #bbb !important; box-shadow: none !important; }
+      .sumCard h2, .lab h3.sumHead { break-after: avoid; }
+      .sumCard > ul { columns: 1; }
+      .sumCard, .chartCard { display: block !important; }
+      .sumCard > * + * { margin-top: 0.45rem; }
+      .chartCard > * + * { margin-top: 0.5rem; }
+      .sumCard li { break-inside: auto; }
+      .sumCard li li, .sumCard .trap li { break-inside: avoid; }
+      .tblWrap, .svgWrap { overflow: visible; }
+      .chartCard svg.dia { min-width: 0; max-height: 120mm; background: transparent !important; filter: invert(1) hue-rotate(180deg); }
+      .chartCard svg.dia :is([fill="#0f1c26"], [fill="#0d1822"], [fill="#122230"], [fill="#16293a"], [fill="#1a2c3a"], [fill="#173238"], [fill="#1d2328"], [fill="#0f1d29"], [fill="#091015"], [fill="#111b22"]) { fill: #000 !important; }
+      table.cmp .sw { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      :is(table.cmp, .flow) [style^="color:#"] { filter: brightness(0.5) saturate(1.4); }
+      #sum-printquiz { display: block; break-before: page; }
+      #sum-printquiz:not([data-mode="qa"]) { display: none !important; }
+      .sumPrintOpt { display: none !important; }
+      #sum-printquiz ol { padding-left: 1.4em; }
+      #sum-printquiz li { break-inside: avoid; margin-bottom: 0.5rem; }
+      #sum-printquiz .po { display: flex; flex-wrap: wrap; gap: 0.1rem 1.4rem; }
+      #sum-printquiz .key li { margin-bottom: 0.25rem; }
+    }
 </style>
-<div class="card quizCard" style="background:transparent;border:0;padding:0"><h2 style="font-family:var(--font-label);font-size:1.5rem;margin:0 0 0.2rem">${heading}</h2><p class="m-hint">${CHARTS.length ? '先看重點圖表，再看每一節的重點和易錯觀念。' : '每一節的重點和易錯觀念。'}按下按鈕可以直接打開對應的動畫或互動。</p></div>
-${CHARTS.length ? '<h3 class="sumHead">重點圖表</h3><div class="sumCharts" id="sum-charts"></div><h3 class="sumHead">各節重點</h3>' : ''}
-<div class="sumMap" id="sum-map"></div>
-<div class="card quizCard" id="sum-quiz"></div>`;
+<table class="pwrap"><thead><tr><td><div class="pspace"></div></td></tr></thead><tbody><tr><td>
+<div class="card quizCard sumIntro" style="background:transparent;border:0;padding:0"><div class="sumHeadRow"><h2 style="font-family:var(--font-label);font-size:1.5rem;margin:0 0 0.2rem">${heading}</h2><div class="sumPrintOpt"><label><input type="checkbox" id="sum-pq">一起印自我檢測和解答</label><button class="ctl small" type="button" id="sum-print" title="印出淺色版的重點圖表和各節重點；勾選後再加印自我檢測和解答">列印講義</button></div></div><p class="m-hint">${!MAP.length ? '先看重點圖表，再做自我檢測。' : CHARTS.length ? '先看重點圖表，再看每一節的重點和易錯觀念。' : '每一節的重點和易錯觀念。'}按下按鈕可以直接打開對應的動畫或互動。</p></div>
+${CHARTS.length ? `<h3 class="sumHead">重點圖表</h3><div class="sumCharts" id="sum-charts"></div>${MAP.length ? '<h3 class="sumHead">各節重點</h3>' : ''}` : ''}
+${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
+<div class="card quizCard" id="sum-quiz"></div>
+<section id="sum-printquiz"></section>
+</td></tr></tbody><tfoot><tr><td><div class="pspace"></div></td></tr></tfoot></table>`;
+        // 列印選項：預設只印重點圖表和各節重點；勾選才加印自我檢測和解答（記在這台電腦的瀏覽器裡）
+        const pqSel = box.querySelector('#sum-pq'), pqBox = box.querySelector('#sum-printquiz');
+        try { pqSel.checked = localStorage.getItem('bio-print-quiz') === 'qa'; } catch (e) {}
+        const pqApply = () => { pqBox.dataset.mode = pqSel.checked ? 'qa' : 'none'; try { localStorage.setItem('bio-print-quiz', pqBox.dataset.mode); } catch (e) {} };
+        pqSel.addEventListener('change', pqApply);
+        pqApply();
+        box.querySelector('#sum-print').addEventListener('click', () => window.print());
         // 重點圖表
-        const findItem = (iid) => { for (const [sec] of MAP) { const it = S.itemsOf(sec).find((x) => x.id === iid); if (it) return it; } return null; };
+        const findItem = (iid) => S.findItem(iid); // 任何一章的動畫／互動都可以連結
         const linkBtn = (link) => {
           if (!link) return '';
           const [iid, k] = link, it = findItem(iid);
           if (!it) return '';
           return `<div class="btn-row"><button class="ctl small" type="button" data-at="${iid}" data-k="${k || 1}">${it.kind === 'lab' ? '互動' : '動畫'}：${it.title}${it.kind !== 'lab' && k > 1 ? `（第 ${k} 步）` : ''}</button></div>`;
         };
+        // 表頭的色塊和第一個字黏在一起，換行時色塊不會自己掉成一行
+        const swHead = (n) => { const m = /^([^<&\s])([\s\S]*)$/u.exec(n); return m ? `<span class="swn"><span class="sw" aria-hidden="true"></span>${m[1]}</span>${m[2]}` : `<span class="sw" aria-hidden="true"></span>${n}`; };
+        // 很短的列名（例如「大腦」）不要在手機上被拆成一字一行
+        const rowHead = (h) => (String(h).replace(/<[^>]+>/g, '').length <= 3 && !/<br/i.test(h) ? `<span class="swn">${h}</span>` : h);
         const chartsBox = box.querySelector('#sum-charts');
         CHARTS.forEach((ch) => {
           const f = document.createElement('figure');
@@ -63,7 +144,7 @@ ${CHARTS.length ? '<h3 class="sumHead">重點圖表</h3><div class="sumCharts" i
           f.style.margin = '0';
           let body = '';
           if (ch.type === 'table') {
-            body = `<div class="tblWrap"><table class="cmp"><thead><tr><th></th>${ch.cols.map(([n, c]) => (c ? `<th style="--c:${c}"><span class="sw" aria-hidden="true"></span>${n}</th>` : `<th>${n}</th>`)).join('')}</tr></thead><tbody>${ch.rows.map(([h, ...cells]) => `<tr><th scope="row">${h}</th>${cells.map((x) => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+            body = `<div class="tblWrap"><table class="cmp"><thead><tr><th></th>${ch.cols.map(([n, c]) => (c ? `<th style="--c:${c}">${swHead(n)}</th>` : `<th>${n}</th>`)).join('')}</tr></thead><tbody>${ch.rows.map(([h, ...cells]) => `<tr><th scope="row">${rowHead(h)}</th>${cells.map((x) => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
           } else if (ch.type === 'flow') {
             body = `<div class="flow">${ch.nodes.map(([n, sub, c], k) => `${k ? '<span class="arr" aria-hidden="true">→</span>' : ''}<div class="node" style="--c:${c || 'var(--accent)'}"><b>${n}</b>${sub ? `<small>${sub}</small>` : ''}</div>`).join('')}${ch.loop ? `<div class="loop">↺ ${ch.loop}</div>` : ''}</div>`;
           }
@@ -83,15 +164,25 @@ ${CHARTS.length ? '<h3 class="sumHead">重點圖表</h3><div class="sumCharts" i
         }
 
         const map = box.querySelector('#sum-map');
-        MAP.forEach(([sec, name, pts, trap]) => {
+        const li = (p) => (Array.isArray(p) ? `<li>${p[0]}<ul>${p[1].map(li).join('')}</ul></li>` : `<li>${p}</li>`);
+        if (map) MAP.forEach(([sec, name, pts, trap]) => {
           const c = document.createElement('section');
           c.className = 'card sumCard';
           const links = S.itemsOf(sec).map((it) => `<button class="ctl small" type="button" data-id="${it.id}">${it.kind === 'lab' ? '互動' : '動畫'}：${it.title}</button>`).join('');
-          c.innerHTML = `<h2><span class="n">${S.secLabel(sec)}</span>${name}</h2><ul>${pts.map((p) => `<li>${p}</li>`).join('')}</ul><p class="trap"><b>易錯：</b>${trap}</p><div class="btn-row">${links}</div>`;
+          const traps = (Array.isArray(trap) ? trap : [trap]).filter(Boolean);
+          const trapHtml = !traps.length ? '' : traps.length === 1 ? `<p class="trap"><b>易錯：</b>${traps[0]}</p>` : `<div class="trap"><b>易錯：</b><ul>${traps.map((t) => `<li>${t}</li>`).join('')}</ul></div>`;
+          c.innerHTML = `<h2><span class="n">${S.secLabel(sec)}</span>${name}</h2><ul>${pts.map(li).join('')}</ul>${trapHtml}<div class="btn-row">${links}</div>`;
           map.appendChild(c);
         });
-        map.querySelectorAll('[data-id]').forEach((b) => b.addEventListener('click', () => S.openById(b.dataset.id)));
-        gsap.fromTo(map.children, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.06 });
+        if (map) {
+          map.querySelectorAll('[data-id]').forEach((b) => b.addEventListener('click', () => S.openById(b.dataset.id)));
+          gsap.fromTo(map.children, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.06 });
+        }
+
+        // 列印用：自我檢測的題目＋最後的解答與解析（螢幕上不顯示）
+        const pq = box.querySelector('#sum-printquiz');
+        if (pq && QUIZ.length) pq.innerHTML = `<h3 class="sumHead">自我檢測</h3><ol>${QUIZ.map(([q, o]) => `<li><p style="margin:0 0 0.15rem">${q}</p><div class="po">${o.map((x, k) => `<span>（${'ABCD'[k]}）${x}</span>`).join('')}</div></li>`).join('')}</ol>
+          <div class="pq-key"><h3 class="sumHead">解答與解析</h3><ol class="key">${QUIZ.map(([, , a, why]) => `<li><b>${'ABCD'[a]}</b>　${why}</li>`).join('')}</ol></div>`;
 
         const qbox = box.querySelector('#sum-quiz');
         const titleOf = (iid) => { const it = findItem(iid); return it ? `${it.kind === 'lab' ? '互動' : '動畫'}：${it.title}` : ''; };

@@ -1,4 +1,4 @@
-/* 互動模型：保持平衡 — 體溫或血糖偏離正常範圍時，由學生選出身體的反應，看曲線能不能回到正常範圍（恆定的調節）＋ 任務 */
+/* 互動模型：保持平衡 — 體溫或血糖偏離正常範圍時，由學生選出身體的反應，看曲線能不能回到正常範圍（恆定的調節）；也從身體的反應反推環境的冷熱 ＋ 任務 */
 (() => {
   const { el, g, text, C } = S;
   const TEMP_C = '#ff9a5c', SUG_C = C.sugar, INS = '#63d4bf', GLUC = '#c9a8ff';
@@ -15,17 +15,20 @@
     'hot-warm': '體溫離 37 °C 更遠了。發抖會產生熱，皮膚血管收縮會讓熱不容易散出去——現在身體需要的是這樣嗎？',
     'cold-cool': '體溫更低了。流汗和皮膚血管擴張都會讓身體散失更多熱——天冷時需要這樣嗎？',
     'meal-glu': '血糖更高了。升糖素會讓肝臟把肝糖分解成葡萄糖——現在血糖已經偏高，還需要更多葡萄糖嗎？',
-    'fast-ins': '血糖更低了。胰島素會讓葡萄糖進入細胞、合成肝糖，使血糖下降——現在血糖已經偏低了。',
+    'fast-ins': '血糖更低了。胰島素會讓葡萄糖進入細胞、合成肝糖，使血糖下降——現在血糖已經偏低，還需要再降低嗎？',
   };
 
   const MISSIONS = [
     { title: '大熱天', ev: 'hot', text: '你是身體的「控制中心」。先讓身體在<b>大太陽下跑步</b>，看看體溫怎麼變：', why: '<b>流汗</b>時汗水蒸發帶走熱，<b>皮膚血管擴張</b>讓更多血液流到皮膚散熱，體溫回到約 37 °C。' },
     { title: '冷氣房', ev: 'cold', text: '這次讓身體<b>走進很冷的冷氣房</b>：', why: '<b>皮膚血管收縮</b>減少散熱，<b>肌肉顫抖</b>（發抖）產生熱，體溫回到約 37 °C。' },
+    { title: '看反應猜環境', guess: true,
+      quiz: { q: '小華的身體正在<b>發抖</b>，皮膚的血管<b>收縮</b>（看左邊的人）。他最可能在怎樣的環境中？', opts: ['很冷的地方', '很熱的地方', '從身體的反應看不出來'], ans: 0, hint: '發抖會產生熱，皮膚血管收縮會讓熱不容易散出去。身體在什麼時候需要多產生熱、少散失熱？' },
+      why: '發抖產生熱、皮膚血管收縮減少散熱，表示身體正在「保住熱」，所以他在<b>很冷</b>的環境中。反過來，看到大量流汗、皮膚血管擴張（皮膚發紅），表示環境<b>很熱</b>。' },
     { title: '吃完飯', ev: 'meal', text: '換成血糖。讓身體<b>吃完一頓飯</b>，看看血糖怎麼變：', why: '飯後血糖上升，胰島分泌<b>胰島素</b>，使葡萄糖進入細胞，並在肝臟合成<b>肝糖</b>儲存，血糖回到正常範圍。' },
     { title: '很久沒吃', ev: 'fast', text: '這次讓身體<b>很久沒有吃東西</b>：', why: '血糖下降時，胰島分泌<b>升糖素</b>，使肝臟把<b>肝糖分解</b>成葡萄糖送入血液，血糖回到正常範圍。' },
     { title: '胰島素不足', diab: true, need: (s) => s.urineGlu, needText: '如果胰島分泌的<b>胰島素不足</b>，吃完飯會怎樣？', act: '胰島素不足的人吃完飯',
-      quiz: { q: '血糖一直降不下來、太高了。這時尿中可能檢驗出什麼？', opts: ['葡萄糖', '澱粉', '胰島素'], ans: 0, hint: '看看左邊的尿液杯：出現在尿中的小分子，和血液中太多的是同一種物質。' },
-      why: '胰島素不足（或身體對胰島素反應變差），血糖長期過高，腎臟來不及把葡萄糖全部送回血液，尿中就出現<b>葡萄糖</b>，這就是<b>糖尿病</b>。' },
+      quiz: { q: '血糖一直降不下來、太高了。這時尿中可能檢驗出什麼？', opts: ['葡萄糖', '澱粉', '胰島素'], ans: 0, hint: '血糖太高時，腎臟來不及送回的是什麼？' },
+      why: '胰島素不足（補充：或身體對胰島素反應變差），血糖長期過高，腎臟來不及把葡萄糖全部送回血液，尿中就出現<b>葡萄糖</b>，這就是<b>糖尿病</b>。' },
   ];
 
   S.registerLab({
@@ -118,7 +121,7 @@
       icons.fast = g(root, { opacity: 0 });
       el('circle', { cx: 90, cy: 96, r: 32, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 4 }, icons.fast);
       el('path', { d: 'M 90,96 L 90,74 M 90,96 L 106,104', stroke: '#cfe8ff', 'stroke-width': 4, 'stroke-linecap': 'round' }, icons.fast);
-      text(icons.fast, 90, 152, '很久沒吃', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
+      text(icons.fast, 90, 158, '很久沒吃', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
       const shiverG = g(root, { opacity: 0 }); // 發抖的記號
       [[108, 250], [96, 330], [352, 250], [364, 330]].forEach(([x, y]) => el('path', { d: `M ${x},${y} l 6,-8 l 6,8 l 6,-8 l 6,8`, fill: 'none', stroke: '#9fd8ff', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, shiverG));
       const respLbl = text(root, 230, 600, '', { 'font-size': 22, 'text-anchor': 'middle', 'font-weight': 700 });
@@ -154,7 +157,7 @@
         st.marks.filter((m) => m.t >= t0).forEach((m, i) => {
           const x = xOf(m.t);
           el('line', { x1: x, y1: PY1, x2: x, y2: PY0, stroke: m.col, 'stroke-width': 2, 'stroke-dasharray': '6 5', opacity: 0.8 }, plot);
-          text(plot, x + 6, PY1 + 20 + (i % 2) * 26, m.label, { 'font-size': 20, fill: m.col });
+          text(plot, x + 6, PY1 + 22 + (i % 2) * 30, m.label, { 'font-size': 20, fill: m.col });
         });
         readout.textContent = M.fmt(st.v);
         const inBand = st.v >= M.lo && st.v <= M.hi;
@@ -186,7 +189,7 @@
       let jitter = 0;
       function render() {
         const s = st, temp = s.mode === 'temp';
-        Object.entries(icons).forEach(([k, ic]) => { ic.style.opacity = s.ev === k ? 1 : 0; });
+        Object.entries(icons).forEach(([k, ic]) => { ic.style.opacity = s.ev === k && !s.hideEv ? 1 : 0; });
         // 體溫反應
         const sweat = temp && s.resp === 'cool', shiver = temp && s.resp === 'warm';
         tint.setAttribute('fill', sweat ? 'rgba(255,95,116,0.28)' : shiver ? 'rgba(170,200,255,0.25)' : 'rgba(0,0,0,0)');
@@ -222,14 +225,14 @@
       function setMode(mode) {
         if (st.mode === mode && st.hist.length) return;
         if (mode === 'temp') st.lowIns = false;
-        Object.assign(st, { mode, v: baseV(mode), t: 0, hist: [], marks: [], ev: null, evT: 0, resp: null, urineGlu: false, okT: 0 });
+        Object.assign(st, { mode, v: baseV(mode), t: 0, hist: [], marks: [], ev: null, evT: 0, resp: null, urineGlu: false, okT: 0, hideEv: false });
         drawAxes(); render(); syncFree();
       }
       function startEvent(ev, fresh = true) {
         const [mode, , short] = EVENTS[ev];
         if (st.mode !== mode) setMode(mode);
         if (fresh) Object.assign(st, { v: baseV(mode), t: 0, hist: [], marks: [], gly: ev === 'fast' ? 0.7 : 0.5, urineGlu: false });
-        Object.assign(st, { ev, evT: 0, resp: null, okT: 0 });
+        Object.assign(st, { ev, evT: 0, resp: null, okT: 0, hideEv: false });
         st.marks.push({ t: st.t, label: short, col: C.ink2 });
         status(ev === 'hot' ? '在大太陽下跑步，身體產生很多熱……看看體溫曲線。' : ev === 'cold' ? '走進很冷的冷氣房，身體的熱散失得很快……' : ev === 'meal' ? '吃完飯，葡萄糖被吸收進入血液……看看血糖曲線。' : '很久沒有吃東西，血液中的葡萄糖慢慢被用掉……');
         syncFree();
@@ -244,7 +247,7 @@
       function syncFree() {
         box.querySelectorAll('#labK-mode button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.v === st.mode));
         const evs = Object.entries(EVENTS).filter(([, [m]]) => m === st.mode), rs = Object.entries(RESPS).filter(([, [m]]) => m === st.mode);
-        $('evs').innerHTML = evs.map(([k, [, n]]) => `<button class="ctl small" type="button" data-e="${k}" aria-pressed="${st.ev === k}">${n}</button>`).join('') + `<button class="ctl small" type="button" data-e="" aria-pressed="${!st.ev}">沒有特別狀況</button>`;
+        $('evs').innerHTML = evs.map(([k, [, n]]) => `<button class="ctl small" type="button" data-e="${k}" aria-pressed="${st.ev === k && !st.hideEv}">${n}</button>`).join('') + `<button class="ctl small" type="button" data-e="" aria-pressed="${!st.ev}">沒有特別狀況</button>`;
         $('rs').innerHTML = rs.map(([k, [, n]]) => `<button class="ctl small" type="button" data-r="${k}" aria-pressed="${st.resp === k}">${n}</button>`).join('') + `<button class="ctl small" type="button" data-r="" aria-pressed="${!st.resp}">不反應</button>`;
         $('evs').querySelectorAll('[data-e]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.e) startEvent(b.dataset.e, false); else { st.ev = null; syncFree(); } }));
         $('rs').querySelectorAll('[data-r]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.r) respond(b.dataset.r); else { st.resp = null; syncFree(); } }));
@@ -262,7 +265,7 @@
       function drawMission() {
         if (mi >= MISSIONS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
-            <div class="fb ok"><strong>恆定的調節</strong>偏離正常範圍 → 身體察覺 → 做出反應 → 回到正常範圍。<br>體溫：熱時流汗、皮膚血管擴張；冷時發抖、皮膚血管收縮。<br>血糖：飯後胰島素使血糖下降；很久沒吃，升糖素使肝糖分解、血糖上升。<br>胰島素不足，血糖長期過高，尿中可能出現葡萄糖（糖尿病）。</div>
+            <div class="fb ok"><strong>恆定的調節</strong>偏離正常範圍 → 身體察覺 → 做出反應 → 回到正常範圍。<br>體溫：熱時流汗、皮膚血管擴張；冷時發抖、皮膚血管收縮。看到這些反應，也能反推環境是熱還是冷。<br>血糖：飯後胰島素使血糖下降；很久沒吃，升糖素使肝糖分解、血糖上升。<br>胰島素不足，血糖長期過高，尿中可能出現葡萄糖（糖尿病）。</div>
             <button class="ctl primary" type="button" id="labK-again">再練習一次</button>`;
           mbox.querySelector('#labK-again').addEventListener('click', reset);
           $('free').open = true;
@@ -270,7 +273,11 @@
         }
         const m = MISSIONS[mi];
         let html = `<div class="mission-top"><h2>任務 ${mi + 1}：${m.title}</h2>${dots()}</div>`;
-        if (m.diab) {
+        if (m.guess) {
+          html += `<p class="m-text">${m.quiz.q}</p><div class="opts">${m.quiz.opts.map((o, k) => `<button class="opt ${done && k === m.quiz.ans ? 'right' : !done && k === picked ? 'wrong' : ''}" type="button" data-k="${k}" ${done ? 'disabled' : ''}>${o}</button>`).join('')}</div>`;
+          if (!done && picked >= 0) html += `<div class="fb bad"><strong>再想想看</strong>${m.quiz.hint}</div>`;
+          if (done) html += `<div class="fb ok"><strong>答對了</strong>${m.why}</div>`;
+        } else if (m.diab) {
           const ready = m.need(st);
           needShown = ready;
           if (!ready) html += `<p class="m-text">${m.needText}</p><div class="acts"><button class="ctl primary" type="button" id="labK-go" ${phase === 'idle' ? '' : 'disabled'}>${m.act}</button></div>${phase !== 'idle' ? '<p class="m-hint">看看血糖曲線和左邊的尿液杯……</p>' : ''}`;
@@ -305,7 +312,11 @@
           else { wrong = `${m.ev}-${r}`; status(`${MODES[st.mode].name}離正常範圍更遠了！再想一想。`); addLog(`${EVENTS[m.ev][2]} → ${RESPS[r][1]}`, `${MODES[st.mode].name}${m.ev === 'hot' || m.ev === 'meal' ? '繼續上升' : '繼續下降'}，離正常範圍更遠`); }
           drawMission();
         }));
-        mbox.querySelectorAll('.opt[data-k]').forEach((b) => b.addEventListener('click', () => { const k = +b.dataset.k; if (k === m.quiz.ans) done = true; else picked = k; drawMission(); }));
+        mbox.querySelectorAll('.opt[data-k]').forEach((b) => b.addEventListener('click', () => {
+          const k = +b.dataset.k;
+          if (k === m.quiz.ans) { done = true; if (m.guess) { st.hideEv = false; syncFree(); status('答對了：他在很冷的冷氣房裡（左上角）。發抖、皮膚血管收縮讓體溫維持在約 37 °C。'); addLog('看到發抖、皮膚血管收縮', '推測環境很冷'); } } else picked = k;
+          drawMission();
+        }));
         const nx = mbox.querySelector('#labK-next');
         if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = -1; phase = 'idle'; wrong = null; needShown = null; enter(); drawMission(); });
       }
@@ -313,6 +324,7 @@
       function missionTick(dt, force) {
         const m = MISSIONS[mi];
         if (!m || done) return;
+        if (m.guess) return;
         if (m.diab) { if (force || m.need(st) !== needShown) drawMission(); return; }
         const M = MODES[st.mode];
         if (!M || st.ev !== m.ev) return;
@@ -326,10 +338,12 @@
       function enter() {
         const m = MISSIONS[mi];
         if (!m) return;
-        const mode = m.diab ? 'sugar' : EVENTS[m.ev][0];
+        const mode = m.diab ? 'sugar' : m.guess ? 'temp' : EVENTS[m.ev][0];
         st.mode = ''; setMode(mode);
         st.lowIns = false;
-        status(m.diab ? '如果胰島素分泌不足……' : `觀察的是<b>${MODES[mode].name}</b>。按任務卡上的按鈕開始。`);
+        // 反推環境：身體已經在反應，但先不顯示環境的圖示
+        if (m.guess) Object.assign(st, { ev: 'cold', resp: 'warm', hideEv: true });
+        status(m.diab ? '如果胰島素分泌不足……' : m.guess ? '看看左邊的人：身體出現了什麼反應？' : `觀察的是<b>${MODES[mode].name}</b>。按任務卡上的按鈕開始。`);
         syncFree();
       }
       function reset() {

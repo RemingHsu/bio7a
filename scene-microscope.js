@@ -295,13 +295,45 @@
 
       // ===== 6 玻片標本 =====
       const P6 = g(root, { opacity: 0 });
-      el('rect', { x: 60, y: 300, width: 400, height: 110, rx: 6, fill: M.glass, stroke: '#cfe8ff', 'stroke-width': 3 }, P6);
-      const drop = el('ellipse', { cx: 260, cy: 352, rx: 34, ry: 14, fill: 'rgba(214,170,60,0.7)' }, P6);
-      const tissue = el('rect', { x: 230, y: 340, width: 60, height: 24, rx: 4, fill: 'rgba(240,220,160,0.9)' }, P6);
-      const coverO = S.place(g(P6), { x: 200, y: 340, r: -45 });
+      const STAIN = 'rgba(196,140,40,0.6)';
+      text(P6, 260, 96, '製作玻片標本', { 'font-size': 28, 'font-weight': 700, 'text-anchor': 'middle' });
+      // ① 先滴一滴水、放標本，蓋玻片斜斜放下
+      el('rect', { x: 60, y: 126, width: 400, height: 96, rx: 6, fill: M.glass, stroke: '#cfe8ff', 'stroke-width': 3 }, P6);
+      const drop = el('ellipse', { cx: 260, cy: 172, rx: 34, ry: 14, fill: 'rgba(160,215,255,0.6)' }, P6);
+      const tissue = el('rect', { x: 230, y: 160, width: 60, height: 24, rx: 4, fill: 'rgba(240,220,160,0.9)' }, P6);
+      const coverO = S.place(g(P6), { x: 200, y: 160, r: -45 });
       el('rect', { x: 0, y: -4, width: 130, height: 8, rx: 2, fill: 'rgba(200,235,255,0.6)', stroke: '#e8f6ff', 'stroke-width': 2 }, coverO);
-      text(P6, 260, 470, '蓋玻片斜斜地慢慢放下，避免產生氣泡', { 'font-size': 22, fill: C.hi, 'text-anchor': 'middle' });
-      text(P6, 260, 270, '製作玻片標本', { 'font-size': 28, 'font-weight': 700, 'text-anchor': 'middle' });
+      text(P6, 260, 262, '① 蓋玻片斜斜放下，避免氣泡', { 'font-size': 22, fill: C.hi, 'text-anchor': 'middle' });
+      // ② 染色：一側滴染液，另一側用吸水紙吸（從斜上方看玻片）
+      const stainG = g(P6, { opacity: 0 });
+      el('rect', { x: 60, y: 400, width: 400, height: 128, rx: 6, fill: M.glass, stroke: '#cfe8ff', 'stroke-width': 3 }, stainG);
+      const CV = { x: 180, y: 408, w: 160, h: 112 };
+      const spec = g(stainG);
+      el('rect', { x: 214, y: 432, width: 92, height: 64, rx: 6, fill: 'rgba(240,225,180,0.55)', stroke: '#c8b27a', 'stroke-width': 1.5 }, spec);
+      [237, 260, 283].forEach((x) => el('line', { x1: x, y1: 434, x2: x, y2: 494, stroke: '#c8b27a', 'stroke-width': 1.2 }, spec));
+      [453, 475].forEach((y) => el('line', { x1: 216, y1: y, x2: 304, y2: y, stroke: '#c8b27a', 'stroke-width': 1.2 }, spec));
+      el('rect', { x: CV.x, y: CV.y, width: CV.w, height: CV.h }, el('clipPath', { id: 'msClip6' }, el('defs', {}, stainG)));
+      const stainL = el('rect', { x: CV.x, y: CV.y, width: 0, height: CV.h, fill: STAIN, 'clip-path': 'url(#msClip6)' }, stainG);
+      el('rect', { x: CV.x, y: CV.y, width: CV.w, height: CV.h, rx: 3, fill: 'rgba(200,235,255,0.18)', stroke: '#e8f6ff', 'stroke-width': 2 }, stainG);
+      const flowA = g(stainG, { opacity: 0 });
+      el('line', { x1: 200, y1: 508, x2: 306, y2: 508, stroke: C.hi, 'stroke-width': 4 }, flowA);
+      el('path', { d: 'M 320,508 l -16,-9 l 0,18 Z', fill: C.hi }, flowA);
+      // 滴管：在蓋玻片左側滴染液
+      const dropper = S.place(g(stainG), { x: 172, y: 446 });
+      el('path', { d: 'M -5,-16 L -2,0 L 2,0 L 5,-16 Z', fill: 'rgba(200,230,255,0.5)', stroke: '#cfe8ff', 'stroke-width': 1.5 }, dropper);
+      el('rect', { x: -6, y: -78, width: 12, height: 64, rx: 3, fill: 'rgba(200,230,255,0.25)', stroke: '#cfe8ff', 'stroke-width': 2 }, dropper);
+      el('rect', { x: -4, y: -42, width: 8, height: 27, fill: 'rgba(196,140,40,0.85)' }, dropper);
+      el('ellipse', { cx: 0, cy: -92, rx: 10, ry: 16, fill: '#d0574a' }, dropper);
+      text(stainG, 150, 376, '染液', { 'font-size': 22, 'text-anchor': 'end', fill: '#e0b45a', 'font-weight': 700 });
+      const sDrop = el('ellipse', { cx: 176, cy: 466, rx: 14, ry: 20, fill: 'rgba(196,140,40,0.85)', opacity: 0 }, stainG);
+      // 吸水紙：放在蓋玻片右側
+      const paper = g(stainG, { opacity: 0 });
+      const paperO = S.place(g(paper), { x: 384, y: 466, r: -8 });
+      el('rect', { x: -48, y: -26, width: 100, height: 52, rx: 3, fill: '#f4f1e8', stroke: '#d8d2c0', 'stroke-width': 2 }, paperO);
+      const wet = el('ellipse', { cx: -40, cy: 0, rx: 0, ry: 0, fill: 'rgba(196,140,40,0.55)' }, paperO);
+      text(paper, 400, 388, '吸水紙', { 'font-size': 22, 'text-anchor': 'middle', fill: '#e8e2cf', 'font-weight': 700 });
+      text(stainG, 260, 572, '② 染色：一側滴染液，', { 'font-size': 22, fill: C.hi, 'text-anchor': 'middle' });
+      text(stainG, 260, 604, '另一側用吸水紙吸，染液流過標本', { 'font-size': 22, fill: C.hi, 'text-anchor': 'middle' });
       const vOn = view(P6, 690, 340, 140, 'msV6a');
       onion(vOn.inner, 540, 200, 5, 7, 66, 44, rnd);
       const vCh = view(P6, 1030, 340, 140, 'msV6b', '#e6eef6');
@@ -320,8 +352,18 @@
       S.show(tl, P6, 's6+=0.3', 0.4);
       tl.fromTo(drop, { opacity: 0, scale: 0, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.4 }, 's6+=0.6');
       tl.fromTo(tissue, { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.5 }, 's6+=1');
-      S.move(tl, coverO, { x: 200, y: 340, r: -45 }, { x: 196, y: 334, r: 0 }, 1.4, 's6+=1.6', 'power1.in');
-      tl.fromTo(specimens, { opacity: 0, scale: 0.6, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.6, stagger: 0.3 }, 's6+=3');
+      S.move(tl, coverO, { x: 200, y: 160, r: -45 }, { x: 196, y: 154, r: 0 }, 1.4, 's6+=1.6', 'power1.in');
+      S.show(tl, stainG, 's6+=3.1', 0.4);
+      tl.fromTo(sDrop, { opacity: 0, attr: { cy: 448, rx: 4, ry: 6 } }, { opacity: 1, attr: { cy: 466, rx: 14, ry: 20 }, duration: 0.5, ease: 'power1.in', immediateRender: false }, 's6+=3.6');
+      S.show(tl, paper, 's6+=4.1', 0.4);
+      S.drive(tl, (u) => {
+        stainL.setAttribute('width', (CV.w * u).toFixed(1));
+        sDrop.setAttribute('rx', (14 - 10 * u).toFixed(1)); sDrop.setAttribute('ry', (20 - 14 * u).toFixed(1));
+        const w = S.smoothstep(0.7, 1, u);
+        wet.setAttribute('rx', (34 * w).toFixed(1)); wet.setAttribute('ry', (20 * w).toFixed(1));
+        flowA.setAttribute('opacity', u > 0 ? 1 : 0);
+      }, 1.8, 's6+=4.6', 'power1.inOut');
+      tl.fromTo(specimens, { opacity: 0, scale: 0.6, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.6, stagger: 0.3 }, 's6+=6.4');
 
       return {
         tl,
@@ -332,7 +374,7 @@
           '＊記法：像偏哪一邊，玻片就往哪一邊移。',
           '＊高倍物鏡較長、離玻片較近，所以換高倍後只能用細調節輪；視野變暗時把光圈開大或調亮光源。',
           null,
-          '＊洋蔥表皮細胞沒有葉綠體，染色是為了讓細胞核看得更清楚。',
+          '＊洋蔥表皮細胞沒有葉綠體，染色是為了讓細胞核看得更清楚。也可以先滴染液、放標本，再蓋上蓋玻片；吸水紙還能吸掉蓋玻片外多餘的液體。',
         ],
         steps: [
           '<b>複式顯微鏡</b>的構造：光線從光源經過光圈、玻片，再經過<b>物鏡</b>和<b>目鏡</b>放大；用<b>粗調節輪</b>和<b>細調節輪</b>對焦。',
@@ -341,7 +383,7 @@
           '要把左上方的細胞移到視野中央：<b>像在哪個方向，玻片就往哪個方向移</b>。',
           '從低倍換成高倍：<b>視野範圍變小、看到的細胞數目變少、細胞的像變大、視野變暗</b>。',
           '操作順序：先用低倍、調亮視野 → 固定玻片 → 從側面看讓物鏡接近玻片 → 從目鏡看慢慢調遠、對焦 → 目標移到中央再換高倍。',
-          '製作玻片標本：洋蔥表皮用<b>碘液</b>、口腔皮膜細胞用<b>亞甲藍液</b>染色；蓋玻片要<b>斜斜放下</b>，避免氣泡。',
+          '製作玻片標本：蓋玻片要<b>斜斜放下</b>，避免氣泡。染色時從蓋玻片<b>一側滴染液</b>、<b>另一側用吸水紙吸</b>，讓染液流過標本；洋蔥表皮用<b>碘液</b>、口腔皮膜細胞用<b>亞甲藍液</b>。',
         ],
       };
     },

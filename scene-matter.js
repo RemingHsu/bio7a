@@ -1,4 +1,4 @@
-/* 1-4 組成物質與細胞分工：原子 → 分子 → 細胞（跨尺度）、生物體的組成物質（水最多；無機物與有機物）、細胞分裂與分化 → 組織 */
+/* 2-3 組成物質與細胞分工：原子 → 分子 → 細胞（跨尺度）、生物體的組成物質（水最多；無機物與有機物）、細胞分裂與分化 → 組織 */
 (() => {
   const { el, g, text, C } = S;
   const FRAME = { fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 };
@@ -37,10 +37,11 @@
       el('ellipse', { cx: 1010, cy: 300, rx: 104, ry: 82, fill: 'rgba(99,212,191,0.12)', stroke: C.membrane, 'stroke-width': 4 }, pan[3]);
       el('circle', { cx: 1000, cy: 296, r: 30, fill: 'rgba(167,150,255,0.45)', stroke: C.nucleus, 'stroke-width': 3 }, pan[3]);
       [[950, 250], [1066, 270], [1060, 338], [960, 350]].forEach(([x, y]) => el('ellipse', { cx: x, cy: y, rx: 15, ry: 8, fill: C.mito, opacity: 0.85 }, pan[3]));
-      [['原子', '約 0.1 nm＊'], ['分子', '水約 0.3 nm、葡萄糖約 1 nm＊'], ['大分子', '蛋白質約數 nm～十幾 nm＊'], ['細胞', '約 10～100 μm＊']].forEach(([n, s], i) => {
+      [['原子', '約 0.1 nm＊'], ['分子', '水約 0.3 nm|葡萄糖約 1 nm＊'], ['大分子', '蛋白質約數 nm|～十幾 nm＊'], ['細胞', '約 10～100 μm＊']].forEach(([n, s], i) => {
         const cx = PX[i] + PW / 2;
         text(pan[i], cx, 158, n, { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700 });
-        text(pan[i], cx, 548, s, { 'font-size': i === 1 ? 18 : 20, 'text-anchor': 'middle', fill: C.hi });
+        const ls = s.split('|');
+        ls.forEach((t, k) => text(pan[i], cx, 554 + (k - (ls.length - 1) / 2) * 28, t, { 'font-size': 22, 'text-anchor': 'middle', fill: C.hi }));
       });
       const arrows0 = [0, 1, 2].map((i) => { const a = g(P0, { opacity: 0 }); const x = PX[i] + PW + 10; el('path', { d: `M ${x - 4},310 l 14,0 m -6,-7 l 7,7 l -7,7`, fill: 'none', stroke: C.ink2, 'stroke-width': 3 }, a); return a; });
       const tip0 = g(P0, { opacity: 0 });

@@ -169,7 +169,7 @@
         drawParents();
         layer.innerHTML = '';
         const c = crossOf(fa, mo, mode);
-        status(mode === 'sex' ? '父親 XY × 母親 XX：精子帶 X 或 Y，卵都帶 X…' : `父親 ${html(fa)} × 母親 ${html(mo)}：先寫出精子和卵帶的等位基因，再兩兩組合…`);
+        status(mode === 'sex' ? '父親 XY × 母親 XX：精子帶 X 或 Y，卵都帶 X……' : `父親 ${html(fa)} × 母親 ${html(mo)}：先寫出精子和卵帶的等位基因，再兩兩組合……`);
         const tops = c.top.map((a, j) => head(layer, GX + CS / 2 + j * CS, 106, alleleI(a, mode), '#cfe3ee'));
         const lefts = c.left.map((a, i) => head(layer, GX - 52, GY + CS / 2 + i * CS, alleleI(a, mode), '#ffd9b0'));
         [...tops, ...lefts].forEach((h) => { h.style.opacity = 0; });

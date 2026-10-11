@@ -1,4 +1,4 @@
-/* 5-1 呼吸與氣體恆定：恆定性、呼吸作用與呼吸運動、呼吸系統（跨尺度）、氣體交換、動植物的呼吸構造、呼吸運動、檢驗與氣體的恆定 */
+/* 6-1 呼吸與氣體恆定：恆定性、呼吸作用與呼吸運動、呼吸系統（跨尺度、呼吸道的防護）、氣體交換、動植物的呼吸構造（植物：氣孔、皮孔、根）、呼吸運動、檢驗（BTB、石灰水、氯化亞鈷試紙）與氣體的恆定 */
 (() => {
   const { el, g, text, C } = S;
   const AIR = '#9fd8ff', O2 = C.oxygen, CO2 = C.co2, LUNG = '#e58a9a', LUNG_E = '#ffc2cc', CAP = C.blood, VEIN = '#9b3b55';
@@ -95,7 +95,7 @@
       co2M.style.opacity = 0; h2oM.style.opacity = 0;
       const bolt = g(P1, { opacity: 0 });
       el('path', { d: 'M 940,250 L 912,300 L 934,300 L 918,346 L 962,286 L 940,286 L 956,250 Z', fill: C.hi }, bolt);
-      text(bolt, 976, 286, '能量', { 'font-size': 24, fill: C.hi, 'font-weight': 700 });
+      text(bolt, 968, 302, '能量', { 'font-size': 24, fill: C.hi, 'font-weight': 700 });
       const eq1 = g(P1, { opacity: 0 });
       el('rect', { x: 640, y: 526, width: 500, height: 76, rx: 14, fill: '#0f1c27', stroke: '#2b4252', 'stroke-width': 2 }, eq1);
       text(eq1, 890, 573, '葡萄糖 ＋ 氧 → 二氧化碳 ＋ 水 ＋ 能量', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
@@ -141,7 +141,7 @@
       const LBL2 = [['鼻', 600, 104, 110], ['咽', 600, 128, 170], ['喉', 600, 148, 230], ['氣管', 600, 176, 290], ['支氣管', 614, 205, 350], ['肺', 641, 222, 420]];
       const call2 = LBL2.map(([s, bx, by, y]) => { const [tx, ty] = B2(bx, by); return S.callout(P2, tx, ty, 540, y, s, AIR, { size: 24 }); });
       const lungSize = g(P2, { opacity: 0 });
-      S.pill(lungSize, 270, 676, '肺：長約 25 cm＊', { size: 22, color: C.hi });
+      // 肺的長度不標數字（不是國中的重點）
       const FA = [640, 910], FW2 = 250;
       const fr2 = FA.map((x) => { const f = g(P2, { opacity: 0 }); el('rect', { x, y: 90, width: FW2, height: 430, rx: 16, ...FRAME }, f); return f; });
       // A：支氣管末端與成串的肺泡
@@ -167,6 +167,8 @@
         text(fr2[i], cx, 562, n, { 'font-size': 26, 'text-anchor': 'middle', 'font-weight': 700 });
         S.pill(fr2[i], cx, 604, s, { size: 22, color: i ? C.hi : C.ink2 });
       });
+      const guard2 = g(P2, { opacity: 0 });
+      S.pill(guard2, 900, 668, '鼻毛、黏液、纖毛：擋住灰塵和病菌', { size: 22, color: '#cfe8ff', edge: '#4a6272' });
       const zb = [[B2(634, 254), 24, FA[0]], [[830, 300], 70, FA[1]]].map(([[x, y], s, fx]) => {
         const zg = g(P2, { opacity: 0 });
         el('rect', { x: x - s / 2, y: y - s / 2, width: s, height: s, fill: 'none', stroke: C.hi, 'stroke-width': 3 }, zg);
@@ -186,6 +188,7 @@
       S.show(tl, lungSize, 's2+=3.6', 0.4);
       S.show(tl, zb[0], 's2+=4', 0.3); S.show(tl, fr2[0], 's2+=4.2', 0.4);
       S.show(tl, zb[1], 's2+=5', 0.3); S.show(tl, fr2[1], 's2+=5.2', 0.4);
+      S.show(tl, guard2, 's2+=5.8', 0.4);
 
       // ===== 3 氣體交換 =====
       const P3 = g(root, { opacity: 0 });
@@ -201,8 +204,8 @@
       text(P3, 310, 190, '肺泡（空氣）', { 'font-size': 24, 'text-anchor': 'middle', fill: AIR });
       tone(P3, 310, 234, [['氧 ↓ 進入血液', O2], ['　　', C.ink], ['二氧化碳 ↑ 進入肺泡', CO2]]);
       el('rect', { x: 80, y: 360, width: 460, height: 80, rx: 40, fill: 'url(#br3a)', opacity: 0.35, stroke: CAP, 'stroke-width': 3 }, P3);
-      text(P3, 90, 474, '含氧較少的血', { 'font-size': 20, fill: '#d98a9a' });
-      text(P3, 530, 474, '含氧較多的血', { 'font-size': 20, fill: CAP, 'text-anchor': 'end' });
+      text(P3, 90, 474, '缺氧血', { 'font-size': 20, fill: '#d98a9a' });
+      text(P3, 530, 474, '充氧血', { 'font-size': 20, fill: CAP, 'text-anchor': 'end' });
       text(P3, 310, 474, '微血管 →', { 'font-size': 20, fill: C.ink2, 'text-anchor': 'middle' });
       // 右：微血管＋組織細胞
       el('rect', { x: 660, y: 150, width: 460, height: 80, rx: 40, fill: 'url(#br3b)', opacity: 0.35, stroke: CAP, 'stroke-width': 3 }, P3);
@@ -291,29 +294,34 @@
       });
       S.callout(frog, 770, 292, 838, 150, '肺', LUNG, { size: 24 }).style.opacity = 1;
       S.callout(frog, 690, 330, 676, 150, '皮膚', '#a8e39a', { size: 24 }).style.opacity = 1;
-      text(frog, 750, 452, '皮膚要保持濕潤', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
-      // 植物：氣孔
-      const pl = fr4[3];
-      el('path', { d: 'M 940,330 C 980,250 1080,250 1130,330 C 1080,410 980,410 940,330 Z', fill: '#4fae4a', stroke: '#2f7a3a', 'stroke-width': 3 }, pl);
-      el('line', { x1: 946, y1: 330, x2: 1124, y2: 330, stroke: '#a8e39a', 'stroke-width': 2 }, pl);
-      el('circle', { cx: 1030, cy: 360, r: 8, fill: 'none', stroke: C.hi, 'stroke-width': 2.5 }, pl);
-      el('line', { x1: 1030, y1: 352, x2: 1030, y2: 230, stroke: C.hi, 'stroke-width': 1.5, 'stroke-dasharray': '5 5' }, pl);
-      const st4 = S.place(g(pl), { x: 1030, y: 186 });
-      el('circle', { cx: 0, cy: 0, r: 44, fill: '#1c3a2c', stroke: C.hi, 'stroke-width': 2.5 }, st4);
-      [-1, 1].forEach((s) => el('path', { d: `M 0,-26 C ${s * 26},-26 ${s * 26},26 0,26 C ${s * 8},16 ${s * 8},-16 0,-26 Z`, fill: '#6fce62', stroke: '#2f7a3a', 'stroke-width': 2 }, st4));
-      const gasIO = g(pl);
-      arrow(gasIO, 1092, 160, 1060, 176, CO2, 3, 10);
-      arrow(gasIO, 1060, 200, 1092, 216, CO2, 3, 10);
-      text(pl, 1104, 194, '氣體', { 'font-size': 20, fill: CO2 });
-      text(pl, 978, 194, '氣孔', { 'font-size': 24, 'text-anchor': 'end', fill: '#a8e39a', 'font-weight': 700 });
-      text(pl, 1030, 446, '葉的表皮有許多氣孔', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
-      [['魚', '用鰓'], ['昆蟲', '用氣管'], ['青蛙', '用肺和皮膚'], ['植物', '經由氣孔']].forEach(([n, s], i) => {
+      text(frog, 750, 452, '皮膚要保持溼潤', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      // 植物：葉的氣孔、莖的皮孔、根的表皮細胞
+      const pl = fr4[3], PX = 975;
+      el('rect', { x: 920, y: 388, width: 240, height: 100, rx: 10, fill: '#3a2a1c' }, pl);
+      ['M 975,390 L 975,474', 'M 975,410 C 962,424 948,440 936,464', 'M 975,420 C 986,436 994,452 1000,470'].forEach((d) => el('path', { d, fill: 'none', stroke: '#c9a97a', 'stroke-width': 4, 'stroke-linecap': 'round' }, pl));
+      [[975, 474], [936, 464], [1000, 470]].forEach(([x, y]) => [-0.9, 0, 0.9].forEach((a) => el('line', { x1: x, y1: y, x2: x + Math.sin(a) * 9, y2: y + Math.cos(a) * 9 - 2, stroke: '#e8d8b0', 'stroke-width': 1.5 }, pl)));
+      const leafB = (bx, by, r, L, W) => {
+        const lg = S.place(g(pl), { x: bx, y: by, r });
+        el('path', { d: `M 0,0 C ${L * 0.3},${-W / 2} ${L * 0.75},${-W / 2} ${L},0 C ${L * 0.75},${W / 2} ${L * 0.3},${W / 2} 0,0 Z`, fill: '#4fae4a', stroke: '#2f7a3a', 'stroke-width': 2.5 }, lg);
+        el('line', { x1: 2, y1: 0, x2: L - 6, y2: 0, stroke: '#a8e39a', 'stroke-width': 2 }, lg);
+      };
+      leafB(PX + 6, 218, -35, 100, 44);
+      leafB(PX - 6, 262, -145, 60, 30);
+      el('rect', { x: PX - 8, y: 168, width: 16, height: 224, rx: 6, fill: '#7a5a3a', stroke: '#a8845a', 'stroke-width': 2 }, pl);
+      el('path', { d: `M ${PX - 3},${180} q 4,40 0,80 q -4,40 0,90`, fill: 'none', stroke: '#5a4028', 'stroke-width': 1.5 }, pl);
+      [236, 300, 344].forEach((y) => el('ellipse', { cx: PX + 1, cy: y, rx: 5, ry: 2.2, fill: '#e8d8b0' }, pl));
+      // 頂芽和兩片張開的幼葉
+      leafB(PX - 2, 166, -62, 26, 12); leafB(PX + 2, 166, -118, 26, 12);
+      el('path', { d: `M ${PX},140 C ${PX + 7},150 ${PX + 7},160 ${PX},170 C ${PX - 7},160 ${PX - 7},150 ${PX},140 Z`, fill: '#8be07a', stroke: '#2f7a3a', 'stroke-width': 2 }, pl);
+      [[1036, 182, 1094, 120, '葉：氣孔', '#a8e39a'], [PX + 6, 300, 1094, 280, '莖：皮孔', '#e8d8b0'], [1000, 466, 1078, 432, '根：表皮細胞', '#c9a97a']]
+        .forEach(([tx, ty, x, y, s2, c]) => { S.callout(pl, tx, ty, x, y, s2, c, { size: 20 }).style.opacity = 1; });
+      [['魚', '用鰓'], ['昆蟲', '用氣管'], ['青蛙', '用肺和皮膚'], ['植物', '氣孔、皮孔、根']].forEach(([n, s], i) => {
         const cx = FX4[i] + FW4 / 2;
         text(fr4[i], cx, 548, n, { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700 });
         text(fr4[i], cx, 586, s, { 'font-size': 24, 'text-anchor': 'middle', fill: C.hi });
       });
       const common4 = g(P4, { opacity: 0 });
-      S.pill(common4, 600, 664, '共同點：交換氣體的表面濕潤、面積大，氣體容易擴散', { size: 24, color: C.hi, edge: C.hi });
+      S.pill(common4, 600, 664, '共同點：交換氣體的表面溼潤、面積大，氣體容易擴散', { size: 24, color: C.hi, edge: C.hi });
       tl.addLabel('s4');
       S.hide(tl, P3, 's4', 0.4);
       S.show(tl, P4, 's4+=0.3', 0.2);
@@ -393,13 +401,24 @@
         const bubs = [0, 1, 2, 3, 4].map(() => el('circle', { cx: 0, cy: 0, r: 5, fill: 'none', stroke: '#e8f6ff', 'stroke-width': 2, opacity: 0 }, tg));
         return { liq, bubs, x };
       };
-      const tA = tube6(170, BTB[0], 'br6a'), tB = tube6(400, 'rgba(220,235,245,0.22)', 'br6b');
-      text(P6, 170, 534, 'BTB 溶液', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
-      const resA = text(P6, 170, 568, '藍 → 綠 → 黃', { 'font-size': 22, 'text-anchor': 'middle', fill: C.sugar, opacity: 0 });
-      text(P6, 400, 534, '澄清石灰水', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
-      const resB = text(P6, 400, 568, '變混濁', { 'font-size': 22, 'text-anchor': 'middle', fill: '#f2f2f2', opacity: 0 });
+      const tA = tube6(125, BTB[0], 'br6a'), tB = tube6(290, 'rgba(220,235,245,0.22)', 'br6b');
+      // BTB 多一行說明：三行排緊一點，和下方的結論標籤保持距離
+      text(P6, 125, 532, 'BTB 溶液', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
+      text(P6, 125, 560, '（溴瑞香草藍）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      const resA = text(P6, 125, 587, '藍 → 綠 → 黃', { 'font-size': 22, 'text-anchor': 'middle', fill: C.sugar, opacity: 0 });
+      text(P6, 290, 534, '澄清石灰水', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
+      const resB = text(P6, 290, 568, '變混濁', { 'font-size': 22, 'text-anchor': 'middle', fill: '#f2f2f2', opacity: 0 });
+      // 氯化亞鈷試紙：對著乾燥（藍色）的試紙呼氣，遇到水蒸氣變成粉紅色
+      const CB = 455;
+      arrow(P6, CB, 146, CB, 226, AIR, 4, 12);
+      text(P6, CB + 16, 168, '呼氣', { 'font-size': 20, fill: AIR });
+      const paper = el('rect', { x: CB - 24, y: 252, width: 48, height: 190, rx: 4, fill: '#2f6fd6', stroke: '#cfe8ff', 'stroke-width': 2 }, P6);
+      el('rect', { x: CB - 14, y: 238, width: 28, height: 22, rx: 4, fill: '#8aa1ae', stroke: '#cfe8ff', 'stroke-width': 1.5 }, P6);
+      const vap6 = [0, 1, 2, 3].map(() => el('circle', { cx: CB, cy: 0, r: 7, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 2, 'stroke-dasharray': '4 3', opacity: 0 }, P6));
+      text(P6, CB, 534, '氯化亞鈷試紙', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 });
+      const resC = text(P6, CB, 568, '藍 → 粉紅', { 'font-size': 22, 'text-anchor': 'middle', fill: '#f4a6c4', opacity: 0 });
       const conc6 = g(P6, { opacity: 0 });
-      S.pill(conc6, 290, 616, '呼出的氣體含較多二氧化碳', { size: 24, color: C.hi, edge: C.hi });
+      S.pill(conc6, 290, 624, '呼出的氣體含較多二氧化碳和水蒸氣', { size: 22, color: C.hi, edge: C.hi });
       const FLOW = ['運動：細胞的呼吸作用旺盛', '血液中的二氧化碳增加', '腦幹：使呼吸加快、加深', '排出較多的二氧化碳', '二氧化碳回到正常範圍'];
       const flow6 = FLOW.map((s, i) => {
         const fg = g(P6, { opacity: 0 });
@@ -426,13 +445,15 @@
       S.drive(tl, (u) => {
         tA.liq.setAttribute('fill', btbCol(S.smoothstep(0.1, 0.95, u)));
         tB.liq.setAttribute('fill', `rgba(${Math.round(S.lerp(220, 238, u))},${Math.round(S.lerp(235, 238, u))},${Math.round(S.lerp(245, 236, u))},${S.lerp(0.22, 0.85, S.smoothstep(0.15, 0.9, u)).toFixed(2)})`);
+        paper.setAttribute('fill', mix('#2f6fd6', '#f4a6c4', S.smoothstep(0.2, 0.9, u)));
+        vap6.forEach((v, i) => { const k = (u * 4 + i / 4) % 1; v.setAttribute('cx', CB + Math.sin(k * 9 + i) * 10); v.setAttribute('cy', S.lerp(160, 262, k)); v.style.opacity = u > 0.02 && u < 0.98 ? 0.9 * (1 - k) : 0; });
         [tA, tB].forEach((t) => t.bubs.forEach((b, i) => {
           const k = (u * 5 + i / 5) % 1;
           b.setAttribute('cx', t.x + 6 + Math.sin(k * 12 + i) * 6); b.setAttribute('cy', S.lerp(456, 324, k));
           b.style.opacity = u > 0.02 && u < 0.98 ? 0.9 : 0;
         }));
       }, 3, 's6+=0.7', 'none');
-      S.show(tl, [resA, resB], 's6+=3.4', 0.4);
+      S.show(tl, [resA, resB, resC], 's6+=3.4', 0.4);
       S.show(tl, conc6, 's6+=3.7', 0.4);
       flow6.forEach((f, i) => S.show(tl, f, `s6+=${4 + i * 0.4}`, 0.35));
       S.show(tl, trace, 's6+=4', 0.3);
@@ -443,20 +464,20 @@
         notes: [
           '＊示意：曲線只表示「在正常範圍內小幅變動」，不是真實數據。這一章依序介紹氣體（6-1）、水分（6-2）、體溫和血糖（6-3）的恆定。',
           '＊示意：分子和粒線體都畫得很大。所有活細胞（包括植物細胞）不論白天或晚上都會進行呼吸作用；有些課本把反應式寫成「養分＋氧 → 二氧化碳＋水＋能量」。',
-          '＊大小為約略值。咽是食物和空氣共同經過的通道（見 3-4）；喉裡有聲帶（補充）。兩個肺共約有 3～5 億個肺泡＊，總表面積很大；肺泡壁和微血管壁都很薄。',
+          '＊大小為約略值。咽是食物和空氣共同經過的通道（見 3-4）；喉裡有聲帶（補充）。兩個肺共約有 3～5 億個肺泡＊，總表面積很大；肺泡壁和微血管壁都很薄。鼻毛、呼吸道的黏液和纖毛能擋住灰塵和病菌，纖毛把沾了灰塵的黏液往喉部推，咳出來就是痰。',
           '＊示意：分子和紅血球都畫得很大。血液在心臟和血管中如何流動（肺循環、體循環），見第四章。',
-          '＊示意：構造都簡化了。蚯蚓也是用濕潤的皮膚交換氣體；木本植物的莖上還有皮孔（補充）。植物沒有呼吸運動，氣體主要靠擴散經氣孔進出。',
+          '＊示意：構造都簡化了。蚯蚓也是用溼潤的皮膚交換氣體。植物沒有呼吸運動，氣體靠擴散進出；大多數陸生植物的根如果泡水太久，會缺氧而無法進行呼吸作用，甚至死亡。動物交換氣體的表面都溼潤、面積大。',
           '＊示意：構造簡化了，肋骨在前後左右都有。肋骨的上舉和下降，靠肋骨之間的肌肉（補充：肋間肌）。',
-          '＊示意：呼吸曲線不是真實數據。BTB 遇到二氧化碳會由藍色經綠色變成黃色；石灰水遇到二氧化碳會變混濁（不同版本的課本可能用其中一種）。腦幹的功能見 5-1 神經系統。',
+          '＊示意：呼吸曲線不是真實數據。BTB（溴瑞香草藍）是一種指示劑，在接近中性（pH 約 7）時會變色，用來檢驗溶液中的二氧化碳：二氧化碳溶在水中呈弱酸性，使 BTB 由藍色經綠色變成黃色。石灰水遇到二氧化碳會變混濁；氯化亞鈷試紙要先烘乾（藍色），遇到水會變成粉紅色。運動時細胞產生較多二氧化碳；腦幹的功能見 5-1。',
         ],
         steps: [
-          '生物體能維持體內環境（例如<b>氣體</b>、<b>水分</b>、<b>體溫</b>、<b>血糖</b>）的穩定，稱為<b>恆定性</b>。偏離正常範圍時，身體會加以調節。',
+          '生物體能維持體內環境（例如<b>氣體</b>、<b>水分</b>、<b>體溫</b>、<b>血糖</b>）的穩定，稱為<b>恆定性</b>。偏離正常範圍時，身體靠<b>神經系統</b>和<b>內分泌系統</b>協調，加以調節。',
           '<b>呼吸運動</b>是吸氣和呼氣，讓空氣進出肺；<b>呼吸作用</b>是細胞利用氧分解葡萄糖，產生二氧化碳和水並<b>釋放能量</b>，主要在<b>粒線體</b>中進行。',
           '空氣的路徑：鼻 → 咽 → 喉 → 氣管 → 支氣管 → 肺。支氣管在肺中越分越細，末端連著許多<b>肺泡</b>，肺泡外面包著<b>微血管</b>。',
           '<b>氣體交換</b>靠<b>擴散</b>：在肺泡，氧進入微血管、二氧化碳進入肺泡；在全身各處，氧從微血管進入組織細胞，二氧化碳從細胞進入微血管。',
-          '其他生物也有交換氣體的構造：魚用<b>鰓</b>、昆蟲用<b>氣管</b>、青蛙用肺和<b>皮膚</b>，植物經由<b>氣孔</b>。它們的表面都濕潤、面積大，有利氣體擴散。',
+          '其他生物也有交換氣體的構造：魚用<b>鰓</b>、昆蟲用<b>氣管</b>、青蛙用肺和<b>皮膚</b>。植物沒有呼吸器官，經由葉的<b>氣孔</b>、莖的<b>皮孔</b>和根的<b>表皮細胞</b>交換氣體。',
           '<b>吸氣</b>：肋骨上舉、橫膈下降，胸腔變大，空氣進入肺。<b>呼氣</b>：肋骨下降、橫膈上升，胸腔變小，空氣排出。',
-          '呼出的氣體使 <b>BTB</b> 由藍變黃、<b>澄清石灰水</b>變混濁，表示含較多<b>二氧化碳</b>。運動時二氧化碳增加，<b>腦幹</b>使呼吸加快加深，排出多餘的二氧化碳。',
+          '呼出的氣體使 <b>BTB</b> 由藍變黃、<b>石灰水</b>變混濁（含較多<b>二氧化碳</b>），使<b>氯化亞鈷試紙</b>由藍變粉紅（含<b>水蒸氣</b>）。運動時，<b>腦幹</b>使呼吸加快加深。',
         ],
       };
     },

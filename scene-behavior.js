@@ -1,4 +1,4 @@
-/* 4-3 行為與感應：本能行為與學習行為、行為幫助生存與繁殖、植物的向性、向光性的原因、觸發運動 */
+/* 5-3 行為與感應：本能行為與學習行為、行為幫助生存與繁殖、植物的向性、向光性的原因、觸發運動 */
 (() => {
   const { el, g, text, C } = S;
   const FRAME = { fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 };
@@ -123,7 +123,7 @@
       // ===== 1 行為幫助生存與繁殖 =====
       const P1 = g(root, { opacity: 0 });
       const X1 = [30, 325, 620, 915];
-      const cards = [['覓食', '青蛙伸出舌頭', '捕捉昆蟲'], ['躲避敵害', '穿山甲遇到危險', '捲成一顆球'], ['求偶', '雄孔雀展開', '尾羽（開屏）'], ['育幼', '親鳥把食物', '餵給雛鳥']].map(([t, a, b], i) => {
+      const cards = [['覓食', '青蛙伸出舌頭', '捕捉昆蟲'], ['躲避敵害', '穿山甲遇到危險', '捲成一顆球'], ['求偶', '雄孔雀展開', '長長的羽毛（開屏）'], ['育幼', '親鳥把食物', '餵給雛鳥']].map(([t, a, b], i) => {
         const c = g(P1, { opacity: 0 });
         el('rect', { x: X1[i], y: 30, width: 255, height: 520, rx: 18, ...FRAME }, c);
         text(c, X1[i] + 127, 78, t, { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700, fill: i < 2 ? INN : '#ff8fb1' });
@@ -337,7 +337,7 @@
       // 縮圖：整株盆栽，莖彎向右上方的太陽
       const ins3 = g(P3);
       el('rect', { x: 800, y: 30, width: 370, height: 440, rx: 18, ...FRAME }, ins3);
-      text(ins3, 985, 458, '整株植物', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(ins3, 1032, 424, '整株植物', { 'font-size': 22, fill: C.mute }); // 放在花盆右邊：放在下面會碰到花盆和框
       sun(ins3, 1112, 86, 18, [-0.74, 0.67], 34, 2);
       el('path', { d: 'M 912,384 L 1008,384 L 996,434 L 924,434 Z', fill: '#b0703c' }, ins3);
       el('rect', { x: 904, y: 374, width: 112, height: 14, rx: 4, fill: '#7a4a24' }, ins3);
@@ -429,7 +429,7 @@
       [-1, 1].forEach((s) => el('ellipse', { cx: s * 6, cy: -8, rx: 6, ry: 9, fill: 'rgba(220,240,255,0.7)', transform: `rotate(${s * 30} ${s * 6} -8)` }, bug));
       const fast4 = g(P4, { opacity: 0 });
       S.pill(fast4, 310, 410, '幾秒內就完成', { size: 22, color: C.hi, edge: C.hi });
-      S.pill(fast4, 890, 410, '很快就合起', { size: 22, color: C.hi, edge: C.hi });
+      S.pill(fast4, 1040, 410, '很快就合起', { size: 22, color: C.hi, edge: C.hi });
       // 比較表
       const tb4 = g(P4, { opacity: 0 });
       el('rect', { x: 40, y: 476, width: 1120, height: 224, rx: 16, ...FRAME }, tb4);

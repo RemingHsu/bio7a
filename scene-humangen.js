@@ -1,4 +1,5 @@
-/* 七下 2-2 人類的遺傳：看得到的性狀、23 對染色體、性別的決定、ABO 血型、血型的推算、譜系圖 */
+/* 七下 2-2 人類的遺傳：看得到的性狀、23 對染色體、性別的決定、ABO 血型、血型的推算、譜系圖、雙胞胎
+   這個檔案也提供人物、精子、卵的畫法（S.b2），scene-biotech.js 的試管嬰兒會用到。 */
 (() => {
   const { el, g, text, C } = S;
   const FRAME = { fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 };
@@ -112,7 +113,8 @@
     el('path', { d: 'M -14,0 C -30,-8 -40,8 -56,0 C -66,-6 -74,6 -86,0', fill: 'none', stroke: '#cfe3ee', 'stroke-width': 2.4, 'stroke-linecap': 'round' }, sg);
     el('rect', { x: -16, y: -3, width: 8, height: 6, rx: 3, fill: '#cfe3ee' }, sg);
     el('ellipse', { cx: 2, cy: 0, rx: 13, ry: 9.5, fill: '#e8f4fa', stroke: col, 'stroke-width': 2.5 }, sg);
-    text(sg, 2, 6, label, { 'font-size': 17, 'text-anchor': 'middle', 'font-weight': 700, fill: '#0d1822' });
+    // 字放在縮放的群組外面，用實際字級（17×s）：放在群組裡會被最小字級再放大一次，撐出頭部
+    if (label) text(p, x + 2 * s, y + 6 * s, label, { 'font-size': +(17 * s).toFixed(1), 'text-anchor': 'middle', 'font-weight': 700, fill: '#0d1822' });
     return sg;
   }
   function egg(p, x, y, r, label, col) {
@@ -122,6 +124,8 @@
     text(eg, 0, r * 0.24, label, { 'font-size': r * 0.7, 'text-anchor': 'middle', 'font-weight': 700, fill: C.ink });
     return eg;
   }
+  const B2 = (S.b2 = S.b2 || {});
+  B2.person = person; B2.sperm = sperm; B2.egg = egg;
   const gridLines = (p, GX, GY, CS) => { for (let i = 0; i <= 2; i++) { el('line', { x1: GX, y1: GY + i * CS, x2: GX + 2 * CS, y2: GY + i * CS, stroke: '#4a6272', 'stroke-width': 3 }, p); el('line', { x1: GX + i * CS, y1: GY, x2: GX + i * CS, y2: GY + 2 * CS, stroke: '#4a6272', 'stroke-width': 3 }, p); } };
   const arrow = (p, x1, y1, x2, y2, color = '#4a6272', w = 3) => { const a = Math.atan2(y2 - y1, x2 - x1), ag = g(p), hl = 14; el('line', { x1, y1, x2: x2 - Math.cos(a) * hl * 0.7, y2: y2 - Math.sin(a) * hl * 0.7, stroke: color, 'stroke-width': w }, ag); el('path', { d: `M${x2},${y2} L${x2 - hl * Math.cos(a - 0.45)},${y2 - hl * Math.sin(a - 0.45)} L${x2 - hl * Math.cos(a + 0.45)},${y2 - hl * Math.sin(a + 0.45)}Z`, fill: color }, ag); return ag; };
 
@@ -402,6 +406,47 @@
       S.show(tl, gtx, 's5+=3.4', 0.4);
       S.show(tl, tip5, 's5+=4.4', 0.5);
 
+      // ===== 6 雙胞胎：同卵與異卵 =====
+      const P6 = g(root, { opacity: 0 });
+      text(P6, 600, 52, '雙胞胎：同卵和異卵', { 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700 });
+      el('rect', { x: 30, y: 80, width: 560, height: 530, rx: 18, ...FRAME }, P6);
+      el('rect', { x: 610, y: 80, width: 560, height: 530, rx: 18, ...FRAME }, P6);
+      text(P6, 310, 124, '同卵雙胞胎', { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
+      text(P6, 890, 124, '異卵雙胞胎', { 'font-size': 28, 'text-anchor': 'middle', 'font-weight': 700, fill: '#9fe0c8' });
+      const zyg6 = (p, x, y, r = 30) => { const zg = g(p); el('circle', { cx: x, cy: y, r, fill: 'rgba(255,214,170,0.22)', stroke: '#ffd9b0', 'stroke-width': 2.5 }, zg); el('circle', { cx: x, cy: y, r: r * 0.42, fill: 'rgba(167,150,255,0.45)', stroke: C.nucleus, 'stroke-width': 2 }, zg); return zg; };
+      const emb6 = (p, x, y) => { const eg = g(p); [[-10, -10], [10, -10], [-10, 10], [10, 10]].forEach(([a, b]) => el('circle', { cx: x + a, cy: y + b, r: 12, fill: 'rgba(255,214,170,0.25)', stroke: '#ffd9b0', 'stroke-width': 2 }, eg)); return eg; };
+      // 左：一個卵＋一個精子 → 一個受精卵 → 分成兩個胚胎 → 兩個長得一樣的孩子
+      const L6 = [g(P6, { opacity: 0 }), g(P6, { opacity: 0 }), g(P6, { opacity: 0 })];
+      sperm(L6[0], 150, 196, 1.2, '', '#cfe3ee');
+      egg(L6[0], 236, 196, 34, '', '#ffd9b0');
+      arrow(L6[0], 284, 196, 330, 196);
+      zyg6(L6[0], 372, 196);
+      text(L6[0], 372, 256, '1 個受精卵', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      arrow(L6[1], 352, 270, 300, 306); arrow(L6[1], 392, 270, 444, 306);
+      emb6(L6[1], 280, 330); emb6(L6[1], 464, 330);
+      text(L6[1], 372, 338, '分成兩個', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      person(L6[2], 230, 456, 0.62, { girl: true, shirt: '#8a6fb0' });
+      person(L6[2], 390, 456, 0.62, { girl: true, shirt: '#8a6fb0' });
+      text(L6[2], 310, 574, '基因相同 → 性別一定相同', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
+      // 右：兩個卵分別和兩個精子受精 → 兩個受精卵 → 兩個孩子（性別可能不同）
+      const R6 = [g(P6, { opacity: 0 }), g(P6, { opacity: 0 }), g(P6, { opacity: 0 })];
+      [[724, 800], [960, 1036]].forEach(([sx, ex]) => { sperm(R6[0], sx, 196, 1.2, '', '#cfe3ee'); egg(R6[0], ex, 196, 30, '', '#ffd9b0'); });
+      text(R6[0], 890, 256, '兩個卵分別受精', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      arrow(R6[1], 800, 236, 800, 296); arrow(R6[1], 1036, 236, 1036, 296);
+      zyg6(R6[1], 800, 330, 26); zyg6(R6[1], 1036, 330, 26);
+      text(R6[1], 918, 338, '2 個受精卵', { 'font-size': 22, 'text-anchor': 'middle', fill: C.ink2 });
+      person(R6[2], 810, 456, 0.62, { girl: true, shirt: '#8a6fb0' });
+      person(R6[2], 970, 456, 0.62, { shirt: '#4f7896' });
+      text(R6[2], 890, 574, '基因不完全相同 → 性別可能不同', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700, fill: '#9fe0c8' });
+      const key6 = g(P6, { opacity: 0 });
+      S.pill(key6, 600, 660, '同卵雙胞胎由同一個受精卵分裂而來；異卵雙胞胎就像同時出生的兄弟姊妹', { size: 22, color: C.ink, edge: '#4a6272' });
+      tl.addLabel('s6');
+      S.hide(tl, P5, 's6', 0.4);
+      S.show(tl, P6, 's6+=0.3', 0.4);
+      L6.forEach((x, i) => S.show(tl, x, `s6+=${0.7 + i * 0.8}`, 0.5));
+      R6.forEach((x, i) => S.show(tl, x, `s6+=${3.1 + i * 0.8}`, 0.5));
+      S.show(tl, key6, 's6+=5.5', 0.5);
+
       return {
         tl,
         notes: [
@@ -411,6 +456,7 @@
           '血型的等位基因寫成大寫 I 右上角加 A 或 B，以及小寫 i。帶 A 和帶 B 的基因在一起時，兩種都表現出來（高中稱為「共顯性」，補充）。輸血時血型要吻合。',
           '比例是「機率」：這對父母生的每一個孩子，是 O 型的機率都是 1/4，不表示生 4 個就一定有 1 個 O 型。',
           '會考題常用譜系圖：□ 代表男性、○ 代表女性，塗色代表具有某種特徵。能否捲舌在課本中當作一對等位基因的例子（實際比較複雜，補充）。',
+          '＊示意：精子、卵、受精卵都畫得很大。同卵雙胞胎的基因相同，所以長得非常像；異卵雙胞胎的兩個受精卵基因不完全相同，像一般的兄弟姊妹，性別可能相同、也可能不同。',
         ],
         steps: [
           '人類有許多<b>性狀</b>由基因控制，例如有沒有<b>美人尖</b>、<b>雙眼皮</b>、<b>酒窩</b>，能不能<b>捲舌</b>。也有些性狀要檢驗才知道，例如 <b>ABO 血型</b>。',
@@ -419,6 +465,7 @@
           'ABO 血型由 <b>I<sup>A</sup>、I<sup>B</sup>、i</b> 三種等位基因決定，I<sup>A</sup>、I<sup>B</sup> 對 i 是<b>顯性</b>。每個人有其中兩個（可以相同）：6 種基因型 → <b>A、B、AB、O</b> 四種血型。',
           '父親 A 型（<b>I<sup>A</sup>i</b>）、母親 B 型（<b>I<sup>B</sup>i</b>）：用棋盤方格推算，孩子可能是 <b>AB、A、B、O</b> 型，機率各 <b>1/4</b>。',
           '<b>譜系圖</b>：祖父母都能捲舌，卻有子女不能捲舌，表示<b>不能捲舌是隱性</b>；祖父母的基因型都是 <b>Rr</b>。',
+          '<b>同卵雙胞胎</b>：一個受精卵分成兩個胚胎，<b>基因相同</b>，性別一定相同。<b>異卵雙胞胎</b>：兩個卵<b>分別受精</b>，基因不完全相同，性別可能不同。',
         ],
       };
     },

@@ -75,7 +75,7 @@
         <p class="footnote">＊示意：顏色和加熱時間都是示意，實際隔水加熱約需數分鐘；本氏液最後的顏色會依葡萄糖多少而不同。紙片油斑法是補充的簡易方法。</p>
       </div>
     </div>
-    <div class="card pad c-table"><h3>結果記錄</h3><div class="table-wrap" id="labT-table"></div></div>
+    <div class="card pad c-table"><h3>結果紀錄</h3><div class="table-wrap" id="labT-table"></div></div>
   </div>
   <div class="col">
     <div class="card pad c-mis" id="labT-mission"></div>
@@ -124,14 +124,16 @@
 
       // ---------- 隔水加熱 ----------
       const BX = 760, TBX = BX + 44; // 水浴中心、試管在水浴裡的位置
-      const bath = g(root);
+      // 整組往上移 24：字放大後，下方的「水浴（隔水加熱）」才不會壓在底座上、也不會被舞台下緣切掉
+      const BDY = -24;
+      const bath = g(root, { transform: `translate(0,${BDY})` });
       el('rect', { x: BX - 146, y: 584, width: 292, height: 22, rx: 6, fill: '#3a4a56' }, bath);
       const plate = el('rect', { x: BX - 130, y: 576, width: 260, height: 8, rx: 3, fill: '#5a6670' }, bath);
       el('rect', { x: BX - 126, y: 426, width: 252, height: 148, fill: 'rgba(95,184,255,0.16)' }, bath);
       el('path', { d: `M ${BX - 134},410 L ${BX - 126},416 L ${BX - 126},566 Q ${BX - 126},574 ${BX - 118},574 L ${BX + 118},574 Q ${BX + 126},574 ${BX + 126},566 L ${BX + 126},410`, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 4, 'stroke-linejoin': 'round' }, bath);
       const steam = g(bath, { opacity: 0 });
       [-80, 96].forEach((dx) => el('path', { d: `M ${BX + dx},414 q -10,-14 0,-28 q 10,-14 0,-28`, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 3, 'stroke-linecap': 'round', opacity: 0.6 }, steam));
-      text(bath, BX, 616, '水浴（隔水加熱）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
+      text(bath, BX, 610 - BDY, '水浴（隔水加熱）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.mute });
       const heatLbl = text(bath, BX - 52, 512, '約 3 分鐘＊', { 'font-size': 22, 'text-anchor': 'middle', fill: C.hi, opacity: 0 });
 
       // ---------- 紙片 ----------
@@ -230,7 +232,7 @@
           tl.call(() => { addLbl.textContent = '放進熱水中加熱'; });
           mv(tp, setTube, { y: 190 }, 0.45);
           mv(tp, setTube, { x: TBX }, 0.6);
-          mv(tp, setTube, { y: 330 }, 0.45);
+          mv(tp, setTube, { y: 330 + BDY }, 0.45);
           tl.call(() => { addLbl.textContent = ''; });
           tl.to(plate, { attr: { fill: '#ff6b4a' }, duration: 0.3 }, '<');
           tl.to([steam, heatLbl], { opacity: 1, duration: 0.4 }, '<');
@@ -254,7 +256,7 @@
         tl.set(d, { opacity: 0 });
         tl.set(spot, { attr: { fill: '#cdbf8e' }, opacity: 1 });
         tl.to(spot, { attr: { r: 44 }, duration: 0.5, ease: 'power1.out' });
-        tl.call(() => { spotLbl.textContent = '等紙乾…'; spotLbl.setAttribute('fill', C.mute); });
+        tl.call(() => { spotLbl.textContent = '等紙乾……'; spotLbl.setAttribute('fill', C.mute); });
         tl.to({}, { duration: 1.2 });
         if (!oily) tl.to(spot, { opacity: 0, duration: 1 });
         else tl.to(spot, { attr: { fill: '#f8f1d6' }, duration: 1 }); // 油斑：透光、看起來較亮
