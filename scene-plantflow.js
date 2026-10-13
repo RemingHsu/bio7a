@@ -334,7 +334,7 @@
       const BXc = 230;
       el('rect', { x: BXc - 96, y: 500, width: 192, height: 130, fill: 'rgba(226,54,79,0.55)' }, P5);
       el('path', { d: `M ${BXc - 108},440 L ${BXc - 100},448 L ${BXc - 100},630 Q ${BXc - 100},640 ${BXc - 90},640 L ${BXc + 90},640 Q ${BXc + 100},640 ${BXc + 100},630 L ${BXc + 100},448 L ${BXc + 108},440`, fill: 'none', stroke: '#cfe8ff', 'stroke-width': 4 }, P5);
-      text(P5, BXc, 680, '紅色墨水', { 'font-size': 22, 'text-anchor': 'middle', fill: INK });
+      text(P5, BXc, 680, '紅墨水', { 'font-size': 22, 'text-anchor': 'middle', fill: INK });
       el('rect', { x: BXc - 14, y: 120, width: 28, height: 500, rx: 12, fill: 'rgba(143,214,120,0.45)', stroke: '#8fd678', 'stroke-width': 2 }, P5);
       [[BXc - 70, 170, 130, 56, 18], [BXc + 70, 230, 130, 56, -18], [BXc - 60, 320, 120, 52, 14]].forEach(([x, y, w, h, r]) => leaf(P5, x, y, w, h, { r, veins: false, fill: 'rgba(79,174,74,0.85)' }));
       const lines5 = [BXc - 6, BXc + 6].map((x) => el('line', { x1: x, y1: 618, x2: x, y2: 124, stroke: INK, 'stroke-width': 4, 'stroke-dasharray': '494 494', 'stroke-dashoffset': 494 }, P5));
@@ -394,7 +394,7 @@
           '影響蒸散作用的因素：<b>光線強、溫度高、風大</b>時，蒸散作用比較旺盛；<b>溼度高</b>時，蒸散作用比較慢。',
           '葉製造的<b>養分</b>，經由<b>韌皮部</b>的篩管，運送到芽、果實、種子、莖和根等部位使用或儲存，<b>可以往上，也可以往下</b>。',
           '<b>環狀剝皮</b>：剝掉一圈樹皮（含韌皮部），養分不能往下運送，切口<b>上方膨大</b>；水仍經木質部往上，但根得不到養分，最後整棵樹死亡。',
-          '<b>紅墨水實驗</b>：把芹菜插在紅色墨水中，一段時間後橫切，<b>維管束</b>中<b>木質部</b>的位置變紅，表示水由木質部往上運送。',
+          '<b>紅墨水實驗</b>：把芹菜插在紅墨水中，一段時間後橫切，<b>維管束</b>中<b>木質部</b>的位置變紅，表示水由木質部往上運送。',
         ],
       };
     },

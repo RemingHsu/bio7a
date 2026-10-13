@@ -140,7 +140,7 @@
       const drops2 = [0, 1, 2, 3].map((k) => S.place(g(P2, { opacity: 0 }), { x: 150 + k * 100, y: 238 }));
       drops2.forEach((d) => el('path', { d: DROP, fill: C.water, transform: 'scale(1.5)' }, d));
       const lab2 = [
-        [310, 590, '流汗：汗水蒸發帶走熱', C.water],
+        [310, 590, '流汗：汗液蒸發帶走熱', C.water],
         [310, 630, '皮膚血管擴張：散熱增加', C.blood],
         [890, 590, '皮膚血管收縮：減少散熱', C.blood],
         [890, 630, '肌肉顫抖（發抖）：產生熱', C.muscle],

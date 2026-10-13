@@ -329,7 +329,7 @@
         return q;
       });
       const p5b = g(P5, { opacity: 0 });
-      S.pill(p5b, 600, 676, '不隨意放生、棄養寵物，才不會製造新的入侵種', { size: 24, color: C.hi, edge: C.hi });
+      S.pill(p5b, 600, 676, '不隨意放生、棄養寵物，才不會製造新的外來入侵種', { size: 24, color: C.hi, edge: C.hi });
       tl.addLabel('s5');
       S.hide(tl, P4, 's5', 0.4);
       S.show(tl, P5, 's5+=0.3', 0.4);

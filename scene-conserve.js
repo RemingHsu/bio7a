@@ -184,7 +184,7 @@
       const more = [
         ['節約能源', ['隨手關燈、關冷氣，', '多搭大眾運輸'], (q, x) => { el('path', { d: `M ${x - 22},480 C ${x - 46},460 ${x - 40},420 ${x},418 C ${x + 40},420 ${x + 46},460 ${x + 22},480 L ${x + 18},500 L ${x - 18},500 Z`, fill: '#ffe08a', stroke: '#e8c33a', 'stroke-width': 2 }, q); el('rect', { x: x - 16, y: 500, width: 32, height: 20, rx: 4, fill: '#9aa4ab' }, q); }],
         ['在地、當季的食物', ['減少長途運輸', '產生的二氧化碳'], (q, x) => { B.cabbage(at(q, x - 40, 520, 0.6)); B.rice(at(q, x + 40, 522, 0.7), { h: 110 }); }],
-        ['不放生、不棄養', ['不讓寵物', '變成入侵種'], (q, x) => { el('rect', { x: x - 60, y: 432, width: 120, height: 86, rx: 8, fill: 'rgba(95,184,255,0.25)', stroke: '#cfe8ff', 'stroke-width': 2.5 }, q); B.fish(at(q, x - 14, 476, 0.3), { back: '#e8862a', mid: '#f2b25a', belly: '#fff2d8', fin: '#f0a040' }); B.plankton(at(q, x + 34, 506, 1.2), 2); }],
+        ['不放生、不棄養', ['不讓寵物', '變成外來入侵種'], (q, x) => { el('rect', { x: x - 60, y: 432, width: 120, height: 86, rx: 8, fill: 'rgba(95,184,255,0.25)', stroke: '#cfe8ff', 'stroke-width': 2.5 }, q); B.fish(at(q, x - 14, 476, 0.3), { back: '#e8862a', mid: '#f2b25a', belly: '#fff2d8', fin: '#f0a040' }); B.plankton(at(q, x + 34, 506, 1.2), 2); }],
       ].map(([t, ls, draw], i) => {
         const q = g(P4, { opacity: 0 }), x = 206 + i * 394;
         el('rect', { x: x - 180, y: 396, width: 360, height: 270, rx: 14, ...FRAME }, q);

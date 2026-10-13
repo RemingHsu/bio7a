@@ -435,7 +435,7 @@
         for (let k = 0; k < 8; k++) { const a = (k * Math.PI) / 4; el('line', { x1: sx + Math.cos(a) * 15, y1: sy + Math.sin(a) * 15, x2: sx + Math.cos(a) * 20, y2: sy + Math.sin(a) * 20, stroke: C.hi, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, svg); }
         text(svg, 146, sy + 7, '能量來自太陽：生產者行光合作用', { 'font-size': 18, fill: C.hi });
       } },
-    { type: 'svg', title: '碳的循環', w: 600, h: 400, link: ['ecosystem', 5],
+    { type: 'svg', title: '碳循環', w: 600, h: 400, link: ['ecosystem', 5],
       note: '碳在二氧化碳、葡萄糖、澱粉、蛋白質等物質中流動。物質（例如碳）可以循環利用；能量則單向流動，不能循環。大量燃燒化石燃料會使大氣中的二氧化碳增加（第十二章）。',
       draw(svg) {
         const { el, text, C } = S;
