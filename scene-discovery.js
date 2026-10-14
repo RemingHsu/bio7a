@@ -179,12 +179,16 @@
         el('circle', { cx: x, cy: y, r: 8, fill: '#4b3d86' }, animalCard);
       });
       const theory = g(P2, { opacity: 0 });
-      el('rect', { x: 170, y: 500, width: 860, height: 150, rx: 18, fill: 'rgba(255,209,102,0.08)', stroke: C.hi, 'stroke-width': 3 }, theory);
-      text(theory, 600, 545, '細胞學說', { 'font-size': 32, 'font-weight': 700, fill: C.hi, 'text-anchor': 'middle' });
-      text(theory, 600, 590, '① 生物都是由細胞構成的', { 'font-size': 26, 'text-anchor': 'middle' });
-      text(theory, 600, 630, '② 細胞是生物體構造和功能的基本單位', { 'font-size': 26, 'text-anchor': 'middle' });
+      el('rect', { x: 170, y: 490, width: 860, height: 196, rx: 18, fill: 'rgba(255,209,102,0.08)', stroke: C.hi, 'stroke-width': 3 }, theory);
+      text(theory, 600, 530, '細胞學說', { 'font-size': 32, 'font-weight': 700, fill: C.hi, 'text-anchor': 'middle' });
+      text(theory, 600, 572, '① 生物都是由細胞構成的（1838～1839）', { 'font-size': 26, 'text-anchor': 'middle' });
+      text(theory, 600, 610, '② 細胞是生物體構造和功能的基本單位', { 'font-size': 26, 'text-anchor': 'middle' });
+      // 1855 菲爾紹補上第三點（補充）
+      const theory3 = g(P2, { opacity: 0 });
+      text(theory3, 600, 652, '③ 細胞都由原有的細胞分裂而來（1855 菲爾紹）', { 'font-size': 26, 'text-anchor': 'middle', fill: C.hi });
+      S.pill(theory3, 960, 652 - 9, '補充', { size: 20, color: C.mute, edge: '#4a6272' });
       const arrowsT = g(P2, { opacity: 0 });
-      el('path', { d: 'M 360,476 L 470,500 M 840,476 L 730,500', stroke: C.hi, 'stroke-width': 4 }, arrowsT);
+      el('path', { d: 'M 360,476 L 470,492 M 840,476 L 730,492', stroke: C.hi, 'stroke-width': 4 }, arrowsT);
 
       tl.addLabel('s2');
       lit(2, 's2');
@@ -193,7 +197,8 @@
       tl.fromTo([plantCard, animalCard], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.4 }, 's2+=0.4');
       S.show(tl, arrowsT, 's2+=1.4', 0.4);
       S.show(tl, theory, 's2+=1.6', 0.6);
-      lit(3, 's2+=3');
+      S.show(tl, yearOn[3], 's2+=3', 0.4); // 1838–39 保持亮著，1855 也亮起
+      S.show(tl, theory3, 's2+=3.2', 0.5);
 
       // ===== 3 動物細胞的形狀與功能 =====
       const P3 = g(root, { opacity: 0 });
@@ -284,7 +289,7 @@
         steps: [
           '1665 年，<b>虎克</b>用自製的顯微鏡觀察軟木塞薄片，看到許多小格子，命名為「<b>細胞</b>」。他看到的其實是死細胞留下的細胞壁。',
           '<b>雷文霍克</b>用自己磨的鏡片，第一次看到池水裡活生生的微小生物（微生物）。',
-          '1838～1839 年，<b>許來登</b>研究植物、<b>許旺</b>研究動物，提出<b>細胞學說</b>：生物都由細胞構成，細胞是構造和功能的基本單位。',
+          '1838～1839 年，<b>許來登</b>研究植物、<b>許旺</b>研究動物，提出<b>細胞學說</b>：生物都由細胞構成，細胞是構造和功能的基本單位。1855 年<b>菲爾紹</b>再補充：細胞都由原有的細胞分裂而來。',
           '細胞的<b>形狀和功能有關</b>：神經細胞很長、有分支，能傳遞訊息；人的紅血球呈雙凹圓盤狀、沒有細胞核，適合運送氧；肌肉細胞能收縮；精子有尾巴能游動。',
           '植物細胞也一樣：<b>保衛細胞</b>控制氣孔開關；<b>根毛細胞</b>向外突出，增加吸水的面積；<b>葉肉細胞</b>有很多葉綠體。',
           '大多數動植物細胞約 10～100 μm＊，要用顯微鏡才看得到；洋蔥表皮細胞較長，但又薄又透明，仍要用顯微鏡觀察。也有很大的細胞：<b>雞蛋的蛋黃</b>是一個細胞，坐骨神經細胞可長達約 1 m＊。',

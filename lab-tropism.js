@@ -2,7 +2,7 @@
 (() => {
   const { el, g, text, C } = S;
   const STEM = '#7fcf5a', ROOT = '#e8d8b0', LEAF = '#5fbf4a';
-  const DAYS = 4, DAY_SEC = 1.1;             // 每次長 4 天＊；動畫約 1.1 秒代表 1 天＊
+  const DAYS = 4, DAY_SEC = 0.7;             // 每次長 4 天＊；動畫約 0.7 秒代表 1 天＊（4 天約 2.8 秒）
   const SEG = 3, GS = 46, GR = 30;           // 每段 3 px；莖每天長 46 px、根 30 px（示意）
   const rad = (d) => (d * Math.PI) / 180, deg = (r) => (r * 180) / Math.PI;
   const LIGHT = { right: ['右邊', [1, 0], [1010, 230]], left: ['左邊', [-1, 0], [190, 230]], top: ['上方', [0, -1], [600, 64]], none: ['沒有光（暗處）', null, null] };
@@ -213,7 +213,15 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, pred = -1, picked = -1;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：正在長的幼苗先停止（不列入紀錄）
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        if (sim.running) plant();
+        mi = k; enterMission();
+      }
+      S.onDots(mbox, goMission);
       function drawMission() {
         if (mi >= MISSIONS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
@@ -245,7 +253,7 @@
         }));
         mbox.querySelectorAll('.opt[data-k]').forEach((b) => b.addEventListener('click', () => { const k = +b.dataset.k; if (k === m.quiz.ans) done = true; else picked = k; drawMission(); }));
         const nx = mbox.querySelector('#labG-next');
-        if (nx) nx.addEventListener('click', () => { mi++; enterMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function checkMission() {
         const m = MISSIONS[mi];
@@ -276,7 +284,7 @@
       $('go').addEventListener('click', () => { showPred(null, -1); startRun(); });
 
       function reset() {
-        runs.length = 0; mi = 0;
+        runs.length = 0; mi = 0; doneK.clear();
         $('free').open = false;
         log(); enterMission();
       }

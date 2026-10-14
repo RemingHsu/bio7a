@@ -174,7 +174,22 @@
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1;
       const result = [];
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 跳著做任務：先把這個任務沒有顯示的旋鈕調到做得完的狀態（照順序做時不會改到）
+      function prep(k) {
+        const crashed = st.crashed;
+        if (k <= 2 && st.obj === 2) { st.obj = 1; if (st.crashed) { st.crashed = false; st.coarse = 25; st.fine = 0; } } // 任務 1～3 要用低倍
+        if ((k === 2 || (k === 3 && st.obj < 2)) && Math.abs(st.coarse + st.fine - ZF) > 3) { st.coarse = ZF; st.fine = 0; } // 任務 3、4 要先對好焦
+        if (k === 4 && (st.obj !== 2 || st.crashed)) { st.obj = 2; st.crashed = false; st.coarse = ZF; st.fine = 0; } // 任務 5 要在高倍
+        $('coarse').value = st.coarse; $('fine').value = st.fine;
+        if (crashed && !st.crashed) gsap.to(warn, { opacity: 0, duration: 0.3 });
+      }
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        mi = k; done = false; picked = -1; prep(k); drawMission(); update();
+      }
+      S.onDots(mbox, goMission);
       // 只顯示這個任務要用的旋鈕；做完全部任務後全部打開
       const showCtl = (keys) => box.querySelectorAll('[data-c]').forEach((f) => { f.hidden = keys ? !keys.includes(f.dataset.c) : false; });
       function drawMission() {
@@ -199,7 +214,7 @@
         mbox.innerHTML = html;
         mbox.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => { const k = +b.dataset.k; if (k === m.quiz.ans) done = true; else picked = k; drawMission(); }));
         const nx = mbox.querySelector('#labM-next');
-        if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = -1; drawMission(); checkMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function checkMission() {
         const m = MISSIONS[mi];
@@ -209,7 +224,7 @@
       function reset() {
         Object.assign(st, { obj: 0, coarse: 20, fine: 0, iris: 25, T: { x: 0, y: 0 }, crashed: false, coarseAtHigh: 0 });
         $('coarse').value = 20; $('fine').value = 0; $('iris').value = 25;
-        mi = 0; done = false; picked = -1;
+        mi = 0; done = false; picked = -1; doneK.clear();
         gsap.to(warn, { opacity: 0, duration: 0.2 });
         drawMission(); update();
       }

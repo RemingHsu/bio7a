@@ -5,7 +5,7 @@
   const BTB = ['#2f6fd6', '#3fa64a', '#e3c53a'];
   const REST = { rate: 16, depth: 0.55 }, EX = { rate: 30, depth: 1 }; // 每分鐘呼吸次數（約略值＊）
   const EX_SEC = 14, REC_SEC = 8; // 運動後加快的時間、恢復的時間（示意＊）
-  const SEED_SEC = 4; // 倒入清水、把氣體壓進石灰水的時間（示意＊）
+  const SEED_SEC = 2.5; // 倒入清水、把氣體壓進石灰水的時間（示意＊）
   const mix = (a, b, t) => { const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return `rgb(${A.map((v, i) => Math.round(S.lerp(v, B[i], t))).join(',')})`; };
   const btbCol = (u) => (u < 0.5 ? mix(BTB[0], BTB[1], u * 2) : mix(BTB[1], BTB[2], (u - 0.5) * 2));
   const btbName = (u) => (u < 0.3 ? '藍色' : u < 0.75 ? '綠色' : '黃色');
@@ -358,7 +358,17 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, needShown = null;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：拉動橡皮膜、吹氣、倒水先停止（不列入紀錄），回呼不會影響新的任務
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        mv = null; st.busy = false;
+        tubes.forEach((t) => { t.blowT = 0; });
+        if (seedBusy()) resetSeed();
+        mi = k; done = false; picked = -1; pred = -1; enter(); drawMission(); checkMission();
+      }
+      S.onDots(mbox, goMission);
       const busyNow = () => st.busy || tubes.some((t) => t.blowT > 0) || seedBusy();
       const actsHtml = (m) => `<div class="acts">${m.acts.map((a, i) => {
         const did = a.did && a.did(st);
@@ -398,7 +408,7 @@
         }));
         mbox.querySelectorAll('.acts [data-a]').forEach((b) => b.addEventListener('click', () => { const a = m.acts[+b.dataset.a]; ACT[a.then](); drawMission(); }));
         const nx = mbox.querySelector('#labH-next');
-        if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = -1; pred = -1; enter(); drawMission(); checkMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function checkMission() {
         const m = MISSIONS[mi];
@@ -412,10 +422,13 @@
         const m = MISSIONS[mi];
         if (!m) return;
         showView(m.setup === 'seed' ? 'seed' : 'model');
+        // 用圓點跳到任務時也準備好：拉下橡皮膜從原位開始；放開橡皮膜時，橡皮膜已經拉下
+        if (m.onPredict === 'pull') { st.auto = 'off'; mv = null; st.busy = false; st.p = 0; st.pulled = false; status('鐘形罩模型：瓶子代表胸腔，氣球代表肺，底部的橡皮膜代表橫膈。'); }
+        if (m.acts && m.acts[0].then === 'release') { st.auto = 'off'; mv = null; st.busy = false; st.p = 1; st.released = false; status('橡皮膜往下拉：瓶內空間變大，空氣經 Y 形管進入，<b>氣球脹大</b>。'); }
         if (m.auto) { mv = null; st.busy = false; st.auto = m.auto; status('模型和人體示意圖正在呼吸（安靜時）。注意看中間的人體示意圖。'); }
-        if (m.setup === 'btb') { st.auto = 'off'; mv = null; st.p = 0; st.btb = [0, 0]; status('準備好兩支裝了藍色 BTB 溶液的試管。'); }
+        if (m.setup === 'btb') { st.auto = 'off'; mv = null; st.p = 0; st.btb = [0, 0]; st.blown = false; st.pumped = false; status('準備好兩支裝了藍色 BTB 溶液的試管。'); }
         if (m.setup === 'seed') { st.auto = 'off'; mv = null; st.p = 0; resetSeed(); status('A 瓶：發芽中的綠豆；B 瓶：煮過的綠豆（對照組）。兩支試管都裝了澄清石灰水。'); }
-        if (m.setup === 'ex') { st.auto = 'rest'; status('先看看安靜時的呼吸：每分鐘約十幾次。'); }
+        if (m.setup === 'ex') { st.auto = 'rest'; st.ran = false; status('先看看安靜時的呼吸：每分鐘約十幾次。'); }
         sync();
       }
       function reset() {
@@ -424,7 +437,7 @@
         showView('model'); drawSeed();
         tubes.forEach((t) => { t.blowT = 0; });
         log.length = 0; drawLog();
-        mi = 0; done = false; picked = -1; pred = -1; needShown = null;
+        mi = 0; done = false; picked = -1; pred = -1; needShown = null; doneK.clear();
         status('鐘形罩模型：瓶子代表胸腔，氣球代表肺，底部的橡皮膜代表橫膈。');
         $('free').open = false;
         sync(); render(0); drawMission();

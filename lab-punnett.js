@@ -184,8 +184,8 @@
         topG.concat(leftG).forEach((x) => { x.style.opacity = 0; });
         const cellG = [];
         tl = gsap.timeline({ onComplete: () => { busy = false; finish(c, done); } });
-        tl.to(topG, { opacity: 1, duration: 0.35, stagger: 0.12 });
-        tl.to(leftG, { opacity: 1, duration: 0.35, stagger: 0.12 });
+        tl.to(topG, { opacity: 1, duration: 0.3, stagger: 0.1 });
+        tl.to(leftG, { opacity: 1, duration: 0.3, stagger: 0.1 });
         // 每一格：上面和左邊的配子各飛一個進來
         c.cells.forEach((row, i) => row.forEach((gt, j) => {
           const cx = GX + CS / 2 + j * CS, cy = GY + CS / 2 + i * CS;
@@ -198,12 +198,12 @@
           cellG.push(cg);
           const o = { u: 0 };
           tl.set([m1, m2], { opacity: 1 });
-          tl.to(o, { u: 1, duration: 0.45, ease: 'power2.inOut', onUpdate: () => {
+          tl.to(o, { u: 1, duration: 0.3, ease: 'power2.inOut', onUpdate: () => {
             S.place(m1, { x: S.lerp(cx, cx - 14, o.u), y: S.lerp(110, cy, o.u) });
             S.place(m2, { x: S.lerp(GX - 50, cx + 14, o.u), y: S.lerp(cy, cy, o.u) });
           } });
           tl.set([m1, m2], { opacity: 0 });
-          tl.to(cg, { opacity: 1, duration: 0.25 });
+          tl.to(cg, { opacity: 1, duration: 0.2 });
         }));
         return c;
       }
@@ -248,7 +248,25 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, tried = [];
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      const START = '豌豆種子的形狀：<b>圓形（R）</b>是顯性，<b>皺縮（r）</b>是隱性。按任務卡上的按鈕開始。';
+      // 切換任務：正在配對的動畫先停止（不列入紀錄），清掉上一個任務的方格和結果，親代改成這個任務的條件
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        mi = k; done = false; picked = -1; pred = -1; tried = [];
+        const nm = MISSIONS[mi];
+        if (nm) {
+          if (tl) tl.kill(); busy = false; cur = null;
+          clearCells();
+          if (nm.predict) drawParents(nm.predict.cross[0], nm.predict.cross[1]);
+          else if (nm.pick) drawParents(nm.pick.show[0], nm.pick.show[1]);
+          else drawParents(nm.acts[0][1], nm.acts[0][2]);
+          $('status').innerHTML = nm.predict ? '先預測，再看棋盤方格的結果。' : nm.pick ? '點一個選項，就用棋盤方格驗證。' : START;
+        }
+        drawLog(); drawMission();
+      }
+      S.onDots(mbox, goMission);
       function drawMission() {
         if (mi >= MISSIONS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
@@ -268,7 +286,7 @@
           if (!done && tried.length && !busy) html += `<div class="fb bad"><strong>不符合</strong>${m.pick.wrong}</div>`;
           if (done) html += `<div class="fb ok"><strong>答對了</strong>${m.why}</div>`;
         } else {
-          const ready = m.need(log);
+          const ready = m.need(log.filter((c) => c.mi === mi)); // 只看這個任務的配對（回到這個任務時要重新配對）
           html += `<p class="m-text">${m.text}</p>`;
           if (!ready) html += `<div class="acts">${m.acts.map(([label], i) => `<button class="ctl primary" type="button" data-a="${i}" ${busy ? 'disabled' : ''}>${label}</button>`).join('')}</div>`;
           else {
@@ -298,27 +316,15 @@
           drawMission();
         }));
         const nx = mbox.querySelector('#labU1-next');
-        if (nx) nx.addEventListener('click', () => {
-          mi++; done = false; picked = -1; pred = -1; tried = [];
-          const nm = MISSIONS[mi];
-          // 換任務：清掉上一個任務的方格和結果，親代改成這個任務的條件
-          if (nm) {
-            if (tl) tl.kill(); busy = false; cur = null;
-            clearCells();
-            if (nm.predict) drawParents(nm.predict.cross[0], nm.predict.cross[1]);
-            else if (nm.pick) drawParents(nm.pick.show[0], nm.pick.show[1]);
-            $('status').innerHTML = nm.predict ? '先預測，再看棋盤方格的結果。' : '點一個選項，就用棋盤方格驗證。';
-          }
-          drawLog(); drawMission();
-        });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function reset() {
         if (tl) tl.kill();
         busy = false; log.length = 0; cur = null;
-        mi = 0; done = false; picked = -1; pred = -1; tried = [];
+        mi = 0; done = false; picked = -1; pred = -1; tried = []; doneK.clear();
         st.a = 'Rr'; st.b = 'Rr'; sync();
         drawParents(st.a, st.b); clearCells();
-        $('status').innerHTML = '豌豆種子的形狀：<b>圓形（R）</b>是顯性，<b>皺縮（r）</b>是隱性。按任務卡上的按鈕開始。';
+        $('status').innerHTML = START;
         $('free').open = false;
         drawLog(); drawMission();
       }

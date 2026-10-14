@@ -117,12 +117,19 @@
       const mbox = $('mission');
       let mi = 0, phase = 'find', picked = -1;
       const result = []; // 'ok' 一次答對、'miss' 曾答錯
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      function goMission(k) {
+        if (phase === 'done') doneK.add(mi);
+        if (tw && tw.isActive()) goTo(Math.round(st.P)); // 正在縮放：停在最近的一層，不會一路經過新任務的那一層
+        mi = k; phase = 'find'; picked = -1; drawMission(); checkFind();
+      }
+      S.onDots(mbox, goMission);
       function checkFind() {
         if (phase !== 'find' || mi >= MISSIONS.length) return;
         if (last.settled && last.level === MISSIONS[mi].level) { phase = 'ask'; picked = -1; drawMission(); }
       }
       function dots() {
-        return `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${result[k] || (k === mi ? 'on' : '')}"></i>`).join('')}</div>`;
+        return S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? result[k] : ''));
       }
       function drawMission() {
         if (mi >= MISSIONS.length) {
@@ -131,7 +138,7 @@
             <p class="m-text">一次就答對 <b>${ok} / ${MISSIONS.length}</b> 題。</p>
             <div class="fb ok"><strong>重點整理</strong>1 m ＝ 1000 mm，1 mm ＝ 1000 μm，1 μm ＝ 1000 nm。<br>器官用肉眼；組織、細胞用光學顯微鏡；DNA 用電子顯微鏡。</div>
             <button class="ctl primary" type="button" id="labA-again">再挑戰一次</button>`;
-          mbox.querySelector('#labA-again').addEventListener('click', () => { mi = 0; phase = 'find'; result.length = 0; drawMission(); goTo(0); });
+          mbox.querySelector('#labA-again').addEventListener('click', () => { mi = 0; phase = 'find'; result.length = 0; doneK.clear(); drawMission(); goTo(0); });
           return;
         }
         const m = MISSIONS[mi];
@@ -150,11 +157,11 @@
         mbox.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
           const k = +b.dataset.k;
           if (k === m.ans) { if (!result[mi]) result[mi] = 'ok'; phase = 'done'; }
-          else { result[mi] = 'miss'; picked = k; }
+          else { if (!result[mi]) result[mi] = 'miss'; picked = k; } // 回來重做時不改第一次的紀錄
           drawMission();
         }));
         const nx = mbox.querySelector('#labA-next');
-        if (nx) nx.addEventListener('click', () => { mi++; phase = 'find'; picked = -1; drawMission(); checkFind(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
 
       drawMission();

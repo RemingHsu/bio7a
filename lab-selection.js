@@ -176,9 +176,10 @@
       }
 
       // ---------- 動畫（自己的時鐘：分頁隱藏時可用 advance 推進）----------
-      let queue = 0, anim = null, barkAnim = null, onDone = null;
+      let queue = 0, total = 0, anim = null, barkAnim = null, onDone = null;
       function startGen() {
-        const T = queue > 1 ? 0.8 : 1.5;
+        // 只經過 1 代：1.5 秒。經過 10 代：第 1 代 0.8 秒（看得到鳥抓蛾），之後每代約 0.22 秒快轉（不畫鳥），10 代約 3 秒
+        const T = total <= 1 ? 1.5 : queue === total ? 0.8 : 0.22;
         // 依「顯眼程度」挑出鳥要抓的蛾
         const cand = slots.filter((s) => s.alive);
         const pick = [];
@@ -193,7 +194,7 @@
         pick.forEach((m) => { const px = pts[pts.length - 1][0], dir = m.x >= px ? 1 : -1; pts.push([m.x - dir * 53, m.y + 14]); });
         pts.push([820, -80]);
         anim = { t: 0, T, pts, pick, caught: 0, bred: false };
-        birdG.style.display = '';
+        birdG.style.display = T < 0.5 ? 'none' : '';
       }
       function finishGen() {
         st.f = nextF(st.f);
@@ -236,7 +237,7 @@
       let raf = 0, lastTs = 0;
       const loop = (ts) => { const dt = Math.min(0.1, lastTs ? (ts - lastTs) / 1000 : 0); lastTs = ts; step(dt); raf = requestAnimationFrame(loop); };
       const busy = () => !!anim || !!barkAnim;
-      function runGens(n, cb) { if (busy()) return; queue = n; onDone = cb || null; startGen(); sync(); drawMission(); }
+      function runGens(n, cb) { if (busy()) return; queue = n; total = n; onDone = cb || null; startGen(); sync(); drawMission(); }
       function setBarkTo(b, cb) { if (busy()) return; barkAnim = { t: 0, T: 1.3, a: st.bark, b, cb }; sync(); drawMission(); }
 
       // ---------- 狀態、紀錄 ----------
@@ -279,17 +280,40 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, phase = 'env', pred = -1, picked = -1, done = false, after0 = null;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 沒做任務 1 就跳到任務 2：用同一個模型算出「樹幹變黑後經過 10 代」的族群
+      function simAfter0() {
+        const keep = [st.bark, st.k, rnd];
+        st.bark = 1; st.k = 0.45; rnd = S.rng(11);
+        let f = 0.05;
+        const hist = [f];
+        for (let i = 0; i < 10; i++) { f = nextF(f); hist.push(f); }
+        [st.bark, st.k, rnd] = keep;
+        return { f, bark: 1, gen: 10, hist };
+      }
       function setup(m) {
         if (!m.setup) return;
-        const s = m.setup === 'after0' ? (after0 || { f: 0.88, bark: 1, gen: 10, hist: null }) : { ...m.setup, gen: 0, hist: null };
+        const s = m.setup === 'after0' ? (after0 || simAfter0()) : { ...m.setup, gen: 0, hist: null };
         st.k = 0.45;
         st.bark = st.barkTo = s.bark; paintBark();
         if (s.hist) { st.f = s.f; st.gen = s.gen; st.hist = s.hist.slice(); layout(st.f, 100 + st.gen * 7 + Math.round(st.f * 1000)); drawChart(); status(); }
-        else if (m.setup === 'after0') { st.f = s.f; st.gen = s.gen; st.hist = [0.05, s.f]; layout(st.f, 3); drawChart(); status(); }
         else resetPop(s.f);
         sync();
       }
+      // 停止進行中的動畫（不列入紀錄）：樹幹回到原來的顏色，被抓走的蛾先放回來
+      function stopAll() {
+        if (barkAnim) { st.bark = barkAnim.a; paintBark(); }
+        if (anim) { slots.forEach((s) => { s.alive = true; }); paintMoths(1); }
+        anim = null; barkAnim = null; queue = 0; onDone = null; birdG.style.display = 'none';
+        status(); sync();
+      }
+      function goMission(k) {
+        if (done || phase === 'done') doneK.add(mi);
+        stopAll();
+        mi = k; phase = 'env'; pred = -1; picked = -1; done = false; if (MISSIONS[mi]) setup(MISSIONS[mi]); drawMission();
+      }
+      S.onDots(mbox, goMission);
       function drawMission() {
         if (mi >= MISSIONS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
@@ -330,11 +354,11 @@
         });
         mbox.querySelectorAll('.opt[data-k]').forEach((b) => b.addEventListener('click', () => { const k = +b.dataset.k; if (k === m.quiz.ans) done = true; else picked = k; drawMission(); }));
         const nx = mbox.querySelector('#labX1-next');
-        if (nx) nx.addEventListener('click', () => { mi++; phase = 'env'; pred = -1; picked = -1; done = false; if (MISSIONS[mi]) setup(MISSIONS[mi]); drawMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function reset() {
         anim = null; barkAnim = null; queue = 0; onDone = null; birdG.style.display = 'none';
-        runs.length = 0; after0 = null;
+        runs.length = 0; after0 = null; doneK.clear();
         mi = 0; phase = 'env'; pred = -1; picked = -1; done = false;
         st.f0 = 0.05;
         setup(MISSIONS[0]);

@@ -4,6 +4,7 @@
   const TEMP_C = '#ff9a5c', SUG_C = C.sugar, INS = '#63d4bf', GLUC = '#c9a8ff';
   const HOT = 0.06, COLD = -0.06, MEAL = 4, MEAL_SEC = 15, FAST = -1.5; // 每秒的變化（示意＊）
   const WIN = 40; // 圖上顯示最近 40 秒（示意＊）
+  const SPEED = 5; // 模擬的時間比畫面快 5 倍：狀況發生後約 2～3 秒就看得到偏離正常範圍（示意＊）
   const MODES = {
     temp: { name: '體溫', unit: '°C', set: 37, lo: 36.5, hi: 37.5, min: 34.5, max: 39.5, ticks: [35, 36, 37, 38, 39], col: TEMP_C, fmt: (v) => `${v.toFixed(1)} °C` },
     sugar: { name: '血糖', unit: 'mg/dL', set: 90, lo: 70, hi: 140, min: 40, max: 280, ticks: [50, 100, 150, 200, 250], col: SUG_C, fmt: (v) => `${Math.round(v)} mg/dL＊` },
@@ -75,7 +76,7 @@
       const svg = box.querySelector('svg');
       el('rect', { x: 0, y: 0, width: 1200, height: 620, fill: C.bg }, svg);
       const root = g(svg);
-      const st = { mode: 'temp', v: 37, t: 0, hist: [], marks: [], ev: null, evT: 0, resp: null, lowIns: false, gly: 0.5, urineGlu: false, okT: 0 };
+      const st = { mode: 'temp', v: 37, t: 0, vt: 0, hist: [], marks: [], ev: null, evT: 0, resp: null, lowIns: false, gly: 0.5, urineGlu: false, okT: 0 };
       const log = [];
 
       // ---------- 人體 ----------
@@ -165,8 +166,9 @@
       }
 
       // ---------- 模擬 ----------
-      function step(dt) {
-        const M = MODES[st.mode], s = st;
+      function step(dtReal) {
+        const M = MODES[st.mode], s = st, dt = dtReal * SPEED; // dt：模擬的時間；流汗、發抖等小動畫用真實時間 vt
+        s.vt += dtReal;
         s.t += dt;
         let load = 0, I = 0;
         if (s.ev === 'hot') load = HOT;
@@ -193,8 +195,8 @@
         // 體溫反應
         const sweat = temp && s.resp === 'cool', shiver = temp && s.resp === 'warm';
         tint.setAttribute('fill', sweat ? 'rgba(255,95,116,0.28)' : shiver ? 'rgba(170,200,255,0.25)' : 'rgba(0,0,0,0)');
-        drops.forEach((d, i) => { const k = ((s.t * 0.7 + i / drops.length) % 1); d.e.setAttribute('transform', `translate(${d.x},${d.y + k * 30})`); d.e.style.opacity = sweat ? Math.sin(k * Math.PI) : 0; });
-        jitter = shiver ? Math.sin(s.t * 60) * 1.6 : 0;
+        drops.forEach((d, i) => { const k = ((s.vt * 0.7 + i / drops.length) % 1); d.e.setAttribute('transform', `translate(${d.x},${d.y + k * 30})`); d.e.style.opacity = sweat ? Math.sin(k * Math.PI) : 0; });
+        jitter = shiver ? Math.sin(s.vt * 60) * 1.6 : 0;
         body.setAttribute('transform', `translate(${jitter.toFixed(2)},0)`);
         shiverG.style.opacity = shiver ? 1 : 0;
         // 血糖：器官、激素、肝糖
@@ -202,7 +204,7 @@
         glyBar.setAttribute('y', 506 - 142 * s.gly); glyBar.setAttribute('height', 142 * s.gly);
         const horm = !temp && (s.resp === 'ins' || s.resp === 'glu');
         hormone.forEach((h, i) => {
-          const k = (s.t * 0.5 + i / hormone.length) % 1, toLiver = s.resp === 'glu' || i % 2 === 0;
+          const k = (s.vt * 0.5 + i / hormone.length) % 1, toLiver = s.resp === 'glu' || i % 2 === 0;
           const tx = toLiver ? 575 : (i % 4 === 1 ? 520 : 680), ty = toLiver ? 280 : 300 + (i % 3) * 40;
           h.setAttribute('cx', S.lerp(640, tx, k)); h.setAttribute('cy', S.lerp(310, ty, k));
           h.setAttribute('fill', s.resp === 'glu' ? GLUC : INS);
@@ -261,7 +263,14 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, phase = 'idle', wrong = null, done = false, picked = -1, needShown = null;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：enter() 會把曲線重新開始，正在進行的狀況不列入紀錄
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        mi = k; done = false; picked = -1; phase = 'idle'; wrong = null; needShown = null; enter(); drawMission();
+      }
+      S.onDots(mbox, goMission);
       function drawMission() {
         if (mi >= MISSIONS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
@@ -318,7 +327,7 @@
           drawMission();
         }));
         const nx = mbox.querySelector('#labK-next');
-        if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = -1; phase = 'idle'; wrong = null; needShown = null; enter(); drawMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       // 每一格都會呼叫：只有階段改變時才重畫
       function missionTick(dt, force) {
@@ -339,8 +348,8 @@
         const m = MISSIONS[mi];
         if (!m) return;
         const mode = m.diab ? 'sugar' : m.guess ? 'temp' : EVENTS[m.ev][0];
+        st.lowIns = false; // 先關掉，從「胰島素不足」跳到別的血糖任務時，曲線才會從正常的血糖開始
         st.mode = ''; setMode(mode);
-        st.lowIns = false;
         // 反推環境：身體已經在反應，但先不顯示環境的圖示
         if (m.guess) Object.assign(st, { ev: 'cold', resp: 'warm', hideEv: true });
         status(m.diab ? '如果胰島素分泌不足……' : m.guess ? '看看左邊的人：身體出現了什麼反應？' : `觀察的是<b>${MODES[mode].name}</b>。按任務卡上的按鈕開始。`);
@@ -348,14 +357,14 @@
       }
       function reset() {
         log.length = 0; $('log').innerHTML = '<p class="m-hint">每次的狀況、身體的反應和結果會列在這裡。</p>';
-        mi = 0; done = false; picked = -1; phase = 'idle'; wrong = null; needShown = null;
+        mi = 0; done = false; picked = -1; phase = 'idle'; wrong = null; needShown = null; doneK.clear();
         $('free').open = false;
         enter(); drawMission();
       }
 
       reset();
       raf = requestAnimationFrame(loop);
-      S._labK = { st, advance(sec) { for (let i = 0; i < sec * 20; i++) step(0.05); }, get phase() { return phase; } }; // 測試用
+      S._labK = { st, advance(sec) { for (let i = 0; i < sec * 20; i++) step(0.05); }, get phase() { return phase; } }; // 測試用：advance(真實秒數)
       return { unmount() { cancelAnimationFrame(raf); delete S._labK; } };
     },
   });

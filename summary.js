@@ -17,7 +17,7 @@
     const chNo = /^下總(\d+)$/.test(section) ? +RegExp.$1 + 6 : /^總(\d+)$/.test(section) ? +RegExp.$1 : 0;
     const pdfBase = chNo ? `ch${String(chNo).padStart(2, '0')}` : 'cross';
     const pdfName = chNo ? heading.replace(/\s*知識地圖$/, '') : '跨章比較';
-    const first = [];
+    const first = [], solvedK = new Set(); // first[k]：第一次有沒有答對；solvedK：已經答對的題目
 
     S.registerLab({
       id, section, title,
@@ -190,17 +190,20 @@ ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
 
         const qbox = box.querySelector('#sum-quiz');
         const titleOf = (iid) => { const it = findItem(iid); return it ? `${it.kind === 'lab' ? '互動' : '動畫'}：${it.title}` : ''; };
+        // 點圓點切換題目：答對過的題目直接顯示解析
+        S.onDots(qbox, (k) => { qi = k; picked = -1; solved = solvedK.has(k); drawQuiz(); });
         function drawQuiz() {
-          const dots = `<div class="dots" aria-hidden="true">${QUIZ.map((_, k) => `<i class="${k < qi ? (first[k] ? 'ok' : 'miss') : k === qi ? 'on' : ''}"></i>`).join('')}</div>`;
+          const dots = S.dots(QUIZ.length, qi, (k) => (first[k] === false ? 'miss' : solvedK.has(k) ? 'ok' : ''), '題');
           if (qi >= QUIZ.length) {
             const ok = first.filter(Boolean).length;
-            const review = QUIZ.map((q, k) => (first[k] ? null : q[4])).filter((v, i, a) => v && a.indexOf(v) === i);
+            const review = QUIZ.map((q, k) => (first[k] === false ? q[4] : null)).filter((v, i, a) => v && a.indexOf(v) === i); // 只列第一次答錯的題目
             qbox.innerHTML = `<div class="mission-top"><h2>自我檢測結果</h2>${dots}</div>
               <p class="m-text">第一次就答對 <b>${ok} / ${QUIZ.length}</b> 題。</p>
-              ${review.length ? `<p class="m-hint">建議再看一次：</p><div class="btn-row">${review.map((id) => `<button class="ctl small" type="button" data-id="${id}">${titleOf(id)}</button>`).join('')}</div>` : `<div class="fb ok"><strong>全部一次答對</strong>${done}</div>`}
+              ${solvedK.size < QUIZ.length ? `<p class="m-hint">還有 ${QUIZ.length - solvedK.size} 題還沒答對，點上面的圓點可以回去作答。</p>` : ''}
+              ${review.length ? `<p class="m-hint">建議再看一次：</p><div class="btn-row">${review.map((id) => `<button class="ctl small" type="button" data-id="${id}">${titleOf(id)}</button>`).join('')}</div>` : ok === QUIZ.length ? `<div class="fb ok"><strong>全部一次答對</strong>${done}</div>` : ''}
               <div class="btn-row" style="margin-top:0.8rem"><button class="ctl primary" type="button" id="sum-again">重新作答</button></div>`;
             qbox.querySelectorAll('[data-id]').forEach((b) => b.addEventListener('click', () => S.openById(b.dataset.id)));
-            qbox.querySelector('#sum-again').addEventListener('click', () => { qi = 0; picked = -1; solved = false; first.length = 0; drawQuiz(); });
+            qbox.querySelector('#sum-again').addEventListener('click', () => { qi = 0; picked = -1; solved = false; first.length = 0; solvedK.clear(); drawQuiz(); });
             return;
           }
           const [q, opts, ans, why, link] = QUIZ[qi];
@@ -211,7 +214,7 @@ ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
           qbox.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
             const k = +b.dataset.k;
             if (first[qi] === undefined) first[qi] = k === ans;
-            if (k === ans) solved = true; else picked = k;
+            if (k === ans) { solved = true; solvedK.add(qi); } else picked = k;
             drawQuiz();
           }));
           qbox.querySelectorAll('[data-id]').forEach((b) => b.addEventListener('click', () => S.openById(b.dataset.id)));

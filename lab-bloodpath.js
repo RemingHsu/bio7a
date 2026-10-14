@@ -163,7 +163,16 @@
 
       // ---------- 任務 ----------
       const mbox = $('mission');
-      const dots = () => `<div class="dots" aria-hidden="true">${TASKS.map((_, k) => `<i class="${k < ti ? (firstOk[k] ? 'ok' : 'miss') : k === ti ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(TASKS.length, ti, (k) => (doneK.has(k) ? (firstOk[k] === false ? 'miss' : 'ok') : ''));
+      // 切換任務：流動中的血滴和自由探索的一圈都先停止，回呼不會影響新的任務
+      function goMission(k) {
+        const T = TASKS[ti];
+        if (T && (T.quiz ? qSolved : done)) doneK.add(ti);
+        stopLoop();
+        ti = k; startTask();
+      }
+      S.onDots(mbox, goMission);
       function startTask() {
         const T = TASKS[ti];
         si = 0; picked = []; done = false; qPicked = -1; qSolved = false;
@@ -178,7 +187,7 @@
             <div class="fb ok"><strong>重點整理</strong>肺循環：右心室 → 肺動脈 → 肺部的微血管 → 肺靜脈 → 左心房。<br>體循環：左心室 → 主動脈 → 全身的微血管 → 上、下大靜脈 → 右心房。<br>血液在肺部變成充氧血，在全身的微血管變成缺氧血。</div>
             <p class="m-hint">打開下面的「自由探索」，可以看血液流完整的一圈。</p>
             <button class="ctl primary" type="button" id="labQ-again">再玩一次</button>`;
-          mbox.querySelector('#labQ-again').addEventListener('click', () => { ti = 0; firstOk = []; startTask(); });
+          mbox.querySelector('#labQ-again').addEventListener('click', () => { ti = 0; firstOk = []; doneK.clear(); startTask(); });
           $('free').open = true;
           return;
         }
@@ -206,7 +215,7 @@
           draw();
         }));
         const nx = mbox.querySelector('#labQ-next');
-        if (nx) nx.addEventListener('click', () => { ti++; startTask(); });
+        if (nx) nx.addEventListener('click', () => goMission(ti + 1));
       }
       function pick(k) {
         const T = TASKS[ti];

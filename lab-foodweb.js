@@ -186,7 +186,23 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, found = new Set(), wrongTap = null, running = false;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      const INTRO = '箭頭從「被吃的」指向「吃牠的」。按照任務卡的說明，點選舞台上的生物。';
+      const CHAIN_KNOWN = ['frog', 'snake', 'hawk']; // 答對「老鷹是第幾級」後，紀錄表填入的生物
+      // 切換任務：動畫先停止（不執行完成後的動作），紀錄表只填入前面做完過的任務
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        if (anim) anim.kill();
+        running = false; timers.forEach(clearTimeout); timers.length = 0;
+        mi = k; done = false; picked = -1; pred = -1; found = new Set(); wrongTap = null;
+        known.clear();
+        MISSIONS.slice(0, mi).forEach((m, j) => { if (doneK.has(j)) (m.targets || (m.show === 'chains' ? CHAIN_KNOWN : [])).forEach((x) => known.add(x)); });
+        KEYS.forEach((x) => rings[x].setAttribute('opacity', 0)); chainA.style.opacity = 0; chainB.style.opacity = 0; clearMarks(); panelLegend();
+        table(); drawMission();
+        status(mi === 0 ? INTRO : mi < MISSIONS.length ? '' : '全部完成！可以打開「自由探索」，讓其他生物減少看看。');
+      }
+      S.onDots(mbox, goMission);
       function tap(k) {
         const m = MISSIONS[mi];
         if (m && (m.type !== 'tap' || done)) { status(done ? '按任務卡上的「下一個任務」繼續。' : '這個任務請在任務卡上作答。'); return; }
@@ -212,15 +228,15 @@
         if (anim) anim.kill();
         const o = { a: 0, b: 0, c: 0 };
         anim = gsap.timeline({ onComplete: () => { running = false; done = true; drawMission(); } });
-        anim.to(o, { a: 1, duration: 1, ease: 'power1.inOut', onUpdate: () => setBar(sn, S.lerp(130, 40, o.a)) });
+        anim.to(o, { a: 1, duration: 0.7, ease: 'power1.inOut', onUpdate: () => setBar(sn, S.lerp(130, 40, o.a)) });
         anim.call(() => { sn.a.textContent = '↓'; sn.a.setAttribute('fill', DN); marks.snake.textContent = '↓'; marks.snake.setAttribute('fill', DN); orgG.snake.style.opacity = 0.35; status('蛇大量減少了……'); });
-        anim.to(o, { b: 1, duration: 1.2, ease: 'power1.inOut', onUpdate: () => setBar(fr, S.lerp(150, 250, o.b)) }, '+=0.4');
+        anim.to(o, { b: 1, duration: 0.8, ease: 'power1.inOut', onUpdate: () => setBar(fr, S.lerp(150, 250, o.b)) }, '+=0.3');
         anim.call(() => { fr.a.textContent = '↑'; fr.a.setAttribute('fill', UP); marks.frog.textContent = '↑'; marks.frog.setAttribute('fill', UP); status('青蛙的天敵變少，青蛙增加了。'); });
-        anim.to(o, { c: 1, duration: 1.2, ease: 'power1.inOut', onUpdate: () => setBar(hp, S.lerp(210, 140, o.c)) }, '+=0.6');
+        anim.to(o, { c: 1, duration: 0.8, ease: 'power1.inOut', onUpdate: () => setBar(hp, S.lerp(210, 140, o.c)) }, '+=0.3');
         anim.call(() => { hp.a.textContent = '↓'; hp.a.setAttribute('fill', DN); marks.hop.textContent = '↓'; marks.hop.setAttribute('fill', DN); status('接著：青蛙多了，蚱蜢被吃得更多，蚱蜢可能減少。'); });
       }
       function showAfter(m) {
-        if (m.show === 'chains') { chainA.style.opacity = 1; chainB.style.opacity = 1; panelChains(); ['frog', 'snake', 'hawk'].forEach((k) => known.add(k)); table(); }
+        if (m.show === 'chains') { chainA.style.opacity = 1; chainB.style.opacity = 1; panelChains(); CHAIN_KNOWN.forEach((k) => known.add(k)); table(); }
         if (m.show === 'energy') { clearMarks(); chainA.style.opacity = 0; chainB.style.opacity = 0; panelEnergy(); }
       }
       function drawMission() {
@@ -257,13 +273,7 @@
         }));
         mbox.querySelectorAll('[data-p]').forEach((b) => b.addEventListener('click', () => { pred = +b.dataset.p; runSnake(); }));
         const nx = mbox.querySelector('#labL1-next');
-        if (nx) nx.addEventListener('click', () => {
-          mi++; done = false; picked = -1; pred = -1; found = new Set(); wrongTap = null;
-          if (anim) anim.progress(1);
-          KEYS.forEach((k) => rings[k].setAttribute('opacity', 0)); chainA.style.opacity = 0; chainB.style.opacity = 0; clearMarks(); panelLegend();
-          drawMission();
-          status(mi < MISSIONS.length ? '' : '全部完成！可以打開「自由探索」，讓其他生物減少看看。');
-        });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
 
       // ---------- 自由探索：讓一種生物減少 ----------
@@ -292,9 +302,9 @@
       function reset() {
         if (anim) anim.kill();
         mi = 0; done = false; picked = -1; pred = -1; found = new Set(); wrongTap = null; running = false;
-        known.clear(); clearMarks(); chainA.style.opacity = 0; chainB.style.opacity = 0; KEYS.forEach((k) => rings[k].setAttribute('opacity', 0));
+        known.clear(); doneK.clear(); clearMarks(); chainA.style.opacity = 0; chainB.style.opacity = 0; KEYS.forEach((k) => rings[k].setAttribute('opacity', 0));
         panelLegend(); table();
-        status('箭頭從「被吃的」指向「吃牠的」。按照任務卡的說明，點選舞台上的生物。');
+        status(INTRO);
         $('free').open = false;
         drawMission();
       }

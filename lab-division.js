@@ -2,7 +2,7 @@
    點選預測就開始動畫。染色體、細胞的畫法來自 scene-division.js（S.b1）。 */
 (() => {
   const { el, g, text, C } = S;
-  const SEC = { mit: 6.5, mei: 9, fert: 5.5, human: 5 }; // 動畫長度（秒）
+  const SEC = { mit: 3, mei: 3.5, fert: 3, human: 2.5 }; // 動畫長度（秒）：點預測後約 3 秒看到結果
 
   const MISSIONS = [
     { title: '細胞分裂', run: 'mit', q: '這個細胞有 <b>4 條</b>染色體（2 對）。進行<b>細胞分裂</b>後，每個子細胞有幾條？', opts: ['2 條', '4 條', '8 條'], ans: 1, res: '4 條',
@@ -187,13 +187,18 @@
         const u = anim.t / scene.dur;
         scene.set(u);
         const ph = scene.phase(u);
-        if (ph !== lastPh) { lastPh = ph; status(scene.texts[ph]); }
+        if (ph !== lastPh) { lastPh = ph; status(stepList(scene.texts, ph)); }
         if (anim.t >= scene.dur) { const d = anim.onDone; anim = null; d && d(); drawMission(); syncFree(); }
       }
       const loop = (ts) => { const dt = Math.min(0.1, last ? (ts - last) / 1000 : 0); last = ts; tick(dt); raf = requestAnimationFrame(loop); };
       const busy = () => !!anim;
 
       const status = (h) => { $('status').innerHTML = h; };
+      // 過程說明全部列出：進行到的那一步加粗、還沒到的變淡；結論播完才出現（先留位置，畫面不會跳）。播完後全部留著，可以慢慢讀
+      const stepList = (texts, ph) => texts.map((t, i) => {
+        const last = i === texts.length - 1, x = last ? t : `${'①②③④⑤'[i]} ${t.replace(/……$/, '')}`;
+        return i === ph ? `<b>${x}</b>` : i < ph ? x : last ? `<span style="visibility:hidden">${x}</span>` : `<span style="color:var(--muted)">${x}</span>`;
+      }).join('<br>');
       function log() {
         if (!runs.length) { $('log').innerHTML = '<p class="m-hint">每做完一次，結果會列在這裡。</p>'; return; }
         $('log').innerHTML = `<table class="tbl"><thead><tr><th>#</th><th>過程</th><th>你的預測</th><th>結果</th></tr></thead><tbody>${runs.map((r, i) => `<tr><td>${i + 1}</td><td>${r.name}</td><td>${r.pred || '—'}</td><td>${r.res}</td></tr>`).join('')}</tbody></table>`;
@@ -203,10 +208,18 @@
       const mbox = $('mission');
       let mi = 0, done = false, pred = -1, picked = -1;
       const first = [];
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? (first[k] ? 'ok' : 'miss') : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? (first[k] ? 'ok' : 'miss') : ''));
+      // 切換任務：正在播的動畫先停止（不列入紀錄）
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        if (anim) { anim = null; scene.set(0); }
+        mi = k; enter();
+      }
+      S.onDots(mbox, goMission);
       function drawMission() {
         if (mi >= MISSIONS.length) {
-          const ok = first.filter(Boolean).length;
+          const ok = first.filter((v, k) => v && doneK.has(k)).length;
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
             <p class="m-text">第一次就答對 <b>${ok} / ${MISSIONS.length}</b> 題。</p>
             <div class="fb ok"><strong>染色體數目的變化</strong>細胞分裂：2n → 2n（數目不變）。<br>減數分裂：2n → n（數目減半，產生精子和卵）。<br>受精：n ＋ n → 2n（恢復成對）。人：46 → 23 → 46。</div>
@@ -233,7 +246,7 @@
         mbox.innerHTML = html;
         mbox.querySelectorAll('.opt[data-p]').forEach((b) => b.addEventListener('click', () => {
           pred = +b.dataset.p;
-          first[mi] = pred === m.ans;
+          if (first[mi] === undefined) first[mi] = pred === m.ans;
           const k = mi;
           np = 2;
           play(m.run, () => {
@@ -249,7 +262,7 @@
           drawMission();
         }));
         const nx = mbox.querySelector('#labN1-next');
-        if (nx) nx.addEventListener('click', () => { mi++; enter(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function enter() {
         done = false; pred = -1; picked = -1;
@@ -272,7 +285,7 @@
       }));
 
       function reset() {
-        runs.length = 0; first.length = 0; mi = 0;
+        runs.length = 0; first.length = 0; doneK.clear(); mi = 0;
         $('free').open = false;
         log(); enter();
       }

@@ -215,11 +215,16 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .readout .big { font-family: var(--font-mono); font-size: 1.35rem; }
 .tool-chip { display: inline-block; padding: 0.05em 0.7em; border-radius: 999px; border: 1.5px solid currentColor; font-size: 0.92rem; }
 .mission-top { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
-.dots { display: flex; gap: 0.3rem; }
-.dots i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--line); }
-.dots i.on { background: var(--accent); }
-.dots i.ok { background: var(--good); }
-.dots i.miss { background: var(--bad); }
+.dots { display: flex; flex-wrap: wrap; }
+/* 圓點本身小，可點的範圍約 24 px */
+.dots .dot { width: 1.5rem; height: 1.5rem; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; display: grid; place-items: center; }
+.dots .dot::before { content: ''; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--muted); opacity: 0.45; transition: transform 0.15s; }
+.dots .dot.on::before, .dots .dot.ok::before, .dots .dot.miss::before { opacity: 1; }
+.dots .dot:hover::before { transform: scale(1.35); }
+.dots .dot:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.dots .dot.on::before { background: var(--accent); transform: scale(1.35); }
+.dots .dot.ok::before { background: var(--good); }
+.dots .dot.miss::before { background: var(--bad); }
 .m-text { font-family: var(--font-label); font-size: 1.2rem; line-height: 1.55; margin: 0 0 0.6rem; }
 .m-text b { color: var(--accent); }
 .m-hint { font-size: 0.92rem; color: var(--muted); margin: 0 0 0.6rem; }
@@ -324,7 +329,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
   <section class="lab" id="lab" hidden aria-live="polite"></section>
 
-  <p class="hint"><span><span class="kbd-hint">鍵盤：<kbd>←</kbd> <kbd>→</kbd> 上／下一步，<kbd>空白鍵</kbd> 再放一次，數字鍵切換小節。</span>標「互動」的是可以自己操作的模型。</span><span class="ver" id="appVer">版本 v32・2026-10-14</span></p>
+  <p class="hint"><span><span class="kbd-hint">鍵盤：<kbd>←</kbd> <kbd>→</kbd> 上／下一步，<kbd>空白鍵</kbd> 再放一次，數字鍵切換小節。</span>標「互動」的是可以自己操作的模型。</span><span class="ver" id="appVer">版本 v34・2026-10-14</span></p>
 </div>
 
 <script src="vendor/gsap.min.js"></script>

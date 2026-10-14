@@ -157,6 +157,11 @@
   // 互動模型：mount(容器) 回傳 { unmount }
   const labs = [];
   S.registerLab = (lab) => labs.push(lab);
+  // 任務／自我檢測的進度圓點，可以點選切換。state(k)：'ok'（完成）、'miss'（第一次答錯）或 ''（還沒做）；目前這一個顯示 'on'
+  S.dots = (n, cur, state, unit = '個任務') => `<div class="dots" role="group" aria-label="切換${unit.replace('個', '')}">${Array.from({ length: n }, (_, k) =>
+    `<button type="button" class="dot ${k === cur ? 'on' : state(k) || ''}" data-dot="${k}" aria-label="第 ${k + 1} ${unit}"${k === cur ? ' aria-current="step"' : ''}></button>`).join('')}</div>`;
+  // 點圓點時呼叫 go(k)。掛在任務框上一次就好（任務框重畫也有效）
+  S.onDots = (box, go) => box.addEventListener('click', (e) => { const b = e.target.closest('[data-dot]'); if (b && box.contains(b)) go(+b.dataset.dot); });
   let labIdx = -1, labInst = null, playerEl, labEl;
 
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -145,15 +145,44 @@
 
       // ---------- 流程 ----------
       const panel = $('panel');
-      let si = 0, done = false, picks = new Set(), wrong = false, quizPick = -1, sortSel = {}, tries = 0, firstTry = 0;
+      let si = 0, done = false, picks = new Set(), wrong = false, quizPick = -1, sortSel = {}, tries = 0;
+      const first = []; // 每一關第一次就答對（true）或曾答錯（false）
+      const doneK = new Set(); // 做完過的關（點圓點可以回去再做）
       const nutState = { s: 0, p: 0, f: 0 };
       const status = (h) => { $('status').innerHTML = h; };
-      const dots = () => `<div class="dots" aria-hidden="true">${STAGES.map((_, k) => `<i class="${k < si ? 'ok' : k === si ? 'on' : ''}"></i>`).join('')}</div>`;
+      const dots = () => S.dots(STAGES.length, si, (k) => (doneK.has(k) ? 'ok' : ''), '關');
+      // 每一關開始時食物的樣子（前面各關都完成）
+      const BEFORE = [{ s: 0, p: 0, f: 0 }, { s: 1, p: 0, f: 0 }, { s: 1, p: 1, f: 0 }, { s: 2, p: 2, f: 2 }, { s: 2, p: 2, f: 2 }, { s: 2, p: 2, f: 2 }];
+      // 把畫面設成第 k 關開始時的樣子：停止動畫，絨毛的產物、大腸的水分和殘渣放回原位
+      function scene(k) {
+        if (tl) tl.kill();
+        gsap.killTweensOf([...sU, ...pU, fatBig, ...fatSmall, ...fatProd]);
+        Object.assign(nutState, BEFORE[k] || BEFORE[0]);
+        layout(nutState, false);
+        Object.values(chips).forEach((c) => { gsap.killTweensOf(c); c.x = 250; c.y = c.y0; S.place(c.g, { x: c.x, y: c.y }); });
+        waters.forEach((w) => gsap.set(w, { y: 0, opacity: 1 }));
+        resid.setAttribute('cx', 300); resid.setAttribute('rx', 60);
+      }
+      // 切換關卡：照順序往下走時畫面已經是下一關的樣子；跳著走就重設畫面
+      function goMission(k) {
+        if (!done && tries && first[si] === undefined) first[si] = false; // 答錯過才離開
+        const seq = done && k === si + 1;
+        if (done) doneK.add(si);
+        if (!seq) scene(k);
+        si = k; done = false; picks = new Set(); wrong = false; quizPick = -1; sortSel = {}; tries = 0;
+        if (si < STAGES.length) {
+          const s = STAGES[si];
+          showStation(s.st);
+          status(s.st === 3 ? '來到小腸內壁的絨毛。' : s.st === 4 ? '剩下的東西進入大腸。' : `食物來到${STATIONS[s.st]}。`);
+        }
+        draw();
+      }
+      S.onDots(panel, goMission);
 
       function draw() {
         if (si >= STAGES.length) {
           panel.innerHTML = `<div class="mission-top"><h2>旅程結束</h2>${dots()}</div>
-            <p class="m-hint">${firstTry} / ${STAGES.length} 關第一次就答對。</p>
+            <p class="m-hint">${first.filter(Boolean).length} / ${STAGES.length} 關第一次就答對。</p>
             <div class="fb ok"><strong>重點整理</strong>口腔：澱粉 → 麥芽糖（唾液）。<br>胃：蛋白質初步分解（胃液，酸性）。<br>小腸：三大類養分分解完成並吸收；膽汁不含酵素，能乳化脂質。<br>大腸：吸收水分；殘渣由肛門排出（排遺）。</div>
             <button class="ctl primary" type="button" id="labD-again">再走一次</button>`;
           panel.querySelector('#labD-again').addEventListener('click', reset);
@@ -188,12 +217,12 @@
           if (ok) succeed(); else { wrong = true; draw(); status('還不對，看看提示再試一次。'); }
         });
         const nx = panel.querySelector('#labD-next');
-        if (nx) nx.addEventListener('click', next);
+        if (nx) nx.addEventListener('click', () => goMission(si + 1));
       }
 
       function succeed() {
         done = true; wrong = false;
-        if (tries === 1) firstTry++;
+        if (first[si] === undefined) first[si] = tries === 1;
         const s = STAGES[si];
         if (s.kind === 'pick') {
           if (s.st === 0) nutState.s = 1;
@@ -220,24 +249,9 @@
         draw();
       }
 
-      function next() {
-        si++; done = false; picks = new Set(); wrong = false; quizPick = -1; sortSel = {}; tries = 0;
-        if (si < STAGES.length) {
-          const s = STAGES[si];
-          showStation(s.st);
-          status(s.st === 3 ? '來到小腸內壁的絨毛。' : s.st === 4 ? '剩下的東西進入大腸。' : `食物來到${STATIONS[s.st]}。`);
-        }
-        draw();
-      }
-
       function reset() {
-        if (tl) tl.kill();
-        si = 0; done = false; picks = new Set(); wrong = false; quizPick = -1; sortSel = {}; tries = 0; firstTry = 0;
-        Object.assign(nutState, { s: 0, p: 0, f: 0 });
-        layout(nutState, false);
-        Object.values(chips).forEach((c) => { gsap.killTweensOf(c); c.x = 250; c.y = c.y0; S.place(c.g, { x: c.x, y: c.y }); });
-        waters.forEach((w) => gsap.set(w, { y: 0, opacity: 1 }));
-        resid.setAttribute('cx', 300); resid.setAttribute('rx', 60);
+        si = 0; done = false; picks = new Set(); wrong = false; quizPick = -1; sortSel = {}; tries = 0; first.length = 0; doneK.clear();
+        scene(0);
         showStation(0);
         status('跟著食物走一趟消化管。每一站先判斷，再看看發生了什麼。');
         draw();

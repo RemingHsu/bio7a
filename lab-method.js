@@ -107,6 +107,7 @@
       const VHINT = { m: '問題想知道的就是這個條件，所以要刻意改變它（操縱變因）。', c: '這個條件也會影響結果，但不是問題要問的，所以兩組要保持相同（控制變因）。', r: '這是實驗最後要測量、記錄的結果（應變變因）。' };
       let si = 0, phase = 'vars', picks = {}, checked = false, design = null, results = null, picked = -1;
       const scoreFirst = [];
+      const doneK = new Set(); // 做完過的情境（點圓點可以回去再做）
       let vis = null, anim = null, tmr = null, dead = false; // dead：已離開這個互動，計時器不要再改畫面
 
       function drawStage() {
@@ -144,14 +145,14 @@
 
       function flow() {
         const sc = SC[si], fl = $('flow');
-        const dots = `<div class="dots" aria-hidden="true">${SC.map((_, k) => `<i class="${k < si ? (scoreFirst[k] ? 'ok' : 'miss') : k === si ? 'on' : ''}"></i>`).join('')}</div>`;
+        const dots = S.dots(SC.length, si, (k) => (doneK.has(k) ? (scoreFirst[k] ? 'ok' : 'miss') : ''), '個情境');
         if (si >= SC.length) {
           const ok = scoreFirst.filter(Boolean).length;
           fl.innerHTML = `<div class="mission-top"><h2>完成三個情境</h2>${dots}</div>
             <p class="m-text">一次就設計出公平實驗的情境：<b>${ok} / ${SC.length}</b></p>
             <div class="fb ok"><strong>重點整理</strong>操縱變因只有一個；其他條件都要相同（控制變因）；要觀察記錄的是應變變因。<br>每組重複幾次取平均，結果比較可靠。<br>結果不支持假說時，修正假說再實驗。</div>
             <button class="ctl primary" type="button" id="labF-again">再做一次</button>`;
-          fl.querySelector('#labF-again').addEventListener('click', () => { si = 0; scoreFirst.length = 0; start(); });
+          fl.querySelector('#labF-again').addEventListener('click', () => { si = 0; scoreFirst.length = 0; doneK.clear(); start(); });
           return;
         }
         let html = `<div class="mission-top"><h2>${['① 分類變因', '② 設計實驗', '③ 下結論'][{ vars: 0, design: 1, concl: 2 }[phase]]}</h2>${dots}</div>`;
@@ -191,8 +192,16 @@
           run();
         }));
         fl.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => { picked = +b.dataset.k; flow(); }));
-        on('next', () => { si++; start(); });
+        on('next', () => goMission(si + 1));
       }
+
+      // 切換情境：還在等的計時器先取消，動畫由 start() 停止
+      function goMission(k) {
+        if (si < SC.length && phase === 'concl' && results && picked === results.right) doneK.add(si);
+        clearTimeout(tmr);
+        si = k; start();
+      }
+      S.onDots($('flow'), goMission);
 
       function run() {
         const sc = SC[si];

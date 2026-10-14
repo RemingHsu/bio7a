@@ -2,7 +2,7 @@
 (() => {
   const { el, g, text, C } = S;
   const XY = C.water, OIL = '#f1c84a', LEAF = '#4fae4a', LEAF_D = '#2f7a3a', VASC = '#fff1c2';
-  const SEC_PER_HOUR = 6; // 動畫 6 秒代表 1 小時＊
+  const SEC_PER_HOUR = 3; // 動畫 3 秒代表 1 小時＊
   const V0 = 9.0;          // 開始的水量（mL）
   const BASE = 2.4;        // 有葉、照光、無風、不套袋：每小時約減少 2.4 mL（示意）
   const DEF = { leaf: 1, light: 1, wind: 0, bag: 0, oil: 1, vas: 0 };
@@ -60,7 +60,7 @@
       <div class="lab-stage"><svg viewBox="0 0 1200 600" role="img" aria-label="兩支枝條分別插在加了油層的量筒中，比較水減少多少"></svg></div>
       <div class="pad">
         <p class="status-line" id="labV-status" aria-live="polite"></p>
-        <p class="footnote">＊示意：動畫中 6 秒代表 1 小時；水減少的量是示意的數字，實際會因枝條大小、葉片多少、光線、溫度而不同；上、下表皮氣孔的多少也因植物而不同。燈太近會讓溫度升高，可以用 LED 燈或保持距離。不用油層時，也可以用保鮮膜把量筒口封住（讓枝條穿過）。</p>
+        <p class="footnote">＊示意：動畫中 3 秒代表 1 小時；水減少的量是示意的數字，實際會因枝條大小、葉片多少、光線、溫度而不同；上、下表皮氣孔的多少也因植物而不同。燈太近會讓溫度升高，可以用 LED 燈或保持距離。不用油層時，也可以用保鮮膜把量筒口封住（讓枝條穿過）。</p>
       </div>
     </div>
     <div class="card pad c-table"><h3>實驗紀錄（1 小時後減少的水量）</h3><div class="table-wrap" id="labV-table"></div></div>
@@ -275,7 +275,16 @@
       const mbox = $('mission');
       let mi = 0, phase = 'predict', pred = -1, picked = -1, solved = false, result = null;
       const firstOk = [];
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? (firstOk[k] === false ? 'miss' : 'ok') : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? (firstOk[k] === false ? 'miss' : 'ok') : ''));
+      // 切換任務：正在做的實驗先停止（不列入紀錄），換成新任務的設定
+      function goMission(k) {
+        const m = MISSIONS[mi];
+        if (m && ((m.quiz && solved) || phase === 'result')) doneK.add(mi);
+        if (run && !run.done) status(''); // 「兩組同時開始……」不再適用
+        mi = k; setupMission();
+      }
+      S.onDots(mbox, goMission);
       function setupMission() {
         const m = MISSIONS[mi];
         phase = m && m.quiz ? 'quiz' : 'predict'; pred = -1; picked = -1; solved = false; result = null;
@@ -286,13 +295,13 @@
       }
       function drawMission() {
         if (mi >= MISSIONS.length) {
-          const ok = firstOk.filter(Boolean).length;
+          const ok = firstOk.filter((v, k) => v && doneK.has(k)).length; // 只算做完的任務（可以用圓點跳過任務）
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
             <p class="m-text">第一次就答對 <b>${ok} / ${MISSIONS.length}</b> 個。</p>
             <div class="fb ok"><strong>實驗重點</strong>水主要經由葉的氣孔散失（蒸散作用）。<br>光線強、風大時蒸散快；黑暗、溼度高時蒸散慢。<br>多數植物下表皮的氣孔較多：凡士林塗在下表皮，水減少得比較少。<br>水面加油層，防止水從水面直接蒸發；只改變一個條件，比較才公平。</div>
             <p class="m-hint">想自己組合條件，可以打開下面的「自由探索」。</p>
             <button class="ctl primary" type="button" id="labV-again">再做一次</button>`;
-          mbox.querySelector('#labV-again').addEventListener('click', () => { mi = 0; firstOk.length = 0; setupMission(); });
+          mbox.querySelector('#labV-again').addEventListener('click', () => { mi = 0; firstOk.length = 0; doneK.clear(); setupMission(); });
           $('free').open = true;
           return;
         }
@@ -332,7 +341,7 @@
         const on = (id, fn) => { const e = mbox.querySelector('#labV-' + id); if (e) e.addEventListener('click', fn); };
         on('run', () => { phase = 'running'; st.A = { ...DEF, ...m.A }; st.B = { ...DEF, ...m.B }; reset(); sync(); start(); });
         on('back', () => { const p = pred; setupMission(); if (p >= 0) { pred = p; phase = 'ready'; drawMission(); } });
-        on('next', () => { mi++; setupMission(); });
+        on('next', () => goMission(mi + 1));
       }
 
       setupMission();

@@ -11,7 +11,8 @@
       why: '熱量 ＝ 水的質量 × 上升的溫度。100 mL 水約 100 g；1 g 水上升 1 °C 需要 1 卡，1000 卡 ＝ 1 大卡。' },
     { title: '為什麼比較少？', quiz: { q: '包裝上標示 1 g 花生約有 5.8 大卡＊，但我們只測到 1～2 大卡。主要原因是？', opts: ['花生的熱量標示錯了', '很多熱散失到空氣中，沒有被水吸收', '水太多，把熱量稀釋了'], ans: 1, hint: '火焰的熱除了往上加熱鋁罐，還會往哪裡跑？' },
       why: '燃燒時很多熱散失到空氣中，鋁罐和溫度計也會吸熱，有些能量變成光，花生也可能沒燒完，所以水吸收到的熱量比食物實際含有的少。' },
-    { title: '減少熱散失', text: '加上<b>防風罩</b>，其他條件不變，再燒一次花生，和剛才比較。', acts: [['加防風罩，再燒一次花生', 'peanut', 'shield']], done: (rs) => rs.some((r) => r.food === 'peanut' && r.water === 100 && r.setup === 'shield') && rs.some((r) => r.food === 'peanut' && r.water === 100 && r.setup === 'open'),
+    { title: '減少熱散失', text: '加上<b>防風罩</b>，其他條件不變，再燒一次花生，和剛才比較。', acts: [['加防風罩，再燒一次花生', 'peanut', 'shield']], pre: ['peanut', 'open'], done: (rs) => rs.some((r) => r.food === 'peanut' && r.water === 100 && r.setup === 'shield') && rs.some((r) => r.food === 'peanut' && r.water === 100 && r.setup === 'open'),
+      // pre：跳過任務 1 直接來做時，自動補上「剛才」不加防風罩的那一次
       why: '防風罩讓熱比較不容易散失，水吸收到的熱量變多，測得的值更接近實際。' },
     { title: '公平比較', quiz: { q: '想比較「花生和棉花糖哪一個熱量比較多」，下列哪一項<b>必須保持相同</b>？', opts: ['食物的種類', '食物的質量、水量和裝置', '水上升的溫度'], ans: 1, hints: ['如果兩次燒的食物種類都一樣，還比得出哪一種熱量比較多嗎？', '', '水上升幾度，要燒完才量得到。這是能事先保持相同的條件嗎？'] },
       why: '操縱變因是食物種類；食物質量、水量、裝置（有沒有防風罩、距離）都要相同；水上升的溫度是應變變因。' },
@@ -202,9 +203,9 @@
         gsap.set(formula, { opacity: 0.35 });
         tl = gsap.timeline();
         tl.to(flame, { opacity: 1, duration: 0.3 });
-        tl.to(loss, { opacity: st.setup === 'shield' ? 0.35 : 1, duration: 0.4 }, '<');
-        tl.to(o, { T: T0 + dT, s: 0.25, duration: 4, ease: 'power1.inOut', onUpdate: () => { setTemp(o.T); foodE.setAttribute('rx', 22 * o.s + 4); foodE.setAttribute('ry', 15 * o.s + 3); foodE.setAttribute('fill', o.s < 0.6 ? '#3a3a3a' : FOODS[st.food][2]); } });
-        tl.to([flame, loss], { opacity: 0, duration: 0.4 });
+        tl.to(loss, { opacity: st.setup === 'shield' ? 0.35 : 1, duration: 0.3 }, '<');
+        tl.to(o, { T: T0 + dT, s: 0.25, duration: 2.2, ease: 'power1.inOut', onUpdate: () => { setTemp(o.T); foodE.setAttribute('rx', 22 * o.s + 4); foodE.setAttribute('ry', 15 * o.s + 3); foodE.setAttribute('fill', o.s < 0.6 ? '#3a3a3a' : FOODS[st.food][2]); } });
+        tl.to([flame, loss], { opacity: 0, duration: 0.3 });
         tl.call(() => {
           burning = false;
           runs.push(run);
@@ -232,7 +233,27 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, calcRun = null, calcWrong = 0;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：正在燃燒的先停止（不列入紀錄）
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        if (burning) { tl.kill(); burning = false; gsap.set([flame, loss], { opacity: 0 }); setTemp(T0); sync(); }
+        mi = k; done = false; picked = -1; calcRun = null; calcWrong = 0;
+        const nm = MISSIONS[mi];
+        if (nm && nm.label) { setView('label'); revealLabel(false); status('營養標示上的熱量先遮起來了。用每公克的熱量算算看，一份大約有多少大卡。'); }
+        else if (view !== 'app') setView('app');
+        if (nm && nm.pre) {
+          const [food, setup] = nm.pre;
+          if (!runs.some((r) => r.food === food && r.water === 100 && r.setup === setup)) {
+            const dT = Math.round(((FOODS[food][1] * 1000 * EFF[setup]) / 100) * 10) / 10; // 和 burn() 的算法相同
+            runs.push({ food, water: 100, setup, T1: T0 + dT, dT, answered: true }); table();
+            status('還沒有「不加防風罩」燒花生的紀錄，已自動補上一筆，用來比較。');
+          }
+        }
+        drawMission(); checkMission();
+      }
+      S.onDots(mbox, goMission);
       const actsHtml = (m) => `<div class="acts">${m.acts.map(([label, food, setup], i) => {
         const did = runs.some((r) => r.food === food && r.setup === setup && r.water === 100);
         return `<button class="ctl ${did ? '' : 'primary'}" type="button" data-a="${i}" aria-pressed="${did}" ${burning ? 'disabled' : ''}>${label}${did ? ' ✓' : ''}</button>`;
@@ -293,13 +314,7 @@
           inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
         }
         const nx = mbox.querySelector('#labC-next');
-        if (nx) nx.addEventListener('click', () => {
-          mi++; done = false; picked = -1; calcRun = null; calcWrong = 0;
-          const nm = MISSIONS[mi];
-          if (nm && nm.label) { setView('label'); revealLabel(false); status('營養標示上的熱量先遮起來了。用每公克的熱量算算看，一份大約有多少大卡。'); }
-          else if (view !== 'app') setView('app');
-          drawMission(); checkMission();
-        });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function showFormula(r) {
         fLine.textContent = `${r.water} g × ${r.dT.toFixed(1)} °C ＝ ${(r.water * r.dT).toFixed(0)} 卡`;
@@ -316,7 +331,7 @@
         if (tl) tl.kill();
         burning = false; runs.length = 0;
         Object.assign(st, { food: 'peanut', water: 100, setup: 'open' });
-        mi = 0; done = false; picked = -1; calcRun = null; calcWrong = 0;
+        mi = 0; done = false; picked = -1; calcRun = null; calcWrong = 0; doneK.clear();
         gsap.set([flame, loss], { opacity: 0 }); gsap.set(formula, { opacity: 0 });
         setView('app'); gsap.set(cover, { opacity: 1 }); gsap.set(calcG, { opacity: 0 });
         setTemp(T0);

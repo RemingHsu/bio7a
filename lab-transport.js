@@ -17,7 +17,7 @@
 
   // ================= 分子實驗 =================
   function MolSim() {
-    const X0 = 30, X1 = 930, YT = 64, YB = 510, XM = 480, NW = 200, H0 = 240, KPI = 2, KJ = 7.5, TAU = 0.12;
+    const X0 = 30, X1 = 930, YT = 64, YB = 510, XM = 480, NW = 200, H0 = 240, KPI = 2, KJ = 22, TAU = 0.12;
     // 擴散係數（px²/s）。1 px ≈ 0.36 μm 時，換算成真實值：水 2.6、氧 1.8、蔗糖 0.45、鈉離子 1.2、氯離子 1.8（×10⁻⁹ m²/s），
     // 和實測值（水 2.3、氧 2.1、蔗糖 0.52、鈉 1.33、氯 2.03）接近，所以「分子擴散」是真實速度。
     const D = { w: 20000, s: 14000, L: 3500, na: 9300, cl: 14200 }, RAD = { w: 3, s: 6, L: 10, na: 5, cl: 5 };
@@ -85,7 +85,7 @@
       // 滲透：淨水流 J ∝（兩邊滲透壓差 − 水位差造成的壓力）。
       // 滲透壓只看「過不了膜的溶質粒子」濃度（粒子數 ÷ 水量）；這些粒子留在原來那一邊，數量固定，
       // 所以 J 是平順的，水位只會朝一個方向變化，不會被分子的隨機漲落帶著忽高忽低。
-      // 這一項的速度有加快：真實的 U 形管要幾十分鐘以上，水位差也會大得多。
+      // 這一項的速度有加快（約 3 秒就看得出水位差）：真實的 U 形管要幾十分鐘以上，水位差也會大得多。
       if (semi) {
         const c = counts();
         const half = NW / 2, pi = (n, w) => (KPI * n) / Math.max(1, w);
@@ -162,7 +162,7 @@
         // 字放大後比比例尺寬，改成靠右對齊比例尺的右端，才不會超出容器
         const nf = fs(15);
         g.font = `500 ${nf}px "Noto Sans TC", sans-serif`; g.fillStyle = K.mute; g.textAlign = 'right';
-        g.fillText('容器寬約 0.32 mm・分子擴散為真實速度', bx, by + 10 + nf);
+        g.fillText(sim.play > 1 ? `容器寬約 0.32 mm・畫面快轉 ${sim.play} 倍` : '容器寬約 0.32 mm・分子擴散為真實速度', bx, by + 10 + nf);
         if (osmo) { g.fillStyle = K.large; g.fillText('＊示意時間：水位變化已加快', bx, by + 18 + nf * 2.3); }
       }
       if (semi) { const mf = fs(16 * f); g.textAlign = 'center'; g.fillStyle = K.membrane; g.font = `500 ${mf}px "Noto Sans TC", sans-serif`; g.fillText('半透膜', XM, Math.min(H - 3, YB + 8 + mf * 0.9)); }
@@ -172,9 +172,9 @@
 
   // ================= 細胞實驗 =================
   function CellSim() {
-    // 體積變化速率（每秒）。紅血球的水通道多，真實在清水中幾秒內就脹大、破裂，模擬約 3 秒；
+    // 體積變化速率（每秒）。紅血球的水通道多，真實在清水中幾秒內就脹大、破裂，模擬約 1.5 秒；
     // 植物細胞真實要數十秒到幾分鐘才看得到細胞膜和細胞壁分開，這裡加快了（畫面標示「示意時間」）。
-    const CX = 480, CY = 285, KR = { rbc: 0.25, plant: 0.08 };
+    const CX = 480, CY = 285, KR = { rbc: 0.5, plant: 0.16 };
     const sim = { cfg: { cell: 'rbc', cout: 1 }, V: 1, t: 0, burst: 0, hist: [], dots: [], lastRec: -1, salt: [] };
     for (let i = 0; i < 160; i++) sim.salt.push([20 + Math.random() * 920, 20 + Math.random() * 500, Math.random() * 6.28]);
     sim.reset = (cfg) => {
@@ -313,7 +313,8 @@
       for (const [k, v] of Object.entries({ x: M.l, y: M.t, width: VW - M.l - M.r, height: VH - M.t - M.b })) hit.setAttribute(k, v);
       hair.setAttribute('y1', M.t); hair.setAttribute('y2', VH - M.b);
       const tEnd = d.length ? d[d.length - 1].t : 0;
-      xMax = Math.max(20, Math.ceil(tEnd / 10) * 10);
+      // 時間軸跟著實驗長度：短的實驗（幾秒）用 5 或 10 秒的軸，曲線才不會擠在左邊
+      xMax = tEnd <= 5 ? 5 : tEnd <= 10 ? 10 : Math.max(20, Math.ceil(tEnd / 10) * 10);
       gGrid.innerHTML = '';
       [0, 0.5, 1].forEach((f) => {
         const v = yTop * f, y = Y(v);
@@ -321,7 +322,7 @@
         const t = mk('text', { x: M.l - R * 0.4, y: y + R * 0.28, 'text-anchor': 'end' }, gGrid); t.textContent = Math.round(v);
       });
       if (ref != null) mk('line', { x1: M.l, x2: VW - M.r, y1: Y(ref), y2: Y(ref), stroke: 'var(--muted)', 'stroke-width': 1, 'stroke-dasharray': '4 4' }, gGrid);
-      const step = xMax <= 30 ? 5 : 10;
+      const step = xMax <= 5 ? 1 : xMax <= 10 ? 2 : xMax <= 30 ? 5 : 10;
       for (let t = 0; t <= xMax; t += step) { const x = mk('text', { x: X(t), y: VH - R * 0.35, 'text-anchor': 'middle' }, gGrid); x.textContent = t === xMax ? `${t} ${xUnit}` : t; }
       series.forEach((s, k) => { paths[k].setAttribute('d', d.map((p, i) => `${i ? 'L' : 'M'}${X(p.t).toFixed(1)},${Y(p[s.key]).toFixed(1)}`).join('')); });
       gEnd.innerHTML = '';
@@ -367,16 +368,16 @@
       why: '分子會不停地隨機運動，從濃度高的地方往濃度低的地方移動，最後兩邊差不多一樣多，這就是擴散作用。平衡後分子仍在動，只是兩邊進出的數量差不多。' },
     { mode: 'mol', key: 'semi', title: '半透膜的選擇性', setup: { membrane: 'semi', solute: 'large', nL: 40, nR: 0, T: 25 },
       task: '用半透膜隔開，左邊放黃色的蔗糖分子。', q: '黃色的蔗糖分子能跑到右邊嗎？', opts: ['能，最後兩邊一樣多', '不能，會一直留在左邊'], ans: 1,
-      judge: (m) => m.t >= 10 && (() => { const c = m.counts(); return { ok: c.sR === 0, text: `右邊有 ${c.sR} 個蔗糖分子` }; })(),
+      judge: (m) => m.t >= 3 && (() => { const c = m.counts(); return { ok: c.sR === 0, text: `右邊有 ${c.sR} 個蔗糖分子` }; })(),
       why: '這個半透膜讓水和某些小分子（如氧）通過，蔗糖、離子過不去。細胞膜也有選擇性：有些物質能通過，有些不能。' },
     { mode: 'mol', timeNote: '＊示意時間：水位變化已加快，真實要幾十分鐘以上。', key: 'osmo', title: '滲透作用', setup: { membrane: 'semi', solute: 'large', nL: 40, nR: 0, T: 25 },
       task: '同樣的設定，這次觀察「水」。', q: '過一段時間後，哪一邊的水位會比較高？', opts: ['左邊（有蔗糖的一邊）', '右邊（清水）', '兩邊一樣高'], ans: 0,
-      judge: (m) => { const h = m.hist[m.hist.length - 1], up = h.wL - h.wR >= 10; return (m.t >= 12 && up) || m.t >= 30 ? { ok: up, text: `${m.t.toFixed(0)} 秒＊後，左邊水量 ${Math.round(h.wL)}%、右邊 ${Math.round(h.wR)}%` } : null; },
-      why: '水分子兩個方向都會通過半透膜，但進入左邊的比較多：水會往「過不了膜的溶質粒子」濃度較高（水比較少）的一邊淨移動，所以左邊水位上升。這就是滲透作用。' },
+      judge: (m) => { const h = m.hist[m.hist.length - 1], up = h.wL - h.wR >= 10; return (m.t >= 3 && up) || m.t >= 30 ? { ok: up, text: `${m.t.toFixed(0)} 秒＊後，左邊水量 ${Math.round(h.wL)}%、右邊 ${Math.round(h.wR)}%` } : null; },
+      why: '水分子兩個方向都會通過半透膜，但進入左邊的比較多：水會往「過不了膜的溶質粒子」濃度較高（水比較少）的一邊淨移動，所以左邊水位上升。這就是滲透作用。決定方向的是溶質粒子的濃度（數目多少），粒子的大小只決定它能不能通過膜。' },
     { mode: 'mol', timeNote: '＊示意時間：水位變化已加快，真實要幾十分鐘以上。', key: 'conc', title: '（補充）滲透看粒子濃度', setup: { membrane: 'semi', solute: 'mix', nL: 6, nR: 35, T: 25 },
-      task: '左邊是 10% 蔗糖水，右邊是 10% 食鹽水，重量百分濃度一樣。預設的 6 個蔗糖分子和 35 份食鹽（氯化鈉）重量相同。', q: '水會往哪一邊移動？', opts: ['左邊（蔗糖水）', '右邊（食鹽水）', '水沒有淨移動（水位不變），因為一樣是 10%'], ans: 1,
-      judge: (m) => { const h = m.hist[m.hist.length - 1], up = h.wR - h.wL >= 10; return (m.t >= 10 && up) || m.t >= 30 ? { ok: up, text: `${m.t.toFixed(0)} 秒＊後，左邊水量 ${Math.round(h.wL)}%、右邊 ${Math.round(h.wR)}%` } : null; },
-      why: '一份食鹽比一個蔗糖分子輕很多，同樣重量的食鹽份數多很多，而且每份食鹽在水中會分成鈉離子和氯離子兩個粒子。用預設的數量時，右邊「過不了膜的粒子」（70 個離子）大約是左邊（6 個蔗糖分子）的 12 倍，所以水往食鹽水淨移動。判斷滲透方向要看溶質粒子的濃度，不能只看重量百分濃度。' },
+      task: '左右兩邊的水一樣多：左邊溶了 10 公克蔗糖，右邊溶了 10 公克食鹽，溶進去的重量相同。畫面中 6 個蔗糖分子和 35 份食鹽一樣重（食鹽沒有分子，1 份＝1 個鈉離子＋1 個氯離子）。', q: '水會往哪一邊移動？', opts: ['左邊（蔗糖水）', '右邊（食鹽水）', '水沒有淨移動（水位不變）'], ans: 1,
+      judge: (m) => { const h = m.hist[m.hist.length - 1], up = h.wR - h.wL >= 10; return (m.t >= 3 && up) || m.t >= 30 ? { ok: up, text: `${m.t.toFixed(0)} 秒＊後，左邊水量 ${Math.round(h.wL)}%、右邊 ${Math.round(h.wR)}%` } : null; },
+      why: '溶進去一樣重，粒子數目卻不一樣：一份食鹽比一個蔗糖分子輕很多，同樣重量的食鹽份數多很多，而且每份食鹽在水中會分成鈉離子和氯離子兩個粒子。右邊「過不了膜的粒子」（70 個離子）大約是左邊（6 個蔗糖分子）的 12 倍，所以水往食鹽水淨移動。判斷滲透方向要看溶質粒子的濃度（數目），不是看溶了幾公克，也不是看粒子的大小。' },
     { mode: 'mol', key: 'temp', title: '溫度與擴散', twoRuns: true, setup: { membrane: 'none', solute: 'small', nL: 100, nR: 0, T: 8 },
       task: '在冷水和溫水中各做一次擴散實驗，比較哪一次的分子比較快擴散到右邊。', q: '溫度比較高時，擴散會？', opts: ['變快', '變慢', '不變'], ans: 0,
       why: '溫度越高，分子運動越快，擴散也越快。之後理化課會學到「溫度與分子運動」，是同一個道理。' },
@@ -428,6 +429,8 @@
       canvas.width = W * dpr; canvas.height = H * dpr; g.scale(dpr, dpr);
 
       const mol = MolSim(), cel = CellSim();
+      const PLAY = L.play || 1; // 分子模擬的播放倍數：擴散實驗快轉，結果約 3 秒出現；模擬時間（時鐘）仍是真實秒數
+      mol.play = PLAY;
       let mode = L.mode, playing = false, raf = 0, lastT = 0, chartT = 0;
       mol.reset(); cel.reset();
       const sim = () => (mode === 'mol' ? mol : cel);
@@ -500,8 +503,8 @@
         let t;
         if (mode === 'mol') {
           t = mol.cfg.membrane === 'semi' && mol.cfg.solute !== 'small'
-            ? '＊示意時間：水位（滲透）的變化已加快，真實的 U 形管實驗要幾十分鐘到幾小時。分子本身的擴散仍是真實速度（容器寬約 0.32 mm）。'
-            : '時間為真實速度：容器寬約 0.32 mm，分子擴散的快慢和真實相同。';
+            ? `＊示意時間：水位（滲透）的變化已加快，真實的 U 形管實驗要幾十分鐘到幾小時。分子本身的擴散${PLAY > 1 ? `和真實相同（容器寬約 0.32 mm），只是畫面快轉 ${PLAY} 倍` : '仍是真實速度（容器寬約 0.32 mm）'}。`
+            : PLAY > 1 ? `畫面快轉 ${PLAY} 倍，時鐘顯示的是真實時間：容器寬約 0.32 mm，分子擴散的快慢和真實相同。` : '時間為真實速度：容器寬約 0.32 mm，分子擴散的快慢和真實相同。';
           t += ' 模擬裡的分子很少，所以兩邊的數量會小小起伏；真實溶液的分子多到數不清，看起來就是平順的變化。';
         } else {
           t = cel.cfg.cell === 'rbc'
@@ -616,7 +619,7 @@
           return;
         }
         if (m.mode === 'cell') {
-          if (cel.t >= 6 || cel.burst && cel.t - cel.burst > 1.2) {
+          if (cel.t >= 2.5 || cel.burst && cel.t - cel.burst > 1.0) {
             const s = cel.state(); armed = false; setPlaying(false);
             judged = { ok: m.goal(s), text: s.text }; phase = 'result'; drawMission();
           }
@@ -625,7 +628,14 @@
         const r = m.judge(mol);
         if (r) { judged = r; armed = false; setPlaying(false); phase = 'result'; drawMission(); }
       }
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? (firstPred[k] ? 'ok' : 'miss') : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? (firstPred[k] ? 'ok' : 'miss') : ''));
+      // 切換任務：showMission() 會停止正在跑的實驗（不列入紀錄）並自動設定新任務
+      function goMission(k) {
+        if (phase === 'result' && judged && judged.ok) doneK.add(mi);
+        mi = k; showMission();
+      }
+      S.onDots(mbox, goMission);
       function showMission() {
         const m = MISSIONS[mi];
         phase = 'predict'; pred = -1; runs = []; note = ''; judged = null; armed = false;
@@ -641,7 +651,7 @@
             ${L.conv ? '<div id="labB-conv" style="margin:0.6rem 0"></div>' : ''}
             <p class="m-hint">想自己試試其他設定，可以打開下面的「自由探索」。</p>
             <button class="ctl primary" type="button" id="labB-again">再做一次</button>`;
-          mbox.querySelector('#labB-again').addEventListener('click', () => { mi = 0; firstPred = []; showMission(); });
+          mbox.querySelector('#labB-again').addEventListener('click', () => { mi = 0; firstPred = []; doneK.clear(); showMission(); });
           drawConv();
           $('free').open = true;
           return;
@@ -682,7 +692,7 @@
         const on = (id, fn) => { const e = mbox.querySelector('#labB-' + id); if (e) e.addEventListener('click', fn); };
         on('go', () => start(m.mode === 'cell' && pred >= 0 ? { cout: OUT[m.outs[pred]] } : null));
         on('retry', () => { phase = 'predict'; pred = -1; note = ''; judged = null; if (m.twoRuns) runs = []; applySetup(m); drawMission(); });
-        on('next', () => { mi++; showMission(); });
+        on('next', () => goMission(mi + 1));
       }
 
       // ---------- 主迴圈 ----------
@@ -690,8 +700,8 @@
         raf = requestAnimationFrame(frame);
         const dt = Math.min(1 / 30, (now - (lastT || now)) / 1000); lastT = now;
         if (playing) {
-          const s = sim(), n = 2;
-          for (let i = 0; i < n; i++) s.step(dt / n);
+          const s = sim(), k = mode === 'mol' ? PLAY : 1, n = 2 * k; // 快轉時多算幾小步，每一小步的長度不變
+          for (let i = 0; i < n; i++) s.step((dt * k) / n);
           missionTick();
           if (now - chartT > 250) { chartT = now; refreshCharts(); readout(); }
         }
@@ -707,10 +717,10 @@
     },
   });
 
-  makeLab({ id: 'lab-transport', title: '擴散實驗', mode: 'mol', keys: ['diff', 'temp'], conv: true,
+  makeLab({ id: 'lab-transport', title: '擴散實驗', mode: 'mol', keys: ['diff', 'temp'], conv: true, play: 3,
     summary: '擴散：分子由濃度高往濃度低移動，最後分布均勻；溫度高，擴散比較快。距離變成 10 倍，擴散需要的時間變成 100 倍，所以細胞都很小。' });
   makeLab({ id: 'lab-osmosis', title: '滲透實驗', mode: 'mol', keys: ['semi', 'osmo', 'conc'],
-    summary: '半透膜有選擇性：有些物質能通過，有些不能。滲透：水通過半透膜，往「過不了膜的溶質粒子」濃度較高（水比較少）的一邊淨移動。判斷方向要看粒子的濃度，不能只看重量百分濃度。' });
+    summary: '半透膜有選擇性：有些物質能通過，有些不能。滲透：水通過半透膜，往「過不了膜的溶質粒子」濃度較高（水比較少）的一邊淨移動。判斷方向要看溶質粒子的濃度（數目），不是看溶了幾公克，也不是看粒子的大小。' });
   makeLab({ id: 'lab-cells', title: '細胞放進溶液', mode: 'cell', keys: ['rbc', 'plant'],
     summary: '外面比細胞內稀：水進入細胞（紅血球會吸水脹大，最後破裂）。外面和細胞內一樣濃：維持原狀（0.9% 生理食鹽水）。外面比較濃：水離開細胞（植物細胞的細胞膜和細胞壁分開）。' });
 })();

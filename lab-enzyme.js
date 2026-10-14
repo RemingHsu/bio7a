@@ -2,7 +2,7 @@
 (() => {
   const { el, g, text, C } = S;
   const ENZ = '#63d4bf', SUG = '#ffcf5c';
-  const TMAX = 12, SEC_PER_MIN = 0.6; // 動畫約 0.6 秒代表 1 分鐘＊
+  const TMAX = 12, SEC_PER_MIN = 0.25; // 動畫約 0.25 秒代表 1 分鐘＊（12 分鐘約 3 秒）
   const CLEAR = 0.08; // 澱粉剩下這麼少時，碘液看不出藍黑色
   const curve = (T) => (T <= 37 ? Math.pow(Math.max(0, T) / 37, 1.6) : Math.max(0, 1 - Math.pow((T - 37) / 23, 2)));
   const ENZS = { saliva: '唾液', boiled: '煮沸過的唾液', water: '清水（對照）' };
@@ -63,7 +63,7 @@
       <div class="lab-stage"><svg viewBox="0 0 1200 620" role="img" aria-label="水浴中的試管、放大的分子和點滴板"></svg></div>
       <div class="pad">
         <p class="status-line" id="labE-status" aria-live="polite"></p>
-        <p class="footnote">＊示意：動畫中約 0.6 秒代表 1 分鐘；實際需要的時間會因唾液的濃度而不同。放大圖的分子都畫得很大，數量也是示意。</p>
+        <p class="footnote">＊示意：動畫中約 0.25 秒代表 1 分鐘；實際需要的時間會因唾液的濃度而不同。放大圖的分子都畫得很大，數量也是示意。</p>
       </div>
     </div>
     <div class="card pad c-table"><h3>實驗紀錄</h3><div class="table-wrap" id="labE-log"></div></div>
@@ -170,6 +170,13 @@
       const act = (r, T) => (r.enz === 'water' ? 0 : curve(T) * r.health * (r.ph === 'acid' ? 0.03 : 1));
       function step(dm) {
         const r = run, T = st.T;
+        // 任務要「過幾分鐘後調整水浴」：時間到了就停在那裡，等學生按按鈕（時間很快，避免來不及按）
+        let snap = false;
+        if (r.then) {
+          if (T === r.then.T) r.then = null;
+          else if (r.t >= r.then.after - 1e-9) return;
+          else if (r.t + dm >= r.then.after) { dm = r.then.after - r.t; snap = true; }
+        }
         const last = r.segs[r.segs.length - 1];
         if (!last || last.T !== T) r.segs.push({ T, from: r.t, dur: 0 });
         if (r.enz !== 'water') {
@@ -178,6 +185,7 @@
         }
         r.S = Math.max(0, r.S - (act(r, T) * dm) / 3.8);
         r.t += dm;
+        if (snap) r.t = r.then.after;
         r.segs[r.segs.length - 1].dur = r.t - r.segs[r.segs.length - 1].from;
         while (r.wells.length < Math.min(TMAX, Math.floor(r.t + 1e-6))) {
           const i = r.wells.length;
@@ -293,7 +301,15 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：正在做的實驗先停止（不列入紀錄）
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        if (running()) finish(true);
+        mi = k; done = false; picked = -1; pred = -1; drawMission(); checkMission();
+      }
+      S.onDots(mbox, goMission);
       const running = () => run && !run.done;
       const actsHtml = (m) => {
         let h = `<div class="acts">${m.acts.map(([label, enz, ph, T], i) => {
@@ -339,11 +355,12 @@
         mbox.querySelectorAll('.acts [data-a]').forEach((b) => b.addEventListener('click', () => {
           const [, enz, ph, T] = m.acts[+b.dataset.a];
           Object.assign(st, { enz, ph, T }); start();
+          if (m.then) run.then = m.then;
         }));
         const th = mbox.querySelector('#labE-then');
         if (th) th.addEventListener('click', () => { st.T = m.then.T; sync(); drawMission(); });
         const nx = mbox.querySelector('#labE-next');
-        if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = -1; pred = -1; drawMission(); checkMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function checkMission() {
         const m = MISSIONS[mi];
@@ -356,7 +373,7 @@
         if (run && !run.done) run.done = true;
         run = null; runs.length = 0;
         Object.assign(st, { enz: 'saliva', ph: 'neutral', T: 37 });
-        mi = 0; done = false; picked = -1; pred = -1;
+        mi = 0; done = false; picked = -1; pred = -1; doneK.clear();
         wells.forEach((w) => gsap.set(w, { attr: { r: 0 } }));
         addLbl.textContent = '';
         status('按任務卡上的按鈕開始實驗。實驗中每 1 分鐘會自動取一滴，滴到點滴板上加碘液。');

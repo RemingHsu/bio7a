@@ -125,6 +125,7 @@
       // ---------- 狀態 ----------
       let list = ANIMALS, ai = 0, step = 'vert', got = {}, wrong = null, done = false, free = false, savedAi = 0;
       const first = [], recs = [];
+      const doneK = new Set(); // 分好過的動物（點圓點可以回去再做）
       let firstNow = true;
 
       function paint() {
@@ -168,7 +169,7 @@
         if (done) return;
         const a = list[ai];
         const right = step === 'vert' ? (a.vert ? 'yes' : 'no') : step === 'q2' ? a.q2 : a.insect;
-        if (v !== right) { wrong = v; firstNow = false; drawMission(); return; }
+        if (v !== right) { wrong = v; firstNow = false; if (!free && first[ai] === undefined) first[ai] = false; drawMission(); return; }
         wrong = null;
         if (step === 'vert') { got.vert = a.vert; step = 'q2'; }
         else if (step === 'q2') {
@@ -183,8 +184,8 @@
         done = true;
         fly(a.q2);
         const sub = a.insect ? (a.insect === 'yes' ? '（昆蟲）' : a.k === 'spider' ? '（蛛形類）' : a.k === 'crab' ? '（甲殼類）' : '（多足類）') : '';
-        if (!free) first[ai] = firstNow;
-        recs.push([a.name, GN[a.q2] + sub, free ? '自由探索' : firstNow ? '✓' : '再想一次後答對']);
+        if (!free) { if (first[ai] === undefined) first[ai] = firstNow; doneK.add(ai); }
+        recs.push([a.name, GN[a.q2] + sub, free ? '自由探索' : first[ai] ? '✓' : '再想一次後答對']);
         table();
         $('status').innerHTML = `${a.name} → <b>${a.vert ? '脊椎動物' : '無脊椎動物'}・${GN[a.q2]}${sub}</b>`;
       }
@@ -199,11 +200,12 @@
       }
       const mbox = $('mission');
       function drawMission() {
-        const dots = free ? '' : `<div class="dots" aria-hidden="true">${ANIMALS.map((_, k) => `<i class="${k < ai || (k === ai && done) ? (first[k] ? 'ok' : 'miss') : k === ai ? 'on' : ''}"></i>`).join('')}</div>`;
+        // 這一種分好以後，圓點就顯示結果的顏色
+        const dots = free ? '' : S.dots(ANIMALS.length, done ? -1 : ai, (k) => (doneK.has(k) ? (first[k] ? 'ok' : 'miss') : ''), '種動物');
         if (!free && ai >= ANIMALS.length) {
           const ok = first.filter(Boolean).length;
-          mbox.innerHTML = `<div class="mission-top"><h2>六種動物都分好了</h2>${dots}</div>
-            <p class="m-text">第一次就答對：<b>${ok} / ${ANIMALS.length}</b> 種</p>
+          mbox.innerHTML = `<div class="mission-top"><h2>${doneK.size === ANIMALS.length ? '六種動物都分好了' : `分好了 ${doneK.size} / ${ANIMALS.length} 種動物`}</h2>${dots}</div>
+            <p class="m-text">第一次就答對：<b>${ok} / ${ANIMALS.length}</b> 種</p>${doneK.size < ANIMALS.length ? '<p class="m-hint">點上面灰色的圓點，可以去分還沒分的動物。</p>' : ''}
             <div class="fb ok"><strong>容易弄錯的動物</strong>鯨魚、蝙蝠是哺乳類（用肺呼吸、用乳汁哺育幼體）；海馬是魚類。<br>海星是棘皮動物、烏賊是軟體動物，都不是魚。<br>蜘蛛有 4 對腳，是節肢動物中的蛛形類，不是昆蟲。</div>
             <button class="ctl primary" type="button" id="labZ2-again">再做一次</button>`;
           mbox.querySelector('#labZ2-again').addEventListener('click', reset);
@@ -237,14 +239,17 @@
         else { aniW.innerHTML = ''; cueG.innerHTML = ''; nameT.textContent = ''; obs.forEach((t) => { t.textContent = ''; }); }
         table(); paint(); drawMission();
       }
+      // 換一種動物（start 會先把上一種的動畫做完）
+      function goAnimal(k) { ai = k; start(); }
+      S.onDots(mbox, goAnimal);
       function next() {
         if (free) { free = false; list = ANIMALS; ai = savedAi; start(); return; }
-        ai++; start();
+        goAnimal(ai + 1);
       }
       function reset() {
         tweens.forEach((t) => t.kill()); tweens.length = 0;
         Object.values(bx).forEach((b) => { b.icons.innerHTML = ''; b.count = 0; });
-        first.length = 0; recs.length = 0; free = false; list = ANIMALS; ai = 0;
+        first.length = 0; doneK.clear(); recs.length = 0; free = false; list = ANIMALS; ai = 0;
         $('free').open = false; table(); start();
       }
       const ALL = [...ANIMALS, ...EXTRA];

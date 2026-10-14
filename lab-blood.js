@@ -267,7 +267,32 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, tried = [];
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：還在畫的棋盤方格先停止（不列入紀錄），換成新任務的條件
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        if (tl && busy) { if (done) tl.progress(1); else tl.kill(); } // 已完成的任務：方格直接畫完；沒完成的：停止，回呼不會影響新的任務
+        busy = false;
+        mi = k; done = false; picked = -1; pred = -1; tried = [];
+        const nm = MISSIONS[mi];
+        // 換任務：清掉上一個任務的方格和孩子，父母改成這個任務的條件
+        if (nm) {
+          if (tl) tl.kill(); busy = false;
+          clearKids(); layer.innerHTML = '';
+          if (nm.acts && nm.acts[0][1] === 'sex') runCross('XY', 'XX', 'sex');
+          else if (nm.acts) runCross('Ai', 'Bi', 'abo');
+          else {
+            st.mode = 'abo';
+            if (nm.predict) { st.fa = nm.predict.cross[0]; st.mo = nm.predict.cross[1]; st.faType = null; }
+            else { st.faType = nm.pick.show[0]; st.mo = nm.pick.show[1]; }
+            syncFree(); drawParents();
+            status(nm.predict ? '先預測，再看棋盤方格的結果。' : '點一個選項，就用棋盤方格驗證。');
+          }
+        }
+        drawLog(); drawMission();
+      }
+      S.onDots(mbox, goMission);
       function drawMission() {
         if (mi >= MISSIONS.length) {
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
@@ -322,30 +347,12 @@
           drawMission();
         }));
         const nx = mbox.querySelector('#labU2-next');
-        if (nx) nx.addEventListener('click', () => {
-          mi++; done = false; picked = -1; pred = -1; tried = [];
-          const nm = MISSIONS[mi];
-          // 換任務：清掉上一個任務的方格和孩子，父母改成這個任務的條件
-          if (nm) {
-            if (tl) tl.kill(); busy = false;
-            clearKids(); layer.innerHTML = '';
-            if (nm.acts && nm.acts[0][1] === 'sex') runCross('XY', 'XX', 'sex');
-            else if (nm.acts) runCross('Ai', 'Bi', 'abo');
-            else {
-              st.mode = 'abo';
-              if (nm.predict) { st.fa = nm.predict.cross[0]; st.mo = nm.predict.cross[1]; st.faType = null; }
-              else { st.faType = nm.pick.show[0]; st.mo = nm.pick.show[1]; }
-              syncFree(); drawParents();
-              status(nm.predict ? '先預測，再看棋盤方格的結果。' : '點一個選項，就用棋盤方格驗證。');
-            }
-          }
-          drawLog(); drawMission();
-        });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function reset() {
         if (tl) tl.kill();
         busy = false; R.crosses.length = 0; R.births.length = 0;
-        mi = 0; done = false; picked = -1; pred = -1; tried = [];
+        mi = 0; done = false; picked = -1; pred = -1; tried = []; doneK.clear();
         Object.assign(st, { fa: 'Ai', mo: 'Bi', mode: 'abo', faType: null }); syncFree();
         drawParents(); layer.innerHTML = ''; clearKids();
         status('ABO 血型：I<sup>A</sup>、I<sup>B</sup> 對 i 是顯性。按任務卡上的選項或按鈕開始。');

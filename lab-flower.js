@@ -160,7 +160,7 @@
       // ---------- 動畫（rAF；分頁隱藏時用 advance 測試） ----------
       let anim = null, raf = 0, last = 0;
       const RUNS = {
-        pollinate: { dur: 6, fn(u) {
+        pollinate: { dur: 3, fn(u) {
           const k1 = S.smoothstep(0, 0.35, u);
           const [sx, sy] = P(0, -184);
           bee.style.opacity = u < 0.5 ? 1 : 1 - S.smoothstep(0.5, 0.6, u);
@@ -171,7 +171,7 @@
           st.tube = S.smoothstep(0.45, 0.95, u);
         }, texts: [[0, '蜜蜂帶著花粉飛到花上……'], [0.36, '花粉落在柱頭上：授粉。'], [0.45, '花粉長出花粉管，穿過花柱……'], [0.95, '每條花粉管到達一個胚珠，精細胞和卵結合：受精。']] },
         wither: { dur: 3, fn(u) { st.wither = u; }, texts: [[0, '花瓣、雄蕊、柱頭和花柱漸漸凋謝……'], [0.95, '花瓣、雄蕊、柱頭和花柱都凋謝掉落了。']] },
-        fruit: { dur: 3.5, fn(u) { st.fruit = u; }, texts: [[0, '子房漸漸膨大……'], [0.95, '子房長成了果實。']] },
+        fruit: { dur: 2.5, fn(u) { st.fruit = u; }, texts: [[0, '子房漸漸膨大……'], [0.95, '子房長成了果實。']] },
         seed: { dur: 2.5, fn(u) { st.seed = S.smoothstep(0, 0.6, u) * (0.6 + 0.4 * Math.abs(Math.sin(u * 9))); }, texts: [[0, '看看果實的裡面……'], [0.95, '胚珠發育成種子。']] },
         count: { dur: 3, fn(u) { st.seed = 1; st.count = u; }, texts: [[0, '數一數：每顆種子，都是一個受精的胚珠……'], [0.95, '4 個胚珠受精 → 4 顆種子：至少要 4 粒花粉。']] },
       };
@@ -200,7 +200,33 @@
       const mbox = $('mission');
       let mi = 0, done = false, picked = null, hintK = null;
       const first = [];
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? (first[k] ? 'ok' : 'miss') : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? (first[k] ? 'ok' : 'miss') : ''));
+      // 答對第 j 個任務：顯示部位的名稱和「學到了」
+      function learn(j) {
+        const key = MISSIONS[j].opts[MISSIONS[j].ans][0];
+        shown.add(key);
+        if (key === 'petal') { shown.add('anther'); shown.add('stigma'); }
+        sums[j].style.opacity = 1; stageTitle.style.opacity = 1;
+      }
+      // 花恢復成第 k 個任務開始時的樣子：前面任務的變化都已經發生；名稱和「學到了」只顯示前面做完過的任務
+      function stageFor(k) {
+        Object.assign(st, { pol: 0, tube: 0, wither: 0, fruit: 0, seed: 0, count: 0 });
+        shown.clear(); sums.forEach((s) => { s.style.opacity = 0; }); stageTitle.style.opacity = 0;
+        MISSIONS.slice(0, k).forEach((m, j) => { RUNS[m.run].fn(1); if (doneK.has(j)) learn(j); });
+        bee.style.opacity = 0;
+        render();
+      }
+      // 切換任務：正在播的動畫先停止
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        anim = null;
+        mi = k; done = false; picked = null; hintK = null;
+        stageFor(mi);
+        status(mi < MISSIONS.length ? (MISSIONS[mi].run === 'count' ? '數一數果實裡的種子，再點按鈕作答。' : '點選花的部位作答。') : '可以在「自由探索」拉動時間，重看整個過程。');
+        drawMission(); syncFree();
+      }
+      S.onDots(mbox, goMission);
       function tapPart(k) {
         if (busy() || mi >= MISSIONS.length || done) return;
         const m = MISSIONS[mi];
@@ -215,19 +241,16 @@
         if (oi !== m.ans) { picked = oi; hintK = null; drawMission(); return; }
         picked = null; hintK = null;
         const k = mi;
-        const key = m.opts[m.ans][0];
         play(m.run, () => {
           if (mi !== k) return;
           done = true;
-          shown.add(key === 'petal' ? 'petal' : key);
-          if (key === 'petal') { shown.add('anther'); shown.add('stigma'); }
-          sums[k].style.opacity = 1; stageTitle.style.opacity = 1;
+          learn(k);
           render();
         });
       }
       function drawMission() {
         if (mi >= MISSIONS.length) {
-          const ok = first.filter(Boolean).length;
+          const ok = first.filter((v, k) => v && doneK.has(k)).length;
           mbox.innerHTML = `<div class="mission-top"><h2>任務完成</h2>${dots()}</div>
             <p class="m-text">第一次就答對 <b>${ok} / ${MISSIONS.length}</b> 題。</p>
             <div class="fb ok"><strong>花變成果實</strong>授粉：花粉落到柱頭上 → 花粉管到達胚珠，精細胞和卵結合（受精）。<br>花瓣、雄蕊、柱頭、花柱凋謝；子房 → 果實；胚珠 → 種子；受精卵 → 胚。<br>一粒花粉讓一個胚珠受精：種子數 ＝ 受精的胚珠數。</div>
@@ -247,7 +270,7 @@
         mbox.innerHTML = html;
         mbox.querySelectorAll('.opt[data-k]').forEach((b) => b.addEventListener('click', () => { if (!busy()) answer(+b.dataset.k); }));
         const nx = mbox.querySelector('#labN2-next');
-        if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = null; hintK = null; status(mi < MISSIONS.length ? (MISSIONS[mi].run === 'count' ? '數一數果實裡的種子，再點按鈕作答。' : '點選花的部位作答。') : '可以在「自由探索」拉動時間，重看整個過程。'); drawMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
 
       // ---------- 自由探索 ----------
@@ -266,7 +289,7 @@
       box.querySelectorAll('#labN2-lbl button').forEach((b) => b.addEventListener('click', () => { st.labels = b.dataset.v === '1' ? 'all' : 'auto'; syncFree(); render(); }));
 
       function reset() {
-        mi = 0; done = false; picked = null; hintK = null; first.length = 0; shown.clear();
+        mi = 0; done = false; picked = null; hintK = null; first.length = 0; doneK.clear(); shown.clear();
         Object.assign(st, { pol: 0, tube: 0, wither: 0, fruit: 0, seed: 0, count: 0, labels: 'auto' });
         sums.forEach((s) => { s.style.opacity = 0; }); stageTitle.style.opacity = 0;
         bee.style.opacity = 0; $('t').value = 0; $('t-o').textContent = '開花';

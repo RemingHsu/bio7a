@@ -1,7 +1,7 @@
 /* 互動模型：水蘊草實驗 — 調燈的距離、開關燈、換水（小蘇打水／煮沸後冷卻的開水），數 1 分鐘的氣泡；收集氣體用線香測試 ＋ 任務 */
 (() => {
   const { el, g, text, C } = S;
-  const SEC_PER_MIN = 6;            // 6 秒代表 1 分鐘＊
+  const SEC_PER_MIN = 3;            // 3 秒代表 1 分鐘＊
   const PX_CM = 10.5, PLANT_X = 720;
   const WATERS = { soda: '小蘇打水', boiled: '煮沸後冷卻的開水' };
   const GAS_MAX = 190, GAS_TEST = 30;
@@ -21,6 +21,7 @@
     { title: '哪些要相同？', quiz: { q: '這個實驗要比較「燈的距離」對氣泡數的影響。下列哪一項必須保持相同？', opts: ['燈的距離', '水的種類、水蘊草的量和水溫', '每分鐘的氣泡數'], ans: 1, hints: ['如果每一次的燈都放在同樣的距離，還看得出距離有沒有影響嗎？', '', '氣泡數要做完實驗才數得到。這是能事先保持相同的條件嗎？'] },
       why: '只改變燈的距離（操縱變因），觀察氣泡數（應變變因）；水的種類、水蘊草的量、水溫等都要相同（控制變因），實驗才公平。' },
     { title: '缺少二氧化碳', text: '把水換成<b>煮沸後冷卻的開水</b>（水中的二氧化碳被趕走了），燈一樣放 30 cm，和小蘇打水比較。', acts: [{ label: '換水，30 cm 數 1 分鐘', set: { d: 30, light: 1, water: 'boiled' }, then: 'count', did: (s) => s.data.some((r) => r.water === 'boiled' && r.light) }],
+      pre: { d: 30, light: 1, water: 'soda' }, // 沒有小蘇打水 30 cm 的紀錄（跳過任務 2）時，自動補上一筆來比較
       done: (s) => s.data.some((r) => r.water === 'boiled' && r.light && s.data.some((q) => q.water === 'soda' && q.light && q.d === r.d)),
       why: '煮沸會趕走水中的二氧化碳，原料不夠，光合作用很少，氣泡也很少。小蘇打水能提供二氧化碳。' },
     { title: '氣泡是什麼氣體？', text: '先讓試管收集多一點氣體，再用線香的餘燼測試。', acts: [{ label: '燈移到 15 cm，收集氣體', set: { d: 15, light: 1, water: 'soda' }, did: (s) => s.light && s.d === 15 && s.water === 'soda' }, { label: '用線香測試', then: 'test', ready: (s) => s.gas >= GAS_TEST }], done: (s) => s.tested === 'ok',
@@ -56,7 +57,7 @@
       <div class="lab-stage"><svg viewBox="0 0 1200 560" role="img" aria-label="燈、燒杯中的水蘊草、收集氣體的試管和線香測試"></svg></div>
       <div class="pad">
         <p class="status-line" id="labP-status" aria-live="polite"></p>
-        <p class="footnote">＊示意：動畫中 6 秒代表 1 分鐘，氣泡數也是示意；實際數目和水蘊草的多少、燈的種類有關。燈很近時水溫可能升高，實驗時可以用 LED 燈，或在燈和燒杯之間放一杯水隔熱。</p>
+        <p class="footnote">＊示意：動畫中 3 秒代表 1 分鐘，氣泡數也是示意；實際數目和水蘊草的多少、燈的種類有關。燈很近時水溫可能升高，實驗時可以用 LED 燈，或在燈和燒杯之間放一杯水隔熱。</p>
       </div>
     </div>
     <div class="card pad c-data"><h3>實驗紀錄（每分鐘的氣泡數）</h3>
@@ -146,7 +147,7 @@
 
       // ---------- 動畫 ----------
       const rnd = S.rng(5);
-      let nextIn = 0;
+      let nextIn = 0, lastRate = 0;
       function spawn() {
         st.emitted++;
         const b = el('circle', { cx: PLANT_X - 50 + rnd() * 100, cy: 360 + rnd() * 120, r: 4 + rnd() * 3, fill: 'none', stroke: '#e8f6ff', 'stroke-width': 2 }, bubG);
@@ -157,9 +158,12 @@
         // 氣泡出現：間隔有一點隨機（平均每分鐘 rate 個；取 6 段平均，讓數目不會差太多）
         const rate = rateOf(st) / SEC_PER_MIN; // 每秒
         if (rate > 0) {
+          // 換了燈的距離或水：還沒等完的時間照新的速率縮放，不會沿用剛才很慢時的等待（否則近距離也可能數到 0 個）
+          if (lastRate > 0 && rate !== lastRate) nextIn *= lastRate / rate;
+          lastRate = rate;
           nextIn -= dt;
           while (nextIn <= 0) { spawn(); let e = 0; for (let k = 0; k < 6; k++) e -= Math.log(1 - Math.random() * 0.999); nextIn += e / 6 / rate; }
-        } else nextIn = 0.2;
+        } else { nextIn = 0.2; lastRate = 0; }
         for (let i = bubbles.length - 1; i >= 0; i--) {
           const b = bubbles[i];
           b.y -= 150 * dt; b.ph += dt * 8;
@@ -248,7 +252,22 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, needShown = null;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：正在數的氣泡、正在做的線香測試先停止（不列入紀錄）
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        if (counting) { counting = null; counter.textContent = ''; status(''); sync(); }
+        if (testTl && testTl.progress() < 1) {
+          testTl.kill(); testGas.setAttribute('height', 0); testLbl.textContent = ''; status('');
+          Object.assign(sp, { x: TX + 70, y: 250, r: 10 }); placeStick(); gsap.set(fl, { opacity: 0 }); gsap.set(ember, { opacity: 1 });
+        }
+        mi = k; done = false; picked = -1; pred = -1;
+        const p = MISSIONS[mi] && MISSIONS[mi].pre;
+        if (p && !st.data.some((r) => r.water === p.water && r.light && r.d === p.d)) { st.data.push({ ...p, n: Math.round(rateOf(p)) }); drawData(); status(`還沒有「${WATERS[p.water]}、燈在 ${p.d} cm」的紀錄，已自動補上一筆，用來比較。`); }
+        drawMission(); checkMission(true);
+      }
+      S.onDots(mbox, goMission);
       let gasReady = null;
       const actsHtml = (m) => `<div class="acts">${m.acts.map((a, i) => {
         const did = a.did && a.did(st), ok = !counting && (!a.ready || a.ready(st));
@@ -294,7 +313,7 @@
         mbox.querySelectorAll('.acts [data-a]').forEach((b) => b.addEventListener('click', () => doAct(m.acts[+b.dataset.a])));
         gasReady = st.gas >= GAS_TEST;
         const nx = mbox.querySelector('#labP-next');
-        if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = -1; pred = -1; drawMission(); checkMission(true); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       // 每一格都會呼叫：只有狀態改變時才重畫
       function checkMission() {
@@ -310,7 +329,7 @@
         bubbles.forEach((b) => b.e.remove()); bubbles.length = 0;
         Object.assign(st, { d: 30, light: 0, water: 'soda', emitted: 0, gas: 0, data: [], tested: null });
         counting = null; counter.textContent = '';
-        mi = 0; done = false; picked = -1; pred = -1; needShown = null;
+        mi = 0; done = false; picked = -1; pred = -1; needShown = null; doneK.clear();
         testGas.setAttribute('height', 0); testLbl.textContent = '';
         Object.assign(sp, { x: TX + 70, y: 250, r: 10 }); placeStick(); gsap.set(fl, { opacity: 0 }); gsap.set(ember, { opacity: 1 });
         status('按任務卡上的按鈕操作，觀察水蘊草冒出的氣泡。');

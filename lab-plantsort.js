@@ -146,6 +146,7 @@
       // ---------- 狀態 ----------
       let list = PLANTS, pi = 0, qk = 'vasc', ans = {}, wrong = null, done = false, stage2 = false, free = false;
       const first = [], recs = [];
+      const doneK = new Set(); // 分好過的植物（點圓點可以回去再做）
       let firstNow = true;
 
       function paintKey() {
@@ -194,7 +195,7 @@
       function answer(v) {
         if (done) return;
         const pl = list[pi], right = pl.ans[qk];
-        if (v !== right) { wrong = v; firstNow = false; drawMission(); return; }
+        if (v !== right) { wrong = v; firstNow = false; if (!free && first[pi] === undefined) first[pi] = false; drawMission(); return; }
         wrong = null; ans[qk] = v;
         if (qk === 'mono') { stage2 = false; done = true; flyToBox('ang'); finishPlant(); return; }
         const nextQ = ORDER[ORDER.indexOf(qk) + 1];
@@ -207,8 +208,8 @@
       }
       function finishPlant() {
         const pl = list[pi];
-        if (!free) first[pi] = firstNow;
-        recs.push([pl.name, GNAME[groupOf(ans)] + (ans.mono ? `（${ans.mono === 'mono' ? '單子葉' : '雙子葉'}）` : ''), free ? '自由探索' : firstNow ? '✓' : '再想一次後答對']);
+        if (!free) { if (first[pi] === undefined) first[pi] = firstNow; doneK.add(pi); }
+        recs.push([pl.name, GNAME[groupOf(ans)] + (ans.mono ? `（${ans.mono === 'mono' ? '單子葉' : '雙子葉'}）` : ''), free ? '自由探索' : first[pi] ? '✓' : '再想一次後答對']);
         table();
         $('status').innerHTML = `${pl.name} → <b>${GNAME[groupOf(ans)]}</b>${ans.mono ? `（${ans.mono === 'mono' ? '單子葉植物' : '雙子葉植物'}）` : ''}`;
         showClue(); paintKey(); drawMission();
@@ -226,11 +227,12 @@
 
       const mbox = $('mission');
       function drawMission() {
-        const dots = free ? '' : `<div class="dots" aria-hidden="true">${PLANTS.map((_, k) => `<i class="${k < pi || (k === pi && done) ? (first[k] ? 'ok' : 'miss') : k === pi ? 'on' : ''}"></i>`).join('')}</div>`;
+        // 這一株分好以後，圓點就顯示結果的顏色
+        const dots = free ? '' : S.dots(PLANTS.length, done ? -1 : pi, (k) => (doneK.has(k) ? (first[k] ? 'ok' : 'miss') : ''), '種植物');
         if (!free && pi >= PLANTS.length) {
           const ok = first.filter(Boolean).length;
-          mbox.innerHTML = `<div class="mission-top"><h2>五株植物都分好了</h2>${dots}</div>
-            <p class="m-text">第一次就答對：<b>${ok} / ${PLANTS.length}</b> 株</p>
+          mbox.innerHTML = `<div class="mission-top"><h2>${doneK.size === PLANTS.length ? '五株植物都分好了' : `分好了 ${doneK.size} / ${PLANTS.length} 株植物`}</h2>${dots}</div>
+            <p class="m-text">第一次就答對：<b>${ok} / ${PLANTS.length}</b> 株</p>${doneK.size < PLANTS.length ? '<p class="m-hint">點上面灰色的圓點，可以去分還沒分的植物。</p>' : ''}
             <div class="fb ok"><strong>檢索的順序</strong>有維管束嗎？沒有 → 蘚苔植物。<br>有種子嗎？沒有 → 蕨類植物。<br>有花和果實嗎？沒有 → 裸子植物；有 → 被子植物（再分單子葉、雙子葉）。</div>
             <button class="ctl primary" type="button" id="labZ1-again">再做一次</button>`;
           mbox.querySelector('#labZ1-again').addEventListener('click', reset);
@@ -262,15 +264,18 @@
         else { plantW.innerHTML = ''; clueG.innerHTML = ''; nameT.textContent = ''; obsT.textContent = ''; }
         table(); paintKey(); drawMission();
       }
+      // 換一株植物（startPlant 會先把上一株的動畫做完）
+      function goPlant(k) { pi = k; startPlant(); }
+      S.onDots(mbox, goPlant);
       let savedPi = 0;
       function next() {
         if (free) { free = false; list = PLANTS; pi = savedPi; startPlant(); return; }
-        pi++; startPlant();
+        goPlant(pi + 1);
       }
       function reset() {
         tweens.forEach((t) => t.kill()); tweens.length = 0;
         Object.values(boxG).forEach((b) => { b.icons.innerHTML = ''; b.n = 0; });
-        first.length = 0; recs.length = 0; free = false; list = PLANTS; pi = 0;
+        first.length = 0; doneK.clear(); recs.length = 0; free = false; list = PLANTS; pi = 0;
         $('free').open = false; table(); startPlant();
       }
       $('freelist').innerHTML = [...PLANTS, ...EXTRA].map((p, i) => `<button class="ctl small" type="button" data-i="${i}">${p.name}</button>`).join('');

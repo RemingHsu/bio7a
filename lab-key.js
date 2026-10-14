@@ -200,7 +200,13 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, picked = -1, done = false;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        mi = k; setupMission(); drawMission();
+      }
+      S.onDots(mbox, goMission);
       function setupMission() {
         const m = MISSIONS[mi];
         picked = -1; done = false;
@@ -241,12 +247,12 @@
           drawMission();
         }));
         const nx = mbox.querySelector('#labX2-next');
-        if (nx) nx.addEventListener('click', () => { mi++; setupMission(); drawMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function reset() {
         log.length = 0; drawLog(); walks.free = null;
         Object.keys(ORG).forEach((k) => reveal(k, false));
-        mi = 0; setupMission();
+        mi = 0; doneK.clear(); setupMission();
         $('free').open = false;
         drawFree(); drawMission();
       }

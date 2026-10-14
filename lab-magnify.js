@@ -192,6 +192,7 @@
           } else prev = tgt;
           tl.call(() => { badges[k].num.textContent = `${counts[k]}＊`; }, null, '+=0.1');
         }
+        tl.timeScale(Math.max(1, tl.duration() / 3)); // 整段（4 層）約 3 秒播完
       }
 
       function finish() {
@@ -224,7 +225,15 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, ranHere = false;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：正在播放的先停止（不列入紀錄）
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        if (busy) { clearStage(); busy = false; $('status').innerHTML = ''; }
+        mi = k; done = false; picked = -1; pred = -1; ranHere = false; showRing(-1); prep(); drawMission();
+      }
+      S.onDots(mbox, goMission);
       const showRing = (i) => {
         if (i < 0) { ring.setAttribute('opacity', 0); return; }
         const l = LV[i], bird = l.k === 'bird';
@@ -257,7 +266,7 @@
         const eat = mbox.querySelector('#labS1-eat');
         if (eat) eat.addEventListener('click', () => { if (busy) return; Object.assign(st, m.run); ranHere = true; run(); });
         const nx = mbox.querySelector('#labS1-next');
-        if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = -1; pred = -1; ranHere = false; showRing(-1); prep(); drawMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function choose(k) {
         const m = MISSIONS[mi];
@@ -282,7 +291,7 @@
       function reset() {
         clearStage();
         R.length = 0;
-        mi = 0; done = false; picked = -1; pred = -1; ranHere = false;
+        mi = 0; done = false; picked = -1; pred = -1; ranHere = false; doneK.clear();
         showRing(-1);
         $('free').open = false;
         prep(); table(); drawMission();

@@ -102,7 +102,7 @@
       el('path', { d: 'M 0,0 L 22,-14 A 26,26 0 1,0 22,14 Z', fill: ENZ, transform: 'rotate(-90)' }, enz);
       text(enz, 0, 48, '酵素', { 'font-size': 22, 'text-anchor': 'middle', fill: ENZ });
       // 切下來的葡萄糖落到酵素標籤下面（y = 492），不和「酵素」重疊
-      const gluLbl = text(P1, 890, 556, '葡萄糖（小分子）', { 'font-size': 24, 'text-anchor': 'middle', fill: STA, 'font-weight': 700, opacity: 0 });
+      const gluLbl = text(P1, 890, 556, '最後分解成葡萄糖（小分子）', { 'font-size': 24, 'text-anchor': 'middle', fill: STA, 'font-weight': 700, opacity: 0 });
       text(P1, 890, 606, '小分子才能被吸收', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       tl.addLabel('s1');
       S.hide(tl, P0, 's1', 0.4);
@@ -143,7 +143,8 @@
       const c0 = g(colG[0]);
       chain(c0, COLX[0] - 70, ROWY[0] - 14, 4, 's', 24);
       [[COLX[0] - 60, ROWY[0] + 26], [COLX[0] + 20, ROWY[0] + 26]].forEach(([x, y]) => chain(c0, x, y, 2, 's', 24));
-      text(c0, COLX[0], ROWY[0] + 70, '部分分解成麥芽糖', { 'font-size': 18, 'text-anchor': 'middle', fill: C.mute });
+      text(c0, COLX[0], ROWY[0] + 66, '部分分解成麥芽糖', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
+      text(c0, COLX[0], ROWY[0] + 94, '（兩個葡萄糖相連）', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       chain(c0, COLX[0] - 78, ROWY[1], 7, 'p', 26);
       el('circle', { cx: COLX[0], cy: ROWY[2], r: 40, fill: FAT, opacity: 0.9 }, c0);
       // 胃
@@ -155,6 +156,7 @@
       // 小腸
       const c2 = g(colG[2]);
       for (let i = 0; i < 6; i++) glu(c2, COLX[2] - 70 + (i % 3) * 70, ROWY[0] - 16 + Math.floor(i / 3) * 34);
+      text(c2, COLX[2], ROWY[0] + 66, '麥芽糖 → 葡萄糖', { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute });
       for (let i = 0; i < 7; i++) amino(c2, COLX[2] - 75 + (i % 4) * 50, ROWY[1] - 16 + Math.floor(i / 4) * 34);
       for (let i = 0; i < 3; i++) fattyGly(c2, COLX[2] - 60 + i * 56, ROWY[2]);
       ['膽汁先乳化，', '再由酵素分解'].forEach((t, k) => text(c2, COLX[2], ROWY[2] + 48 + k * 26, t, { 'font-size': 22, 'text-anchor': 'middle', fill: C.mute }));
@@ -276,8 +278,8 @@
         ],
         steps: [
           '消化系統由<b>消化管</b>和<b>消化腺</b>組成。食物依序經過：口腔 → 咽 → 食道 → 胃 → 小腸 → 大腸 → 肛門。',
-          '消化分成兩種：<b>物理性消化</b>讓食物變小塊（咀嚼、蠕動、膽汁乳化）；<b>化學性消化</b>靠<b>酵素</b>把大分子分解成小分子。',
-          '口腔：唾液把部分<b>澱粉</b>分解成麥芽糖；胃：胃液初步分解<b>蛋白質</b>；<b>小腸</b>：胰液、腸液和膽汁讓三大類養分都分解完成。',
+          '消化分成兩種：<b>物理性消化</b>讓食物變小塊（咀嚼、蠕動、膽汁乳化）；<b>化學性消化</b>靠<b>酵素</b>把大分子分解成小分子，例如澱粉最後被分解成葡萄糖。',
+          '口腔：唾液把部分<b>澱粉</b>分解成<b>麥芽糖</b>（兩個葡萄糖相連）；胃：胃液初步分解<b>蛋白質</b>；<b>小腸</b>：胰液、腸液和膽汁讓三大類養分都分解完成，麥芽糖也在這裡分解成<b>葡萄糖</b>。',
           '小分子養分在<b>小腸</b>被吸收：葡萄糖、胺基酸進入<b>微血管</b>，脂肪酸和甘油進入<b>乳糜管</b>。皺褶和絨毛讓吸收的面積大幅增加。',
           '<b>大腸</b>吸收剩下的水分；沒有被消化吸收的殘渣形成糞便，由肛門排出，稱為<b>排遺</b>。',
         ],

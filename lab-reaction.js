@@ -270,7 +270,15 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, pred = -1, picked = -1, qi = 0, qOk = false, qWrong = null, base = { simple: 0, choice: 0, ruler: 0 };
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 切換任務：等待中的刺激、掉落中的尺都先停止（enterMission → prepView 會清掉計時器），這次不列入紀錄
+      function goMission(k) {
+        const m = MISSIONS[mi];
+        if (m && (m.kind === 'quiz' ? qOk && qi === ITEMS.length - 1 : done)) doneK.add(mi);
+        mi = k; enterMission();
+      }
+      S.onDots(mbox, goMission);
       const pressHtml = () => `<div class="acts"><button class="ctl primary press" type="button" id="labR-press">開始</button></div>`;
       const cnt = (k) => R[k].length - base[k];
       function after() { if (mi < MISSIONS.length) { checkMission(); drawMission(); } }
@@ -319,9 +327,9 @@
           drawMission();
         }));
         const qn = mbox.querySelector('#labR-qnext');
-        if (qn) qn.addEventListener('click', () => { if (qi < ITEMS.length - 1) { qi++; qOk = false; qWrong = null; showItem(); drawMission(); } else { mi++; enterMission(); } });
+        if (qn) qn.addEventListener('click', () => { if (qi < ITEMS.length - 1) { qi++; qOk = false; qWrong = null; showItem(); drawMission(); } else goMission(mi + 1); });
         const nx = mbox.querySelector('#labR-next');
-        if (nx) nx.addEventListener('click', () => { mi++; enterMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
         bindPress(mbox.querySelector('#labR-press'));
         labelPress();
       }
@@ -331,6 +339,8 @@
           return `<div class="fb ok"><strong>你的平均：${f2(a)} 秒</strong>從眼睛看到、訊息經神經傳到大腦，大腦再命令手指的肌肉收縮，都需要時間。一般人看到後按下按鈕，約 0.2～0.3 秒＊。</div>`;
         }
         const a1 = avg(R.simple), a2 = avg(R.choice.slice(base.choice)), d = a2 - a1;
+        // 用圓點直接跳到任務 2：還沒有「看到紅色就按」的紀錄可以比較
+        if (!R.simple.length) return `<div class="fb"><strong>你的平均：先判斷再按 ${f2(a2)} 秒</strong>還沒有「看到紅色就按」（任務 1）的紀錄可以比較。點第 1 個圓點測 3 次，再回來比一比。<br>要先<b>判斷</b>是哪一種顏色，再決定要不要按，大腦要多花時間，所以反應時間通常會<b>變長</b>。</div>`;
         const res = d > 0.02 ? 0 : d < -0.02 ? 2 : 1;
         const ok = res === pred;
         return `<div class="fb ${ok ? 'ok' : 'bad'}"><strong>${ok ? '和你的預測一樣' : '和你的預測不一樣'}</strong>你的平均：看到紅色就按 ${f2(a1)} 秒 → 先判斷再按 ${f2(a2)} 秒（${['變長', '差不多', '變短'][res]}）。<br>要先<b>判斷</b>是哪一種顏色，再決定要不要按，大腦要多花時間，所以反應時間通常會<b>變長</b>。${res !== 0 ? '這次的差別不明顯，可以在做完任務後打開「自由探索」多測幾次再比較。' : ''}</div>`;
@@ -398,7 +408,7 @@
         R.simple.length = 0; R.choice.length = 0; R.ruler.length = 0; R.wrong = 0;
         st.free = false; st.freeKind = 'simple'; st.greens = 0;
         $('free').open = false;
-        mi = 0; log(); enterMission(); syncFree();
+        mi = 0; doneK.clear(); log(); enterMission(); syncFree();
       }
       reset();
 

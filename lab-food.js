@@ -203,7 +203,7 @@
 
         // 1. 倒入樣品（每次都用乾淨的試管）
         addLbl.textContent = `加入${s.name}`;
-        tl.to(lv, { [s.oil ? 'top' : 'low']: s.oil ? 56 : 80, duration: 0.7, ease: 'power1.out', onUpdate: setLiq });
+        tl.to(lv, { [s.oil ? 'top' : 'low']: s.oil ? 56 : 80, duration: 0.3, ease: 'power1.out', onUpdate: setLiq });
         tl.set(low, { attr: { fill: s.oil ? (test === 'iod' ? COL.iod[0] : COL.blue[0]) : s.fill } }, 0);
 
         // 2. 滴入試劑
@@ -212,54 +212,57 @@
         dropper2.setAttribute('transform', `translate(${BOT[others].x},360)`);
         restDropper(test);
         tl.call(() => { addLbl.textContent = `滴入${TESTS[test]}`; });
-        mv(dp, setDrop, { y: 250 }, 0.35);
-        mv(dp, setDrop, { x: HOME.x }, 0.5);
+        mv(dp, setDrop, { y: 250 }, 0.15);
+        mv(dp, setDrop, { x: HOME.x }, 0.25);
         const surf = () => HOME.y + B - lv.low - lv.top;
         drops.forEach((d, i) => {
           tl.set(d, { attr: { cx: HOME.x, cy: 340, fill: rc }, opacity: 1 });
-          tl.to(d, { attr: { cy: () => surf() - 6 }, duration: 0.35, ease: 'power2.in' });
+          tl.to(d, { attr: { cy: () => surf() - 6 }, duration: 0.15, ease: 'power2.in' });
           tl.set(d, { opacity: 0 });
         });
-        if (s.oil) tl.to(lv, { low: 30, duration: 0.5, onUpdate: setLiq }, '<');
-        else tl.to(lv, { low: 104, duration: 0.5, onUpdate: setLiq }, '<');
+        if (s.oil) tl.to(lv, { low: 30, duration: 0.3, onUpdate: setLiq }, '<');
+        else tl.to(lv, { low: 104, duration: 0.3, onUpdate: setLiq }, '<');
         const mixed = test === 'iod' ? COL.iod[0] : COL.blue[0];
-        tl.to(low, { attr: { fill: s.oil ? rc : (test === 'iod' && s.starch ? COL.bb[0] : mixed) }, duration: 0.6 }, '<');
-        mv(dp, setDrop, { x: BOT[test].x }, 0.5);
-        mv(dp, setDrop, { y: 360 }, 0.3);
+        tl.to(low, { attr: { fill: s.oil ? rc : (test === 'iod' && s.starch ? COL.bb[0] : mixed) }, duration: 0.3 }, '<');
+        const back = tl.duration(); // 滴管放回去的同時，試管就可以拿去加熱
+        mv(dp, setDrop, { x: BOT[test].x }, 0.25);
+        mv(dp, setDrop, { y: 360 }, 0.15);
 
         // 3. 隔水加熱
         if (heat) {
-          tl.call(() => { addLbl.textContent = '放進熱水中加熱'; });
-          mv(tp, setTube, { y: 190 }, 0.45);
-          mv(tp, setTube, { x: TBX }, 0.6);
-          mv(tp, setTube, { y: 330 + BDY }, 0.45);
-          tl.call(() => { addLbl.textContent = ''; });
-          tl.to(plate, { attr: { fill: '#ff6b4a' }, duration: 0.3 }, '<');
-          tl.to([steam, heatLbl], { opacity: 1, duration: 0.4 }, '<');
+          tl.call(() => { addLbl.textContent = '放進熱水中加熱'; }, null, back);
+          mv(tp, setTube, { y: 190 }, 0.15, back);
+          mv(tp, setTube, { x: TBX }, 0.25, '>');
+          mv(tp, setTube, { y: 330 + BDY }, 0.15, '>');
+          tl.call(() => { addLbl.textContent = ''; }, null, '>');
+          tl.to(plate, { attr: { fill: '#ff6b4a' }, duration: 0.2 }, '<');
+          tl.to([steam, heatLbl], { opacity: 1, duration: 0.25 }, '<');
           const n = BSTEP.indexOf(res);
-          if (!s.oil) for (let i = 1; i <= n; i++) tl.to(low, { attr: { fill: COL[BSTEP[i]][0] }, duration: 0.8, ease: 'none' });
-          tl.to({}, { duration: n ? 0.6 : 2 });
-          tl.to([steam, heatLbl], { opacity: 0, duration: 0.3 });
-          tl.to(plate, { attr: { fill: '#5a6670' }, duration: 0.3 }, '<');
-          mv(tp, setTube, { y: 190 }, 0.45);
-          mv(tp, setTube, { x: HOME.x }, 0.6);
-          mv(tp, setTube, { y: HOME.y }, 0.45);
-        }
-        tl.call(() => finish(s, key, res));
+          // 放進熱水就開始變色（一格約 0.15 秒）
+          if (!s.oil) for (let i = 1; i <= n; i++) tl.to(low, { attr: { fill: COL[BSTEP[i]][0] }, duration: 0.15, ease: 'none' }, i === 1 ? '<' : '>');
+          if (n && !s.oil) tl.to({}, { duration: 0.15 });
+          else tl.to({}, { duration: 0.7 }, '<');
+          tl.call(() => finish(s, key, res)); // 顏色變好就出結果；試管再自己放回原位
+          tl.to([steam, heatLbl], { opacity: 0, duration: 0.25 });
+          tl.to(plate, { attr: { fill: '#5a6670' }, duration: 0.25 }, '<');
+          mv(tp, setTube, { y: 190 }, 0.2);
+          mv(tp, setTube, { x: HOME.x }, 0.3);
+          mv(tp, setTube, { y: HOME.y }, 0.2);
+        } else tl.call(() => finish(s, key, res));
       }
 
       function runPaper(s, oily) {
         addLbl.textContent = '';
         const d = drops[0];
         tl.set(d, { attr: { cx: PX, cy: 230, fill: s.fill }, opacity: 1 });
-        tl.to(d, { attr: { cy: 404 }, duration: 0.45, ease: 'power2.in' });
+        tl.to(d, { attr: { cy: 404 }, duration: 0.35, ease: 'power2.in' });
         tl.set(d, { opacity: 0 });
         tl.set(spot, { attr: { fill: '#cdbf8e' }, opacity: 1 });
-        tl.to(spot, { attr: { r: 44 }, duration: 0.5, ease: 'power1.out' });
+        tl.to(spot, { attr: { r: 44 }, duration: 0.4, ease: 'power1.out' });
         tl.call(() => { spotLbl.textContent = '等紙乾……'; spotLbl.setAttribute('fill', C.mute); });
-        tl.to({}, { duration: 1.2 });
-        if (!oily) tl.to(spot, { opacity: 0, duration: 1 });
-        else tl.to(spot, { attr: { fill: '#f8f1d6' }, duration: 1 }); // 油斑：透光、看起來較亮
+        tl.to({}, { duration: 0.8 });
+        if (!oily) tl.to(spot, { opacity: 0, duration: 0.7 });
+        else tl.to(spot, { attr: { fill: '#f8f1d6' }, duration: 0.7 }); // 油斑：透光、看起來較亮
         tl.call(() => finish(s, 'paper', oily));
       }
 
@@ -314,7 +317,20 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1;
-      const dots = () => `<div class="dots" aria-hidden="true">${MISSIONS.map((_, k) => `<i class="${k < mi ? 'ok' : k === mi ? 'on' : ''}"></i>`).join('')}</div>`;
+      const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
+      // 正在做的檢測先停止（不列入紀錄）：動畫跳到最後但不執行回呼，器材回到原位，換一支乾淨的試管
+      function stopRun() {
+        if (!busy) return;
+        tl.progress(1, true); busy = false;
+        freshTube(); setDrop(); spot.setAttribute('r', 0); spotLbl.textContent = '';
+      }
+      function goMission(k) {
+        if (done) doneK.add(mi);
+        stopRun();
+        mi = k; done = false; picked = -1; pred = -1; drawMission(); checkMission();
+      }
+      S.onDots(mbox, goMission);
       // 任務卡上的大按鈕：一按就做那個檢測
       const actsHtml = (m) => `<div class="acts">${m.acts.map(([label, si, test, heat], i) => {
         const key = test === 'ben' ? (heat ? 'ben1' : 'ben0') : test, did = R[SAMP[si].k][key] !== undefined;
@@ -355,7 +371,7 @@
           Object.assign(st, { si, test, heat: heat || 0 }); sync(); run();
         }));
         const nx = mbox.querySelector('#labT-next');
-        if (nx) nx.addEventListener('click', () => { mi++; done = false; picked = -1; pred = -1; drawMission(); checkMission(); });
+        if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
       function checkMission() {
         const m = MISSIONS[mi];
@@ -367,7 +383,8 @@
       function reset() {
         SAMP.forEach((s) => { R[s.k] = {}; });
         Object.assign(st, { si: 0, test: 'iod', heat: 0 });
-        mi = 0; done = false; picked = -1; pred = -1;
+        stopRun();
+        mi = 0; done = false; picked = -1; pred = -1; doneK.clear();
         freshTube(); spot.setAttribute('r', 0); spotLbl.textContent = '';
         $('status').innerHTML = '按任務卡上的按鈕開始檢測。每次都會換一支乾淨的試管。';
         $('free').open = false;
