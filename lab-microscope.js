@@ -229,8 +229,11 @@
         drawMission(); update();
       }
 
-      drawMission();
-      update();
+      // 接上次的進度：做完的任務打勾，從第一個還沒做的開始（goMission 會先把旋鈕調到做得完的狀態）
+      const sv = S.progress.lab('lab-microscope');
+      if (sv) [...sv.ok, ...sv.miss].forEach((k) => { if (k < MISSIONS.length) doneK.add(k); });
+      let k0 = 0; while (k0 < MISSIONS.length && doneK.has(k0)) k0++;
+      goMission(k0);
       S._labM = { st, update };
       return { unmount() { clearTimeout(warnTimer); delete S._labM; } };
     },

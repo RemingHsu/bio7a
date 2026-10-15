@@ -164,7 +164,11 @@
         if (nx) nx.addEventListener('click', () => goMission(mi + 1));
       }
 
-      drawMission();
+      // 接上次的進度：答過的任務照第一次對錯顯示，從第一個還沒做的開始
+      const sv = S.progress.lab('lab-scale');
+      if (sv) [...sv.ok, ...sv.miss].forEach((k) => { if (k < MISSIONS.length) { doneK.add(k); result[k] = sv.ok.includes(k) ? 'ok' : 'miss'; } });
+      let k0 = 0; while (k0 < MISSIONS.length && doneK.has(k0)) k0++;
+      goMission(k0);
       update();
       return { unmount() { if (tw) tw.kill(); clearTimeout(snapT); } };
     },

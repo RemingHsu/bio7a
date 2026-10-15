@@ -281,6 +281,7 @@
       const mbox = $('mission');
       let mi = 0, phase = 'env', pred = -1, picked = -1, done = false, after0 = null;
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-selection'); // 上次存下的進度（要在第一次畫圓點之前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
       // 沒做任務 1 就跳到任務 2：用同一個模型算出「樹幹變黑後經過 10 代」的族群
       function simAfter0() {
@@ -369,6 +370,12 @@
 
       paintBark();
       reset();
+      // 接上上次的進度：圓點照舊，族群設定成第一個還沒做的任務的狀態；全部做完就顯示結果
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => doneK.add(k));
+        const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k));
+        goMission(k0 < 0 ? MISSIONS.length : k0);
+      }
       raf = requestAnimationFrame(loop);
       S._labX1 = { st, runs, get mission() { return { mi, phase }; }, advance(sec) { for (let i = 0; i < sec * 30; i++) step(1 / 30); } }; // 測試用
       return { unmount() { cancelAnimationFrame(raf); delete S._labX1; } };

@@ -253,6 +253,7 @@
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, needShown = null;
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-photo'); // 上次存的進度：要在第一次畫圓點之前讀，reset() 之後再套用
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
       // 切換任務：正在數的氣泡、正在做的線香測試先停止（不列入紀錄）
       function goMission(k) {
@@ -338,6 +339,10 @@
       }
 
       reset();
+      // 接上次的進度：做完的任務打勾，從第一個還沒做的開始
+      if (sv) [...sv.ok, ...sv.miss].forEach((k) => { if (k < MISSIONS.length) doneK.add(k); });
+      let k0 = 0; while (k0 < MISSIONS.length && doneK.has(k0)) k0++;
+      goMission(k0);
       raf = requestAnimationFrame(loop);
       S._labP = { st, advance(sec) { for (let i = 0; i < sec * 20; i++) step(0.05); }, startCount, runTest }; // 測試用
       return { unmount() { cancelAnimationFrame(raf); if (testTl) testTl.kill(); delete S._labP; } };

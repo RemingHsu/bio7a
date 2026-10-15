@@ -290,6 +290,62 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   .player.side .caption-bar { padding: 0.7rem 0.9rem 0.3rem; }
   .player.side .controls { padding: 0.4rem 0.9rem 0.7rem; }
 }
+
+/* 首頁：接續上次、今日錯題、章節進度、下一個互動 */
+body.home-on .nav { display: none; }
+.homeGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 0.9rem; }
+.homeCard { padding: 1rem 1.25rem; display: grid; gap: 0.6rem; align-content: start; }
+.homeCard h2 { font-family: var(--font-label); font-size: 1.35rem; margin: 0; display: flex; align-items: center; gap: 0.5rem; }
+.homeCard.hero { grid-column: 1 / -1; }
+.homeCard .badge { font-family: var(--font-mono); font-size: 0.8rem; background: var(--bad); color: #fff; border-radius: 999px; padding: 0.05em 0.6em; }
+.homeNext { display: grid; gap: 0.1rem; }
+.homeNext .k { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.08em; }
+.homeNext b { font-size: 1.15rem; }
+.homeNext small { color: var(--muted); }
+.chRows { display: grid; gap: 0.2rem; }
+.chRow { font: inherit; display: grid; grid-template-columns: auto minmax(0, 1fr) 5.5rem auto; align-items: center; gap: 0.6rem; padding: 0.35rem 0.5rem; border: 0; border-radius: 0.5rem; background: transparent; color: var(--ink); cursor: pointer; text-align: left; }
+.chRow:hover, .chRow:focus-visible { background: var(--bg); outline: none; }
+.chRow .no { font-size: 0.85rem; color: var(--muted); white-space: nowrap; }
+.chRow .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chRow .bar { height: 0.5rem; border-radius: 0.25rem; background: var(--line); overflow: hidden; }
+.chRow .bar i { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+.chRow .num { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.linklike { font: inherit; border: 0; background: none; color: var(--accent); cursor: pointer; padding: 0; text-decoration: underline; text-align: left; }
+.homeFoot { margin-top: auto; }
+.wl-h { font-size: 0.95rem; margin: 0.6rem 0 0.2rem; color: var(--muted); }
+.wl { margin: 0; padding-left: 1.1em; display: grid; gap: 0.3rem; }
+.wl li { display: grid; }
+.wl small { color: var(--muted); }
+/* 小節膠囊、分頁：✓（全部做完）或小點（做了一部分）；有互動的小節多一個燒杯圖示 */
+.sec .st, .tab .st, .chap-menu .sc .st { display: none; }
+.sec.done .st, .tab.done .st, .chap-menu .sc.done .st { display: inline; color: var(--good); font-weight: 700; }
+.sec.done .st::before, .tab.done .st::before, .chap-menu .sc.done .st::before { content: '✓'; }
+.sec.part .st, .chap-menu .sc.part .st { display: inline-block; width: 0.5em; height: 0.5em; border-radius: 50%; background: var(--accent); opacity: 0.85; }
+.sec[aria-selected="true"] .st { color: var(--accent-ink); }
+.sec[aria-selected="true"].part .st { background: var(--accent-ink); }
+.labi { width: 0.95em; height: 0.95em; fill: var(--accent); opacity: 0.9; flex: 0 0 auto; }
+.sec[aria-selected="true"] .labi { fill: var(--accent-ink); }
+/* 章選單：搜尋框、每章的小節與進度 */
+.chap-search { padding: 0.35rem 0.4rem 0.2rem; grid-column: 1 / -1; }
+.chap-search input { font: inherit; width: 100%; padding: 0.45em 0.7em; border: 1px solid var(--line); border-radius: 0.5rem; background: var(--bg); color: var(--ink); }
+.chap-search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+.chap-menu.searching .grp { display: none; }
+.chap-menu .results { display: grid; gap: 0.1rem; padding-top: 0.3rem; }
+.chap-menu .results button { grid-template-columns: minmax(0, 1fr); }
+.chap-menu .results small { color: var(--muted); display: block; font-size: 0.85rem; }
+.chap-menu .results .none { color: var(--muted); font-size: 0.9rem; padding: 0.4rem 0.75rem; }
+.chap-menu .ch { display: grid; gap: 0.05rem; }
+.chap-menu .ch-main { grid-template-columns: auto minmax(0, 1fr) auto; }
+.chap-menu .pg { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.chap-menu .ch-main[aria-checked="true"] .pg { color: inherit; opacity: 0.8; }
+.chap-menu .secs { display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0 0.5rem 0.5rem; }
+.chap-menu .sc { font: inherit; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.3em; padding: 0.2em 0.6em 0.2em 0.3em; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); cursor: pointer; white-space: nowrap; }
+.chap-menu .sc .n { font-family: var(--font-mono); font-size: 0.85em; padding: 0.1em 0.45em; border-radius: 999px; background: var(--bg); color: var(--muted); }
+.chap-menu .sc:hover, .chap-menu .sc:focus-visible { border-color: var(--accent); outline: none; }
+/* 手機直拿：舞台上直接放「轉成橫向」的按鈕 */
+#stageBig { display: none; font-size: 1rem; padding: 0.5em 0.9em; }
+@media (max-width: 600px) and (orientation: portrait) { .player:not(.big) #stageBig { display: inline-flex; } }
+@media (max-width: 600px) { .home-btn .lbl { display: none; } }
 </style>
 </head>
 <body>
@@ -297,6 +353,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 <div class="app">
   <header>
     <div class="title-block">
+      <button class="chap-btn home-btn" id="homeBtn" type="button" aria-label="首頁"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 1 7.6h2V14h3.6v-4h2.8v4H13V7.6h2z"/></svg><span class="lbl">首頁</span></button>
       <div class="chap-picker">
         <button class="chap-btn" id="chapBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="chapMenu"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12v2H2zm0 4h12v2H2zm0 4h12v2H2z"/></svg>選章節</button>
         <div class="chap-menu" id="chapMenu" role="menu" aria-label="選擇章" hidden></div>
@@ -309,9 +366,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
     </nav>
   </header>
 
+  <section class="home" id="home" aria-label="首頁" hidden></section>
+
   <section class="player" aria-label="動畫播放器">
     <div class="stage-wrap">
       <svg id="stage" viewBox="0 0 1200 720" role="img" aria-labelledby="caption" xmlns="http://www.w3.org/2000/svg"></svg>
+      <button class="big-btn" id="stageBig" type="button" aria-label="轉成橫向、放大畫面">⤢ 轉成橫向看</button>
     </div>
     <div class="caption-bar">
       <div class="step-no" id="stepNo">1 / 1</div>
@@ -329,7 +389,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
   <section class="lab" id="lab" hidden aria-live="polite"></section>
 
-  <p class="hint"><span><span class="kbd-hint">鍵盤：<kbd>←</kbd> <kbd>→</kbd> 上／下一步，<kbd>空白鍵</kbd> 再放一次，數字鍵切換小節。</span>標「互動」的是可以自己操作的模型。</span><span class="ver" id="appVer">版本 v34・2026-10-14</span></p>
+  <p class="hint"><span><span class="kbd-hint">鍵盤：<kbd>←</kbd> <kbd>→</kbd> 上／下一步，<kbd>空白鍵</kbd> 再放一次，數字鍵切換小節，<kbd>/</kbd> 搜尋。</span>標「互動」的是可以自己操作的模型。</span><span class="ver" id="appVer">版本 v35・2026-10-15</span></p>
 </div>
 
 <script src="vendor/gsap.min.js"></script>

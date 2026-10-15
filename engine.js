@@ -158,11 +158,118 @@
   const labs = [];
   S.registerLab = (lab) => labs.push(lab);
   // 任務／自我檢測的進度圓點，可以點選切換。state(k)：'ok'（完成）、'miss'（第一次答錯）或 ''（還沒做）；目前這一個顯示 'on'
-  S.dots = (n, cur, state, unit = '個任務') => `<div class="dots" role="group" aria-label="切換${unit.replace('個', '')}">${Array.from({ length: n }, (_, k) =>
-    `<button type="button" class="dot ${k === cur ? 'on' : state(k) || ''}" data-dot="${k}" aria-label="第 ${k + 1} ${unit}"${k === cur ? ' aria-current="step"' : ''}></button>`).join('')}</div>`;
+  S.dots = (n, cur, state, unit = '個任務') => {
+    // 互動開著時，順便把每個任務的狀態記進學習進度（總整理的自我檢測另外由 summary.js 記）
+    if (labIdx >= 0) { try { S.progress.setLab(labs[labIdx].id, n, Array.from({ length: n }, (_, k) => state(k) || '')); } catch (e) {} }
+    return `<div class="dots" role="group" aria-label="切換${unit.replace('個', '')}">${Array.from({ length: n }, (_, k) =>
+      `<button type="button" class="dot ${k === cur ? 'on' : state(k) || ''}" data-dot="${k}" aria-label="第 ${k + 1} ${unit}"${k === cur ? ' aria-current="step"' : ''}></button>`).join('')}</div>`;
+  };
   // 點圓點時呼叫 go(k)。掛在任務框上一次就好（任務框重畫也有效）
   S.onDots = (box, go) => box.addEventListener('click', (e) => { const b = e.target.closest('[data-dot]'); if (b && box.contains(b)) go(+b.dataset.dot); });
-  let labIdx = -1, labInst = null, playerEl, labEl;
+  let labIdx = -1, labInst = null, playerEl, labEl, homeEl;
+
+  // ---------- 學習進度：存在這台裝置的瀏覽器裡（localStorage），重新整理、下次打開都接得上 ----------
+  // scene[id] = { step: 最後看到的步, max: 看到最遠的步, n: 步數, done: 看到最後一步 }
+  // lab[id]   = { n: 任務數, ok: [做完的], miss: [第一次答錯的] }（S.dots 每次重畫時自動記）
+  // quiz[id]  = { n: 題數, first: { 題號: 第一次有沒有答對 }, solved: [答對過的題號] }（summary.js 記）
+  // wrong[總整理id:題號] = 錯題本 { s, k, due: 下次要問的日期, streak: 連續答對次數, n: 答錯次數, at: 加入日期 }
+  const STORE_KEY = 'bio7a.progress.v1';
+  const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const today = () => ymd(new Date());
+  const addDays = (day, n) => { const d = new Date(day + 'T00:00:00'); d.setDate(d.getDate() + n); return ymd(d); };
+  const WRONG_GAP = [1, 3, 7]; // 答錯後隔 1 天再問，答對再隔 3 天、7 天；連續三次答對就移出錯題本
+  const blank = () => ({ scene: {}, lab: {}, quiz: {}, wrong: {}, last: null, mastered: 0 });
+  let P = blank();
+  try { const raw = localStorage.getItem(STORE_KEY); if (raw) P = Object.assign(blank(), JSON.parse(raw)); } catch (e) {}
+  let saveT = 0, skipMerge = false;
+  const changed = [];
+  const dropped = new Map(); // 這個分頁移出錯題本的題（鍵 → 時間），合併時不要從別的分頁撿回來
+  // 同時開兩個分頁時，各自存檔會互相覆蓋：存之前先和磁碟上的合併，每一筆以時間 t 較新的為準
+  const merge = () => {
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) {}
+    if (!d) return;
+    const newer = (a, b) => (!a ? b : !b ? a : (b.t || 0) > (a.t || 0) ? b : a);
+    ['scene', 'lab', 'quiz', 'wrong'].forEach((k) => {
+      const disk = d[k] || {}, m = {};
+      new Set([...Object.keys(disk), ...Object.keys(P[k])]).forEach((id) => {
+        if (k === 'wrong' && !P.wrong[id] && dropped.has(id) && (disk[id].t || 0) <= dropped.get(id)) return;
+        m[id] = newer(P[k][id], disk[id]);
+      });
+      P[k] = m;
+    });
+    P.mastered = Math.max(P.mastered || 0, d.mastered || 0);
+    if (!P.last) P.last = d.last;
+  };
+  const save = () => {
+    clearTimeout(saveT);
+    saveT = setTimeout(() => {
+      if (!skipMerge) merge();
+      skipMerge = false;
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(P)); } catch (e) {}
+      changed.forEach((f) => f());
+    }, 150);
+  };
+  // 別的分頁存了檔：合併進來，首頁和導覽下次重畫就會更新
+  window.addEventListener('storage', (e) => { if (e.key === STORE_KEY) { merge(); changed.forEach((f) => f()); } });
+  S.QUIZ = {}; // summary.js 登記每份總整理的題目：id → QUIZ
+  S.quizJump = {}; // summary.js 登記：id → (題號) => 跳到那一題
+  const isQuiz = (id) => !!S.QUIZ[id];
+  S.progress = {
+    today,
+    scene: (id) => P.scene[id] || null,
+    lab: (id) => P.lab[id] || null,
+    quiz: (id) => P.quiz[id] || null,
+    get last() { return P.last; },
+    get mastered() { return P.mastered || 0; },
+    setLab(id, n, states) {
+      const ok = [], miss = [];
+      states.forEach((s, k) => { if (s === 'ok') ok.push(k); else if (s === 'miss') miss.push(k); });
+      const old = P.lab[id];
+      if (old && old.n === n && old.ok.join() === ok.join() && old.miss.join() === miss.join()) return;
+      P.lab[id] = { n, ok, miss, t: Date.now() }; save();
+    },
+    setQuiz(id, n, first, solved) {
+      const f = {}; first.forEach((v, k) => { if (v !== undefined) f[k] = v; });
+      P.quiz[id] = { n, first: f, solved: [...solved].sort((a, b) => a - b), t: Date.now() }; save();
+    },
+    // 自我檢測第一次答錯：收進錯題本，明天再問
+    wrongAdd(s, k) {
+      const key = `${s}:${k}`, w = P.wrong[key];
+      if (w) { w.streak = 0; w.n++; w.due = addDays(today(), WRONG_GAP[0]); w.t = Date.now(); }
+      else P.wrong[key] = { s, k, due: addDays(today(), WRONG_GAP[0]), streak: 0, n: 1, at: today(), t: Date.now() };
+      save();
+    },
+    // 錯題本裡的題目再問一次的結果
+    wrongAnswer(key, correct) {
+      const w = P.wrong[key];
+      if (!w) return;
+      w.t = Date.now();
+      if (correct) { w.streak++; if (w.streak >= WRONG_GAP.length) { delete P.wrong[key]; dropped.set(key, w.t); P.mastered = (P.mastered || 0) + 1; } else w.due = addDays(today(), WRONG_GAP[w.streak]); }
+      else { w.streak = 0; w.n++; w.due = addDays(today(), WRONG_GAP[0]); }
+      save();
+    },
+    wrongAll: () => Object.entries(P.wrong).map(([key, w]) => ({ key, ...w })).sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : 0)),
+    wrongDue: () => S.progress.wrongAll().filter((w) => w.due <= today()),
+    itemDone(id) {
+      const it = items.find((x) => x.id === id);
+      if (!it) return false;
+      if (it.kind === 'scene') { const s = P.scene[id]; return !!(s && s.done); }
+      if (isQuiz(id)) { const q = P.quiz[id]; return !!(q && q.n && q.solved.length >= q.n); }
+      const l = P.lab[id]; return !!(l && l.n && l.ok.length + l.miss.length >= l.n);
+    },
+    stat(list) { const total = list.length, done = list.filter((x) => S.progress.itemDone(x.id)).length; return { done, total }; },
+    clear() { P = blank(); dropped.clear(); skipMerge = true; save(); },
+    onChange(f) { changed.push(f); },
+  };
+  // 動畫看到第 i 步：記下來，也記「最後開的是哪一個」
+  const recordScene = (i) => {
+    const id = scenes[idx].id, n = ctx.steps.length, s = P.scene[id] || {};
+    P.scene[id] = { step: i, max: Math.max(s.max || 0, i), n, done: !!s.done || i === n - 1, t: Date.now() };
+    P.last = { id, step: i }; save();
+  };
+  // 網址的 # 跟著目前的項目走；第一次進來（沒有 #）用取代，之後用新增，瀏覽器的「上一頁」才能回到前一個項目
+  const setHash = (id) => { if (location.hash.slice(1) === id) return; try { history[location.hash ? 'pushState' : 'replaceState'](null, '', '#' + id); } catch (e) {} };
 
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let stage, capEl, capNoteEl, stepNoEl, playBtn, nextBtn, progEl, segs = [];
@@ -210,6 +317,7 @@
     const [s, e] = bounds(i);
     if (Math.abs(ctx.tl.time() - s) > 1e-4) ctx.tl.seek(s, false);
     step = i; done = false;
+    recordScene(i);
     setCaption(i);
     updatePlayBtn();
     if (reduce) { ctx.tl.seek(e, false); finish(); return; }
@@ -243,7 +351,8 @@
     labInst = labs[j].mount(labEl) || null;
     addLabBigButtons(labEl);
     markNav(labs[j]);
-    try { history.replaceState(null, '', '#' + labs[j].id); } catch (e) {}
+    P.last = { id: labs[j].id }; save();
+    setHash(labs[j].id);
   }
 
   // ---------- 兩層導覽：小節 → 該小節的動畫／互動 ----------
@@ -270,9 +379,25 @@
   const isSum = (k) => k.includes('總');
   S.secLabel = (k) => (k.startsWith('X') ? '比' : isSum(k) ? '總' : k.replace(/^下(\d+)/, (m, n) => String(+n + 6)));
   const chapOf = (sec) => (SECTIONS.find(([k]) => k === sec) || [])[2];
+  const chapNo = (k) => (CHAPTERS.find(([c]) => c === k) || [])[1] || '';
+  const secName = (k) => (SECTIONS.find(([s]) => s === k) || [])[1] || '';
   const OLD_HASH = { s1: 'scale', s2: 'cell', s3: 'transport', s4: 'levels', a1: 'lab-scale', a2: 'lab-transport' };
   let items = [], curSec = null, curChap = null;
-  const open = (it) => (it.kind === 'scene' ? load(scenes.indexOf(it)) : loadLab(labs.indexOf(it)));
+  const hasLab = (sec) => items.some((x) => x.section === sec && x.kind === 'lab' && !isQuiz(x.id));
+  const kindOf = (x) => (x.kind === 'scene' ? '動畫' : isQuiz(x.id) ? '總整理' : '互動');
+  const ICON_LAB = '<svg class="labi" viewBox="0 0 16 16" aria-hidden="true"><title>這一節有互動</title><path d="M6 1h4v1.2H9v4l4.3 7A1.4 1.4 0 0 1 12.1 15H3.9a1.4 1.4 0 0 1-1.2-2.1L7 6.2v-4H6z"/></svg>';
+  const open = (it) => { hideHome(); if (it.kind === 'scene') load(scenes.indexOf(it)); else loadLab(labs.indexOf(it)); };
+  // 依網址的 # 打開項目；沒有或認不得就顯示首頁
+  const route = () => {
+    const h = location.hash.slice(1), id = OLD_HASH[h] || h;
+    const it = items.find((x) => x.id === id);
+    if (it) open(it); else showHome();
+  };
+  // 打開某一章：第一個還沒做完的項目（都做完了就第一個）
+  function openChapter(k) {
+    const list = items.filter((x) => chapOf(x.section) === k);
+    if (list.length) open(list.find((x) => !S.progress.itemDone(x.id)) || list[0]);
+  }
   // 手機上分頁列是橫向捲動：把選中的項目捲進可見範圍（只捲分頁列，不捲整頁）
   const reveal = (bar, t) => {
     if (t && bar.scrollWidth > bar.clientWidth && (t.offsetLeft < bar.scrollLeft || t.offsetLeft + t.offsetWidth > bar.scrollLeft + bar.clientWidth)) bar.scrollLeft = t.offsetLeft - 8;
@@ -285,33 +410,72 @@
       if (!first) return;
       const b = document.createElement('button');
       b.className = 'sec'; b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.sec = k;
-      b.innerHTML = `<span class="n">${S.secLabel(k)}</span>${name}`;
-      b.addEventListener('click', () => { if (curSec !== k) open(first); });
+      b.innerHTML = `<span class="n">${S.secLabel(k)}</span>${name}${hasLab(k) ? ICON_LAB : ''}<span class="st" aria-hidden="true"></span>`;
+      b.addEventListener('click', () => { if (curSec !== k || homeOn) open(first); });
       secBar.appendChild(b);
     });
     const [, no, title, grade] = CHAPTERS.find(([k]) => k === chap);
     document.getElementById('chapTitle').innerHTML = `<span class="chap-no">${grade} ${no}</span>${title}`;
-    document.querySelectorAll('#chapMenu button').forEach((b) => b.setAttribute('aria-checked', b.dataset.ch === chap));
+    document.querySelectorAll('#chapMenu .ch-main').forEach((b) => b.setAttribute('aria-checked', b.dataset.ch === chap));
   }
-  // 選章節：按鈕打開清單（每章顯示標題和小節），點選後跳到那一章的第一項
+  // 選章節：按鈕打開清單（搜尋框＋每章的標題、進度、可以直接點的小節）；點章跳到那一章第一個還沒做完的項目
+  let menuShow = () => {};
+  const openSearch = () => menuShow(true);
   function setupChapterMenu() {
     const btn = document.getElementById('chapBtn'), menu = document.getElementById('chapMenu');
+    const sbox = document.createElement('div');
+    sbox.className = 'chap-search';
+    sbox.innerHTML = '<input type="search" id="chapSearch" placeholder="搜尋：光合作用、血型、顯微鏡…" aria-label="搜尋小節、動畫或互動" autocomplete="off"><div class="results" id="chapResults" hidden></div>';
+    menu.appendChild(sbox);
+    const searchEl = sbox.querySelector('input'), results = sbox.querySelector('.results');
     // 依年級分組（七上／七下），寬螢幕時兩組並排
     const cols = {};
     CHAPTERS.forEach(([k, no, title, grade]) => {
-      const first = items.find((x) => chapOf(x.section) === k);
-      if (!first) return;
+      if (!items.some((x) => chapOf(x.section) === k)) return;
       if (!cols[grade]) { cols[grade] = document.createElement('div'); cols[grade].className = 'grp'; cols[grade].setAttribute('role', 'group'); cols[grade].setAttribute('aria-label', grade); cols[grade].innerHTML = `<div class="grp-h" aria-hidden="true">${grade}</div>`; menu.appendChild(cols[grade]); }
-      const secs = SECTIONS.filter((x) => x[2] === k && !isSum(x[0])).map((x) => x[1]).join('・');
-      const b = document.createElement('button');
-      b.type = 'button'; b.dataset.ch = k; b.setAttribute('role', 'menuitemradio'); b.setAttribute('aria-checked', 'false');
-      b.innerHTML = `<span class="no">${no}</span><span class="t">${title}</span><span class="s">${secs}</span>`;
-      b.addEventListener('click', () => { close(); if (curChap !== k) open(first); });
-      cols[grade].appendChild(b);
+      const secs = SECTIONS.filter((x) => x[2] === k && items.some((it) => it.section === x[0]));
+      const row = document.createElement('div');
+      row.className = 'ch'; row.dataset.ch = k;
+      row.innerHTML = `<button type="button" class="ch-main" data-ch="${k}" role="menuitemradio" aria-checked="false"><span class="no">${no}</span><span class="t">${title}</span><span class="pg" aria-hidden="true"></span></button>
+        <div class="secs">${secs.map(([sk, name]) => `<button type="button" class="sc" data-sec="${sk}"><span class="n">${S.secLabel(sk)}</span>${name}${hasLab(sk) ? ICON_LAB : ''}<span class="st" aria-hidden="true"></span></button>`).join('')}</div>`;
+      row.querySelector('.ch-main').addEventListener('click', () => { close(); if (curChap !== k || homeOn) openChapter(k); });
+      row.querySelectorAll('.sc').forEach((b) => b.addEventListener('click', () => { close(); const f = items.find((x) => x.section === b.dataset.sec); if (f && (curSec !== b.dataset.sec || homeOn)) open(f); }));
+      cols[grade].appendChild(row);
     });
-    const items_ = () => [...menu.querySelectorAll('button')];
-    const show = () => { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); (menu.querySelector('[aria-checked="true"]') || items_()[0]).focus(); };
-    const close = (focusBtn) => { if (menu.hidden) return; menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); if (focusBtn) btn.focus(); };
+    // 每章的進度數字、小節的 ✓
+    const refresh = () => {
+      menu.querySelectorAll('.ch').forEach((row) => {
+        const { done, total } = S.progress.stat(items.filter((x) => chapOf(x.section) === row.dataset.ch));
+        row.querySelector('.pg').textContent = done ? `${done} / ${total}` : '';
+        row.querySelector('.ch-main').setAttribute('aria-checked', row.dataset.ch === curChap && !homeOn);
+      });
+      menu.querySelectorAll('.sc').forEach((b) => {
+        const { done, total } = S.progress.stat(items.filter((x) => x.section === b.dataset.sec));
+        b.classList.toggle('done', total > 0 && done === total); b.classList.toggle('part', done > 0 && done < total);
+      });
+    };
+    // 搜尋：比對小節名稱和動畫／互動／總整理的標題
+    const doSearch = () => {
+      const q = searchEl.value.trim().toLowerCase();
+      menu.classList.toggle('searching', !!q);
+      results.hidden = !q;
+      if (!q) { results.innerHTML = ''; return; }
+      const hit = [];
+      SECTIONS.forEach(([sk, name, ch]) => { const f = items.find((x) => x.section === sk); if (f && name.toLowerCase().includes(q)) hit.push({ label: `小節：${S.secLabel(sk)} ${name}`, sub: chapNo(ch), id: f.id }); });
+      items.forEach((x) => { if (x.title.toLowerCase().includes(q)) hit.push({ label: `${kindOf(x)}：${x.title}`, sub: where(x), id: x.id }); });
+      results.innerHTML = hit.length ? hit.slice(0, 14).map((h) => `<button type="button" data-open="${h.id}">${h.label}<small>${h.sub}</small></button>`).join('') : '<div class="none">找不到，換個詞試試（例如「光合」「血型」「顯微鏡」）。</div>';
+      results.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => { close(); S.openById(b.dataset.open); }));
+    };
+    searchEl.addEventListener('input', doSearch);
+    searchEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const f = results.querySelector('[data-open]'); if (f) f.click(); e.preventDefault(); } });
+    const items_ = () => [...menu.querySelectorAll('button')].filter((b) => b.offsetParent);
+    const show = (focusSearch) => {
+      refresh();
+      menu.hidden = false; btn.setAttribute('aria-expanded', 'true');
+      if (focusSearch) searchEl.focus(); else (menu.querySelector('[aria-checked="true"]') || items_()[0]).focus();
+    };
+    const close = (focusBtn) => { if (menu.hidden) return; menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); searchEl.value = ''; doSearch(); if (focusBtn) btn.focus(); };
+    menuShow = show;
     btn.addEventListener('click', () => (menu.hidden ? show() : close()));
     document.addEventListener('pointerdown', (e) => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) close(); });
     menu.addEventListener('keydown', (e) => {
@@ -332,7 +496,7 @@
       items.filter((x) => x.section === curSec).forEach((x) => {
         const b = document.createElement('button');
         b.className = 'tab' + (x.kind === 'lab' ? ' lab-tab' : ''); b.type = 'button'; b.setAttribute('role', 'tab');
-        b.innerHTML = `<span class="kind">${x.kind === 'lab' ? '互動' : '動畫'}</span>${x.title}`;
+        b.innerHTML = `<span class="kind">${kindOf(x)}</span>${x.title}<span class="st" aria-hidden="true"></span>`;
         b.addEventListener('click', () => open(x));
         b.item = x;
         tabBar.appendChild(b);
@@ -342,6 +506,131 @@
     tabBar.querySelectorAll('.tab').forEach((b) => b.setAttribute('aria-selected', b.item === it ? 'true' : 'false'));
     reveal(secBar, secBar.querySelector('.sec[aria-selected="true"]'));
     reveal(tabBar, tabBar.querySelector('.tab[aria-selected="true"]'));
+    refreshNav();
+  }
+  // 小節膠囊、分頁上的 ✓（全部做完）或小點（做了一部分）
+  function refreshNav() {
+    document.querySelectorAll('#sections .sec').forEach((b) => {
+      const { done, total } = S.progress.stat(items.filter((x) => x.section === b.dataset.sec));
+      b.classList.toggle('done', total > 0 && done === total); b.classList.toggle('part', done > 0 && done < total);
+      b.title = `${done} / ${total} 完成`;
+    });
+    document.querySelectorAll('#tabs .tab').forEach((b) => b.classList.toggle('done', S.progress.itemDone(b.item.id)));
+  }
+
+  // ---------- 首頁：接續上次、今日錯題、章節進度、下一個互動 ----------
+  let homeOn = false, savedTitle = '';
+  function showHome() {
+    if (homeOn) { renderHome(); return; }
+    homeOn = true;
+    if (bigEl) setBig(bigEl, false);
+    if (labIdx >= 0) closeLab();
+    clearTimeout(timer); if (cur) cur.kill();
+    document.body.classList.add('home-on');
+    const h1 = document.getElementById('chapTitle'); savedTitle = h1.innerHTML; h1.textContent = '國中生物';
+    playerEl.hidden = true; labEl.hidden = true; homeEl.hidden = false;
+    renderHome();
+    setHash('home');
+    window.scrollTo({ top: 0 });
+  }
+  function hideHome() {
+    if (!homeOn) return;
+    homeOn = false;
+    document.body.classList.remove('home-on');
+    homeEl.hidden = true; homeEl.innerHTML = '';
+    document.getElementById('chapTitle').innerHTML = savedTitle;
+    playerEl.hidden = false;
+    fitSoon();
+  }
+  const where = (it) => `${chapNo(chapOf(it.section))} ${S.secLabel(it.section)} ${secName(it.section)}`;
+  function renderHome() {
+    const pr = S.progress, lastIt = pr.last && items.find((x) => x.id === pr.last.id);
+    const nLabs = labs.filter((l) => !isQuiz(l.id)).length, nSums = labs.length - nLabs;
+    const due = pr.wrongDue(), all = pr.wrongAll();
+    const nextLab = items.find((x) => x.kind === 'lab' && !isQuiz(x.id) && !pr.itemDone(x.id));
+    const prog = (it) => { // 接續卡上的進度說明
+      if (it.kind === 'scene') { const s = pr.scene(it.id); return s ? `第 ${s.step + 1} / ${s.n} 步` : ''; }
+      if (isQuiz(it.id)) { const q = pr.quiz(it.id); return q ? `自我檢測答對 ${q.solved.length} / ${q.n} 題` : ''; }
+      const l = pr.lab(it.id); return l ? `任務 ${l.ok.length + l.miss.length} / ${l.n} 完成` : '';
+    };
+    // 接續：上次開的項目；做完了就建議下一個
+    let cont = lastIt || items[0];
+    if (lastIt && pr.itemDone(lastIt.id)) cont = items[items.indexOf(lastIt) + 1] || lastIt;
+    const chRows = CHAPTERS.map(([k, no, title]) => {
+      const list = items.filter((x) => chapOf(x.section) === k);
+      if (!list.length) return '';
+      const { done, total } = pr.stat(list);
+      return `<button type="button" class="chRow" data-ch="${k}"><span class="no">${no}</span><span class="t">${title}</span><span class="bar" aria-hidden="true"><i style="width:${total ? Math.round((done / total) * 100) : 0}%"></i></span><span class="num">${done} / ${total}</span></button>`;
+    }).join('');
+    homeEl.innerHTML = `
+<div class="homeGrid">
+  <section class="card homeCard hero">
+    <h2>${lastIt ? '今天 15 分鐘' : '國中生物，一節一節學'}</h2>
+    <p class="m-hint">${lastIt ? '接著上次、複習錯題、再做一個互動。' : `12 章、${scenes.length} 個動畫、${nLabs} 個互動實驗、${nSums} 份總整理（附自我檢測與 PDF 講義）。每一節先看動畫，再做互動，最後用總整理複習。`}</p>
+    <div class="homeNext"><span class="k">${!lastIt ? '從這裡開始' : cont === lastIt ? '接續上次' : '上次的做完了，下一個'}</span><b>${kindOf(cont)}：${cont.title}</b><small>${where(cont)}${prog(cont) ? '・' + prog(cont) : ''}</small></div>
+    <div class="btn-row"><button class="ctl primary" type="button" data-open="${cont.id}">${lastIt ? '繼續' : '開始'}</button></div>
+  </section>
+  <section class="card homeCard" id="homeWrong">
+    <h2>今日錯題${due.length ? `<span class="badge">${due.length}</span>` : ''}</h2>
+    ${due.length ? `<p class="m-hint">有 ${due.length} 題到期了。答錯的題目會隔 1、3、7 天再問一次，連續答對三次就移出錯題本。</p><div class="btn-row"><button class="ctl primary" type="button" id="homeWrongStart">開始複習</button></div>`
+      : all.length ? `<p class="m-hint">今天沒有到期的錯題。錯題本還有 ${all.length} 題，下一次是 ${all[0].due.slice(5).replace('-', '/')}。</p>`
+      : `<p class="m-hint">自我檢測答錯的題目會收進錯題本，隔 1、3、7 天再問你一次，連續答對三次就移出。${pr.mastered ? `已經有 ${pr.mastered} 題畢業了。` : ''}</p>`}
+    ${all.length ? `<div class="btn-row"><button class="ctl small" type="button" id="homeWrongAll" aria-expanded="false">看全部錯題（${all.length}）</button></div><div id="homeWrongList" hidden></div>` : ''}
+  </section>
+  <section class="card homeCard">
+    <h2>章節進度</h2>
+    <div class="chRows">${chRows}</div>
+  </section>
+  <section class="card homeCard">
+    <h2>下一個互動</h2>
+    ${nextLab ? `<div class="homeNext"><b>互動：${nextLab.title}</b><small>${where(nextLab)}</small></div><div class="btn-row"><button class="ctl primary" type="button" data-open="${nextLab.id}">去做</button></div>` : '<p class="m-hint">所有互動都做過了。</p>'}
+    <p class="m-hint homeFoot">進度只存在這台裝置的瀏覽器裡，清除瀏覽資料就會不見。<button class="linklike" type="button" id="homeClear">清除進度</button></p>
+  </section>
+</div>`;
+    homeEl.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => S.openById(b.dataset.open)));
+    homeEl.querySelectorAll('.chRow').forEach((b) => b.addEventListener('click', () => openChapter(b.dataset.ch)));
+    homeEl.querySelector('#homeClear').addEventListener('click', () => { if (confirm('要清除這台裝置上的所有學習進度和錯題本嗎？')) { pr.clear(); renderHome(); } });
+    const ws = homeEl.querySelector('#homeWrongStart');
+    if (ws) ws.addEventListener('click', () => wrongReview(homeEl.querySelector('#homeWrong'), due));
+    const wa = homeEl.querySelector('#homeWrongAll');
+    if (wa) wa.addEventListener('click', () => { const l = homeEl.querySelector('#homeWrongList'); const show = l.hidden; l.hidden = !show; wa.setAttribute('aria-expanded', show); if (show) renderWrongList(l, all); });
+  }
+  // 今日錯題：一題一題問；第一次點的選項就算數（答對→下次隔更久，答錯→明天再問），然後顯示解析
+  function wrongReview(card, list) {
+    let i = 0, right = 0;
+    const n = list.length;
+    const draw = () => {
+      if (i >= n) {
+        card.innerHTML = `<h2>今日錯題</h2><p class="m-text">複習了 ${n} 題，答對 <b>${right}</b> 題。</p><p class="m-hint">答對的會隔幾天再問一次確認，答錯的明天再問。</p><div class="btn-row"><button class="ctl" type="button" id="homeBack">回首頁</button></div>`;
+        card.querySelector('#homeBack').addEventListener('click', renderHome);
+        return;
+      }
+      const w = list[i], Q = S.QUIZ[w.s] && S.QUIZ[w.s][w.k];
+      if (!Q) { i++; draw(); return; }
+      const [q, opts, ans, why, link] = Q, it = items.find((x) => x.id === w.s);
+      card.innerHTML = `<div class="mission-top"><h2>今日錯題 ${i + 1} / ${n}</h2><span class="m-hint" style="margin:0">${it ? chapNo(chapOf(it.section)) : ''}</span></div><p class="m-text">${q}</p><div class="opts">${opts.map((o, k) => `<button class="opt" type="button" data-k="${k}">${'ABCD'[k]}. ${o}</button>`).join('')}</div><div id="homeFb"></div>`;
+      card.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
+        const k = +b.dataset.k, ok = k === ans;
+        S.progress.wrongAnswer(w.key, ok);
+        if (ok) right++;
+        card.querySelectorAll('.opt').forEach((x) => { x.disabled = true; if (+x.dataset.k === ans) x.classList.add('right'); else if (+x.dataset.k === k) x.classList.add('wrong'); });
+        const li = link && S.findItem(link);
+        card.querySelector('#homeFb').innerHTML = `<div class="fb ${ok ? 'ok' : 'bad'}"><strong>${ok ? '答對了' : `答錯了，正確是 ${'ABCD'[ans]}`}</strong>${why}${li ? `<div class="btn-row" style="margin-top:0.4rem"><button class="ctl small" type="button" data-open="${link}">${li.kind === 'lab' ? '互動' : '動畫'}：${li.title}</button></div>` : ''}</div><div class="btn-row"><button class="ctl primary" type="button" id="homeWrongNext">${i === n - 1 ? '看結果' : '下一題'}</button></div>`;
+        card.querySelector('#homeWrongNext').addEventListener('click', () => { i++; draw(); });
+        card.querySelectorAll('[data-open]').forEach((x) => x.addEventListener('click', () => S.openById(x.dataset.open)));
+      }));
+    };
+    draw();
+  }
+  // 全部錯題：依章列出，點題目就打開那份總整理的那一題
+  function renderWrongList(el, all) {
+    const groups = {};
+    all.forEach((w) => { const it = items.find((x) => x.id === w.s); const ch = it ? chapOf(it.section) : '?'; (groups[ch] = groups[ch] || []).push(w); });
+    el.innerHTML = CHAPTERS.filter(([k]) => groups[k]).map(([k, no, title]) => `<h3 class="wl-h">${no} ${title}</h3><ul class="wl">${groups[k].map((w) => {
+      const Q = S.QUIZ[w.s] && S.QUIZ[w.s][w.k], stem = Q ? Q[0].replace(/<[^>]+>/g, '') : '';
+      return `<li><button type="button" class="linklike" data-s="${w.s}" data-k="${w.k}">${stem.length > 48 ? stem.slice(0, 48) + '…' : stem}</button><small>${w.due <= today() ? '今天' : w.due.slice(5).replace('-', '/')}・答錯 ${w.n} 次</small></li>`;
+    }).join('')}</ul>`).join('');
+    el.querySelectorAll('[data-s]').forEach((b) => b.addEventListener('click', () => { S.openById(b.dataset.s); const j = S.quizJump[b.dataset.s]; if (j) j(+b.dataset.k); }));
   }
 
   // ---------- 自適應：讓舞台＋說明＋按鈕剛好放進一個畫面 ----------
@@ -494,9 +783,10 @@
       progEl.appendChild(b);
       return b;
     });
-    try { history.replaceState(null, '', '#' + scenes[i].id); } catch (e) {}
+    setHash(scenes[i].id);
+    const sv = P.scene[scenes[i].id];
     step = 0;
-    go(0);
+    go(sv && !sv.done && sv.step > 0 && sv.step < ctx.steps.length ? sv.step : 0); // 上次沒看完：接著上次的那一步
     fit();
   }
 
@@ -548,19 +838,24 @@
     const order = (x) => SECTIONS.findIndex(([k]) => k === x.section);
     items = [...scenes, ...labs].map((x, n) => ({ x, n })).sort((a, b) => order(a.x) - order(b.x) || a.n - b.n).map((o) => o.x);
     setupChapterMenu();
+    homeEl = document.getElementById('home');
+    document.getElementById('homeBtn').addEventListener('click', showHome);
+    document.getElementById('stageBig').addEventListener('click', () => setBig(playerEl, true));
+    S.progress.onChange(refreshNav);
+    window.addEventListener('hashchange', route);
     document.getElementById('prev').addEventListener('click', () => go(step - 1));
     document.getElementById('next').addEventListener('click', () => go(step + 1));
     playBtn.addEventListener('click', replay);
     document.addEventListener('keydown', (e) => {
       if (e.target.closest && e.target.closest('input,textarea,select')) return;
-      if (labIdx >= 0) return;
+      if (e.key === '/') { openSearch(); e.preventDefault(); return; }
+      if (labIdx >= 0 || homeOn) return;
       if (e.key === 'ArrowRight') { go(step + 1); e.preventDefault(); }
       else if (e.key === 'ArrowLeft') { go(step - 1); e.preventDefault(); }
       else if (e.key === ' ') { replay(); e.preventDefault(); }
       else if (/^[1-9]$/.test(e.key)) { const secs = SECTIONS.filter((x) => x[2] === curChap), sec = secs[+e.key - 1] && secs[+e.key - 1][0], first = sec && items.find((x) => x.section === sec); if (first && sec !== curSec) open(first); }
     });
-    const h = location.hash.slice(1), id = OLD_HASH[h] || h;
-    open(items.find((x) => x.id === id) || items[0]);
+    route();
   };
 
   // 總整理等頁面用：依 id 開啟某個動畫／互動，或列出某小節的項目

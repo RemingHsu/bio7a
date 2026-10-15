@@ -201,6 +201,7 @@
       const mbox = $('mission');
       let mi = 0, picked = -1, done = false;
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-key'); // 上次存下的進度（要在第一次畫圓點之前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
       function goMission(k) {
         if (done) doneK.add(mi);
@@ -257,6 +258,13 @@
         drawFree(); drawMission();
       }
       reset();
+      // 接上上次的進度：圓點照舊，從第一個還沒做的任務開始；全部做完就顯示結果（左下角不留著第 1 題的生物）
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => doneK.add(k));
+        const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k));
+        if (k0 < 0) { walks.mission = null; show(null); specTitle.textContent = ''; specName.textContent = ''; }
+        goMission(k0 < 0 ? MISSIONS.length : k0);
+      }
       S._labX2 = { walks, get walk() { return walk; }, answer, get mi() { return mi; } }; // 測試用
       return { unmount() { delete S._labX2; } };
     },

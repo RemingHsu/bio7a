@@ -231,6 +231,11 @@
         }
         table(); flow();
       }
+      // 接上次的進度：做過的情境照第一次對錯顯示，從第一個還沒做的開始
+      const sv = S.progress.lab('lab-method');
+      if (sv) [...sv.ok, ...sv.miss].forEach((k) => { if (k < SC.length) { doneK.add(k); scoreFirst[k] = sv.ok.includes(k); } });
+      while (si < SC.length && doneK.has(si)) si++;
+      if (si >= SC.length) { si = SC.length - 1; drawStage(); si = SC.length; } // 全部做完：舞台畫最後一個情境，右邊顯示總結
       start();
       return { unmount() { dead = true; clearTimeout(tmr); if (anim) anim.kill(); } };
     },

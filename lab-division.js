@@ -209,6 +209,7 @@
       let mi = 0, done = false, pred = -1, picked = -1;
       const first = [];
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-division'); // 上次存下的進度（要在第一次畫圓點之前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? (first[k] ? 'ok' : 'miss') : ''));
       // 切換任務：正在播的動畫先停止（不列入紀錄）
       function goMission(k) {
@@ -290,6 +291,12 @@
         log(); enter();
       }
       reset();
+      // 接上上次的進度：圓點照舊，從第一個還沒做的任務開始；全部做完就顯示結果
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => { doneK.add(k); first[k] = sv.ok.includes(k); });
+        const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k));
+        goMission(k0 < 0 ? MISSIONS.length : k0);
+      }
       raf = requestAnimationFrame(loop);
       S._labN1 = { advance(sec) { for (let i = 0; i < sec * 30 && anim; i++) tick(1 / 30); }, get mission() { return mi; }, get busy() { return busy(); }, runs }; // 測試用
       return { unmount() { cancelAnimationFrame(raf); anim = null; delete S._labN1; } };

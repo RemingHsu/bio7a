@@ -359,6 +359,7 @@
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, needShown = null;
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-breath'); // 存檔的進度（要在第一次畫圓點前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
       // 切換任務：拉動橡皮膜、吹氣、倒水先停止（不列入紀錄），回呼不會影響新的任務
       function goMission(k) {
@@ -444,6 +445,11 @@
       }
 
       reset();
+      // 接上存檔的進度：圓點照舊，從第一個還沒做的任務開始（都做完就顯示完成畫面）
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => doneK.add(k));
+        if (doneK.size) { const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k)); goMission(k0 < 0 ? MISSIONS.length : k0); }
+      }
       raf = requestAnimationFrame(loop);
       S._labH = { st, advance(sec) { for (let i = 0; i < sec * 20; i++) step(0.05); }, act: (k) => ACT[k]() }; // 測試用
       return { unmount() { cancelAnimationFrame(raf); mv = null; delete S._labH; } };

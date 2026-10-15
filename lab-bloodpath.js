@@ -164,6 +164,7 @@
       // ---------- 任務 ----------
       const mbox = $('mission');
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-bloodpath'); // 存檔的進度（要在第一次畫圓點前讀）
       const dots = () => S.dots(TASKS.length, ti, (k) => (doneK.has(k) ? (firstOk[k] === false ? 'miss' : 'ok') : ''));
       // 切換任務：流動中的血滴和自由探索的一圈都先停止，回呼不會影響新的任務
       function goMission(k) {
@@ -254,6 +255,11 @@
       $('stop').addEventListener('click', () => { stopLoop(); if (tw) tw.progress(1); });
 
       startTask();
+      // 接上存檔的進度：圓點照舊，從第一個還沒做的任務開始（都做完就顯示完成畫面）
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < TASKS.length).forEach((k) => { doneK.add(k); firstOk[k] = !sv.miss.includes(k); });
+        if (doneK.size) { const k0 = TASKS.findIndex((_, k) => !doneK.has(k)); goMission(k0 < 0 ? TASKS.length : k0); }
+      }
       S._labQ = { st, pick, get task() { return ti; }, get step() { return si; }, skip() { if (tw) tw.progress(1); } }; // 測試用
       return { unmount() { stopLoop(); if (tw) tw.kill(); delete S._labQ; } };
     },

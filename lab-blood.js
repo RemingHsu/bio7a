@@ -268,6 +268,7 @@
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, tried = [];
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-blood'); // 存檔的進度（要在第一次畫圓點前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
       // 切換任務：還在畫的棋盤方格先停止（不列入紀錄），換成新任務的條件
       function goMission(k) {
@@ -361,6 +362,11 @@
       }
 
       reset();
+      // 接上存檔的進度：圓點照舊，從第一個還沒做的任務開始（都做完就顯示完成畫面）
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => doneK.add(k));
+        if (doneK.size) { const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k)); goMission(k0 < 0 ? MISSIONS.length : k0); }
+      }
       S._labU2 = { st, R, runCross, births, get busy() { return busy; }, finishNow() { if (tl) tl.progress(1); } }; // 測試用
       return { unmount() { if (tl) tl.kill(); gsap.killTweensOf(kidG.childNodes); delete S._labU2; } };
     },

@@ -271,6 +271,7 @@
       const mbox = $('mission');
       let mi = 0, done = false, pred = -1, picked = -1, qi = 0, qOk = false, qWrong = null, base = { simple: 0, choice: 0, ruler: 0 };
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-reaction'); // 存檔的進度（要在第一次畫圓點前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
       // 切換任務：等待中的刺激、掉落中的尺都先停止（enterMission → prepView 會清掉計時器），這次不列入紀錄
       function goMission(k) {
@@ -411,6 +412,11 @@
         mi = 0; doneK.clear(); log(); enterMission(); syncFree();
       }
       reset();
+      // 接上存檔的進度：圓點照舊，從第一個還沒做的任務開始（都做完就顯示完成畫面）
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => doneK.add(k));
+        if (doneK.size) { const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k)); goMission(k0 < 0 ? MISSIONS.length : k0); }
+      }
 
       // 測試用：fire() 立刻出現刺激（或放開尺）；sim(ms) 在刺激後 ms 毫秒按下
       S._labR = {

@@ -187,8 +187,9 @@
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, found = new Set(), wrongTap = null, running = false;
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-foodweb'); // 上次存下的進度（要在第一次畫圓點之前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
-      const INTRO = '箭頭從「被吃的」指向「吃牠的」。按照任務卡的說明，點選舞台上的生物。';
+      const INTRO ='箭頭從「被吃的」指向「吃牠的」。按照任務卡的說明，點選舞台上的生物。';
       const CHAIN_KNOWN = ['frog', 'snake', 'hawk']; // 答對「老鷹是第幾級」後，紀錄表填入的生物
       // 切換任務：動畫先停止（不執行完成後的動作），紀錄表只填入前面做完過的任務
       function goMission(k) {
@@ -309,6 +310,12 @@
         drawMission();
       }
       reset();
+      // 接上上次的進度：圓點照舊，紀錄表填入做完過的任務，從第一個還沒做的任務開始；全部做完就顯示結果
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => doneK.add(k));
+        const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k));
+        goMission(k0 < 0 ? MISSIONS.length : k0);
+      }
       S._labL1 = { tap, get mi() { return mi; }, finish() { if (anim) anim.progress(1); }, freeRun };
       return { unmount() { if (anim) anim.kill(); timers.forEach(clearTimeout); delete S._labL1; } };
     },

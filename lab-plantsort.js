@@ -147,6 +147,7 @@
       let list = PLANTS, pi = 0, qk = 'vasc', ans = {}, wrong = null, done = false, stage2 = false, free = false;
       const first = [], recs = [];
       const doneK = new Set(); // 分好過的植物（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-plantsort'); // 上次存下的進度（要在第一次畫圓點之前讀）
       let firstNow = true;
 
       function paintKey() {
@@ -285,6 +286,12 @@
         window.scrollTo({ top: box.getBoundingClientRect().top + window.scrollY - 10, behavior: 'smooth' });
       }));
       reset();
+      // 接上上次的進度：圓點照舊，從第一株還沒分的植物開始；全部分好就顯示結果
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < PLANTS.length).forEach((k) => { doneK.add(k); first[k] = sv.ok.includes(k); });
+        const k0 = PLANTS.findIndex((_, k) => !doneK.has(k));
+        goPlant(k0 < 0 ? PLANTS.length : k0);
+      }
       S._labZ1 = { answer, next, state: () => ({ pi, qk, done, free, ans: { ...ans }, wrong }), flush: () => tweens.forEach((t) => t.progress(1)) };
       return { unmount() { tweens.forEach((t) => t.kill()); delete S._labZ1; } };
     },

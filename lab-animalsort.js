@@ -126,6 +126,7 @@
       let list = ANIMALS, ai = 0, step = 'vert', got = {}, wrong = null, done = false, free = false, savedAi = 0;
       const first = [], recs = [];
       const doneK = new Set(); // 分好過的動物（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-animalsort'); // 上次存下的進度（要在第一次畫圓點之前讀）
       let firstNow = true;
 
       function paint() {
@@ -260,6 +261,12 @@
         window.scrollTo({ top: box.getBoundingClientRect().top + window.scrollY - 10, behavior: 'smooth' });
       }));
       reset();
+      // 接上上次的進度：圓點照舊，從第一種還沒分的動物開始；全部分好就顯示結果
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < ANIMALS.length).forEach((k) => { doneK.add(k); first[k] = sv.ok.includes(k); });
+        const k0 = ANIMALS.findIndex((_, k) => !doneK.has(k));
+        goAnimal(k0 < 0 ? ANIMALS.length : k0);
+      }
       S._labZ2 = { answer, next, state: () => ({ ai, step, done, free, got: { ...got }, wrong }), flush: () => tweens.forEach((t) => t.progress(1)), pick: (i) => $('freelist').querySelectorAll('[data-i]')[i].click() };
       return { unmount() { tweens.forEach((t) => t.kill()); delete S._labZ2; } };
     },

@@ -148,9 +148,10 @@
       let si = 0, done = false, picks = new Set(), wrong = false, quizPick = -1, sortSel = {}, tries = 0;
       const first = []; // 每一關第一次就答對（true）或曾答錯（false）
       const doneK = new Set(); // 做完過的關（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-digest'); // 上次存的進度：要在第一次畫圓點之前讀，reset() 之後再套用
       const nutState = { s: 0, p: 0, f: 0 };
       const status = (h) => { $('status').innerHTML = h; };
-      const dots = () => S.dots(STAGES.length, si, (k) => (doneK.has(k) ? 'ok' : ''), '關');
+      const dots = () => S.dots(STAGES.length, si, (k) => (doneK.has(k) ? (first[k] === false ? 'miss' : 'ok') : ''), '關'); // 第一次答錯過的關顯示紅色，和其他互動一致
       // 每一關開始時食物的樣子（前面各關都完成）
       const BEFORE = [{ s: 0, p: 0, f: 0 }, { s: 1, p: 0, f: 0 }, { s: 1, p: 1, f: 0 }, { s: 2, p: 2, f: 2 }, { s: 2, p: 2, f: 2 }, { s: 2, p: 2, f: 2 }];
       // 把畫面設成第 k 關開始時的樣子：停止動畫，絨毛的產物、大腸的水分和殘渣放回原位
@@ -258,6 +259,11 @@
       }
 
       reset();
+      // 接上次的進度：做完的關打勾，從第一個還沒做的開始
+      if (sv) [...sv.ok, ...sv.miss].forEach((k) => { if (k < STAGES.length) { doneK.add(k); first[k] = sv.ok.includes(k); } });
+      let k0 = 0; while (k0 < STAGES.length && doneK.has(k0)) k0++;
+      goMission(k0);
+      if (k0 >= STAGES.length) { scene(STAGES.length - 1); showStation(STAGES[STAGES.length - 1].st); } // 全部做完：舞台停在最後一站
       return { unmount() { if (tl) tl.kill(); } };
     },
   });

@@ -707,7 +707,12 @@
         }
         sim().draw(g, W / (canvas.clientWidth || W));
       }
-      buildCharts(); drawControls(); setPlaying(false); readout(); showMission();
+      buildCharts(); drawControls(); setPlaying(false); readout();
+      // 接上次的進度：做過的任務照第一次預測對錯顯示，從第一個還沒做的開始（showMission 會自動設定畫面）
+      const sv = S.progress.lab(L.id);
+      if (sv) [...sv.ok, ...sv.miss].forEach((k) => { if (k < MISSIONS.length) { doneK.add(k); firstPred[k] = sv.ok.includes(k); } });
+      while (mi < MISSIONS.length && doneK.has(mi)) mi++;
+      showMission();
       const ro = new ResizeObserver(() => refreshCharts());
       ro.observe($('charts'));
       raf = requestAnimationFrame(frame);

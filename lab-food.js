@@ -318,6 +318,7 @@
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1;
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-food'); // 上次存的進度：要在第一次畫圓點之前讀，reset() 之後再套用
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
       // 正在做的檢測先停止（不列入紀錄）：動畫跳到最後但不執行回呼，器材回到原位，換一支乾淨的試管
       function stopRun() {
@@ -392,6 +393,10 @@
       }
 
       reset();
+      // 接上次的進度：做完的任務打勾，從第一個還沒做的開始
+      if (sv) [...sv.ok, ...sv.miss].forEach((k) => { if (k < MISSIONS.length) doneK.add(k); });
+      let k0 = 0; while (k0 < MISSIONS.length && doneK.has(k0)) k0++;
+      goMission(k0);
       S._labT = { st, R, run };
       return { unmount() { if (tl) tl.kill(); delete S._labT; } };
     },

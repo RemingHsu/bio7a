@@ -249,8 +249,9 @@
       const mbox = $('mission');
       let mi = 0, done = false, picked = -1, pred = -1, tried = [];
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-punnett'); // 上次存下的進度（要在第一次畫圓點之前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? 'ok' : ''));
-      const START = '豌豆種子的形狀：<b>圓形（R）</b>是顯性，<b>皺縮（r）</b>是隱性。按任務卡上的按鈕開始。';
+      const START ='豌豆種子的形狀：<b>圓形（R）</b>是顯性，<b>皺縮（r）</b>是隱性。按任務卡上的按鈕開始。';
       // 切換任務：正在配對的動畫先停止（不列入紀錄），清掉上一個任務的方格和結果，親代改成這個任務的條件
       function goMission(k) {
         if (done) doneK.add(mi);
@@ -330,6 +331,12 @@
       }
 
       reset();
+      // 接上上次的進度：圓點照舊，從第一個還沒做的任務開始；全部做完就顯示結果
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => doneK.add(k));
+        const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k));
+        goMission(k0 < 0 ? MISSIONS.length : k0);
+      }
       S._labU1 = { st, log, run, cross, get busy() { return busy; }, finishNow() { if (tl) tl.progress(1); } }; // 測試用
       return { unmount() { if (tl) tl.kill(); delete S._labU1; } };
     },

@@ -276,6 +276,7 @@
       let mi = 0, phase = 'predict', pred = -1, picked = -1, solved = false, result = null;
       const firstOk = [];
       const doneK = new Set(); // 做完過的任務（點圓點可以回去再做）
+      const sv = S.progress.lab('lab-transpiration'); // 存檔的進度（要在第一次畫圓點前讀）
       const dots = () => S.dots(MISSIONS.length, mi, (k) => (doneK.has(k) ? (firstOk[k] === false ? 'miss' : 'ok') : ''));
       // 切換任務：正在做的實驗先停止（不列入紀錄），換成新任務的設定
       function goMission(k) {
@@ -346,6 +347,11 @@
 
       setupMission();
       table();
+      // 接上存檔的進度：圓點照舊，從第一個還沒做的任務開始（都做完就顯示完成畫面）
+      if (sv) {
+        [...sv.ok, ...sv.miss].filter((k) => k < MISSIONS.length).forEach((k) => { doneK.add(k); firstOk[k] = !sv.miss.includes(k); });
+        if (doneK.size) { const k0 = MISSIONS.findIndex((_, k) => !doneK.has(k)); goMission(k0 < 0 ? MISSIONS.length : k0); }
+      }
       raf = requestAnimationFrame(loop);
       S._labV = { st, get run() { return run; }, start, advance(sec) { for (let i = 0; i < sec * 20 && run && !run.done; i++) step((0.05 / SEC_PER_HOUR) * 60); animate(0.05); } }; // 測試用
       return { unmount() { cancelAnimationFrame(raf); delete S._labV; } };
