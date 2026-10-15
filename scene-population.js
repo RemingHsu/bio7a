@@ -6,7 +6,7 @@
   const UP = '#6fce62', DOWN = '#ff8a7a';
 
   S.register({
-    id: 'population', section: '下5-1', title: '族群、群集與演替',
+    id: 'population', cards: true, animate: [2], section: '下5-1', title: '族群、群集與演替',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

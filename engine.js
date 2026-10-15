@@ -305,6 +305,7 @@
   function updatePlayBtn() {
     const last = step === ctx.steps.length - 1;
     playBtn.innerHTML = ICON_AGAIN + '<span class="lbl">再放一次</span>';
+    playBtn.hidden = isCard(step); // 重點卡沒有動畫可以重播
     nextBtn.disabled = last;
     nextBtn.classList.toggle('ready', done && !last); // 這一步播完：提示可以按下一步
   }
@@ -320,9 +321,13 @@
     recordScene(i);
     setCaption(i);
     updatePlayBtn();
-    if (reduce) { ctx.tl.seek(e, false); finish(); return; }
-    cur = ctx.tl.tweenTo(e, { ease: 'none', onUpdate: paintProgress, onComplete: finish });
+    // 重點卡（cards: true 的場景）：每一步直接顯示完成的畫面，不播淡入；太長的步最多播 MAX_STEP 秒
+    if (reduce || isCard(i)) { ctx.tl.seek(e, false); finish(); return; }
+    cur = ctx.tl.tweenTo(e, { ease: 'none', duration: Math.min(e - s, MAX_STEP), onUpdate: paintProgress, onComplete: finish });
   }
+  const MAX_STEP = 6;
+  // 場景可以標 cards: true（整景是「分步重點卡」），animate: [步的索引] 列出例外、仍然要播動畫的步
+  const isCard = (i) => { const sc = scenes[idx]; return !!(sc && sc.cards && !(sc.animate || []).includes(i)); };
 
   function finish() {
     done = true;
@@ -384,7 +389,7 @@
   const OLD_HASH = { s1: 'scale', s2: 'cell', s3: 'transport', s4: 'levels', a1: 'lab-scale', a2: 'lab-transport' };
   let items = [], curSec = null, curChap = null;
   const hasLab = (sec) => items.some((x) => x.section === sec && x.kind === 'lab' && !isQuiz(x.id));
-  const kindOf = (x) => (x.kind === 'scene' ? '動畫' : isQuiz(x.id) ? '總整理' : '互動');
+  const kindOf = (x) => (x.kind === 'scene' ? (x.cards ? '重點' : '動畫') : isQuiz(x.id) ? '總整理' : '互動');
   const ICON_LAB = '<svg class="labi" viewBox="0 0 16 16" aria-hidden="true"><title>這一節有互動</title><path d="M6 1h4v1.2H9v4l4.3 7A1.4 1.4 0 0 1 12.1 15H3.9a1.4 1.4 0 0 1-1.2-2.1L7 6.2v-4H6z"/></svg>';
   const open = (it) => { hideHome(); if (it.kind === 'scene') load(scenes.indexOf(it)); else loadLab(labs.indexOf(it)); };
   // 依網址的 # 打開項目；沒有或認不得就顯示首頁
@@ -752,7 +757,7 @@
   }
   // 互動的舞台右上角也放一個「放大」按鈕
   function addLabBigButtons(box) {
-    box.querySelectorAll('.lab-stage').forEach((st) => {
+    box.querySelectorAll('.lab-stage, .dia-wrap').forEach((st) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'big-btn'; b.textContent = '⤢ 放大'; b.setAttribute('aria-label', '放大畫面');
       b.addEventListener('click', () => setBig(st, !st.classList.contains('big')));
@@ -862,9 +867,9 @@
   S.openById = (id) => { const it = items.find((x) => x.id === id); if (it) { open(it); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
   // 打開某個動畫並直接播放第 step 步（step 從 0 開始；總整理的圖表用）
   S.openAt = (id, step) => { S.openById(id); if (step > 0 && ctx && scenes[idx] && scenes[idx].id === id) go(step); };
-  S.itemsOf = (sec) => items.filter((x) => x.section === sec).map((x) => ({ id: x.id, title: x.title, kind: x.kind }));
-  // 依 id 找任何一個動畫／互動（跨章比較的連結用）
-  S.findItem = (id) => { const x = items.find((it) => it.id === id); return x ? { id: x.id, title: x.title, kind: x.kind, section: x.section } : null; };
+  S.itemsOf = (sec) => items.filter((x) => x.section === sec).map((x) => ({ id: x.id, title: x.title, kind: x.kind, label: kindOf(x) }));
+  // 依 id 找任何一個動畫／互動（跨章比較的連結用）；label：動畫／重點／互動／總整理
+  S.findItem = (id) => { const x = items.find((it) => it.id === id); return x ? { id: x.id, title: x.title, kind: x.kind, section: x.section, label: kindOf(x) } : null; };
   S.stageOnly = (on) => { document.body.classList.toggle('stage-only', on !== false); if (on === false) fit(); };
   // 檢查用：直接跳到某一步的結尾畫面
   S.jump = (i, scene) => {

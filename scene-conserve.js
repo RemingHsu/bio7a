@@ -20,7 +20,7 @@
   const cross = (p, x, y, r = 26) => el('path', { d: `M ${x - r},${y - r} L ${x + r},${y + r} M ${x + r},${y - r} L ${x - r},${y + r}`, stroke: '#ff5f74', 'stroke-width': 6, 'stroke-linecap': 'round', opacity: 0.9 }, p);
 
   S.register({
-    id: 'conserve', section: '下6-3', title: '保育與永續',
+    id: 'conserve', cards: true, section: '下6-3', title: '保育與永續',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

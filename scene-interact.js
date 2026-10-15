@@ -27,7 +27,7 @@
   };
 
   S.register({
-    id: 'interact', section: '下5-2', title: '生物間的互動關係',
+    id: 'interact', cards: true, section: '下5-2', title: '生物間的互動關係',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

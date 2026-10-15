@@ -27,10 +27,19 @@
         box.innerHTML = `
 <style>
     .sumMap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
-    .sumCard { padding: 1rem 1.25rem; display: grid; gap: 0.5rem; align-content: start; }
-    .sumCard h2 { display: flex; align-items: center; gap: 0.5rem; }
+    .sumCard { padding: 1rem 1.25rem; }
+    .sumCard > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; }
+    .sumCard > summary::-webkit-details-marker { display: none; }
+    .sumCard > summary::before { content: '▾'; color: var(--muted); font-size: 1.1rem; transition: transform 0.2s; }
+    .sumCard:not([open]) > summary::before { transform: rotate(-90deg); }
+    .sumCard h2 { display: flex; align-items: center; gap: 0.5rem; margin: 0; }
+    .sumBody { display: grid; gap: 0.5rem; margin-top: 0.5rem; }
+    .sumCard li.sup { list-style: none; margin-left: -1.1em; }
+    .sumCard li.sup > details > summary { cursor: pointer; color: var(--muted); font-size: 0.95rem; }
+    .sumCard li.sup > details[open] > summary { margin-bottom: 0.2rem; }
+    .sumCard li.sup > details > ul { margin-left: 1.1em; }
     .sumCard h2 .n { font-family: var(--font-mono); font-size: 0.75em; padding: 0.1em 0.5em; border-radius: 999px; background: var(--bg); color: var(--muted); font-weight: 500; }
-    .sumCard > ul { margin: 0; padding-left: 1.1em; columns: 2 24rem; column-gap: 2.2rem; font-size: 1rem; line-height: 1.65; }
+    .sumBody > ul { margin: 0; padding-left: 1.1em; columns: 2 24rem; column-gap: 2.2rem; font-size: 1rem; line-height: 1.65; }
     .sumCard li { break-inside: avoid; margin: 0 0 0.3rem; }
     .sumCard li ul { margin: 0.2rem 0 0; padding-left: 1.1em; list-style: circle; font-size: 0.97em; }
     .sumCard li ul li { margin-bottom: 0.15rem; }
@@ -68,7 +77,7 @@
     .svgWrap { overflow-x: auto; }
     .chartCard svg.dia { display: block; width: 100%; min-width: 440px; height: auto; background: #0f1c26; border-radius: 0.6rem; }
     /* 圖解也可以「放大」（手機直拿時會轉成橫向）：借用互動舞台的放大按鈕 */
-    .dia-wrap { padding-top: 0 !important; background: transparent; border: 0; display: block; }
+    .dia-wrap { position: relative; }
     .dia-wrap .big-btn { top: 0.4rem; right: 0.4rem; }
     .dia-wrap.big { background: var(--stage); }
     .dia-wrap.big svg.dia { width: 100%; height: 100%; max-height: 100%; min-width: 0; border-radius: 0; }
@@ -115,8 +124,9 @@
       table.cmp tr { break-inside: avoid; }
       .sumCard { margin: 0 0 0.7rem; border: 1px solid #bbb !important; box-shadow: none !important; }
       .sumCard h2, .lab h3.sumHead { break-after: avoid; }
-      .sumCard > ul { columns: 1; }
-      .sumCard, .chartCard { display: block !important; }
+      .sumBody > ul { columns: 1; }
+      .sumCard > summary::before { display: none; }
+      .sumCard, .chartCard, .sumBody { display: block !important; }
       .sumCard > * + * { margin-top: 0.45rem; }
       .chartCard > * + * { margin-top: 0.5rem; }
       .sumCard li { break-inside: auto; }
@@ -136,14 +146,19 @@
     }
 </style>
 <table class="pwrap"><thead><tr><td><div class="pspace"></div></td></tr></thead><tbody><tr><td>
-<div class="card quizCard sumIntro" style="background:transparent;border:0;padding:0"><div class="sumHeadRow"><h2 style="font-family:var(--font-label);font-size:1.5rem;margin:0 0 0.2rem">${heading}</h2><div class="sumPrintOpt"><span class="sumPdf" id="sum-pdf" hidden>PDF：<a href="pdf/${pdfBase}.pdf" download="${pdfName}-重點.pdf">重點</a>・<a href="pdf/${pdfBase}-qa.pdf" download="${pdfName}-含自我檢測與解答.pdf">含自我檢測與解答</a></span></div></div><p class="m-hint">${!MAP.length ? '先看重點圖表，再做自我檢測。' : CHARTS.length ? '先看重點圖表，再看每一節的重點和易錯觀念。' : '每一節的重點和易錯觀念。'}按下按鈕可以直接打開對應的動畫或互動。</p>
-<div class="sumToc" aria-label="章內目錄">${CHARTS.length ? '<button type="button" data-go="#sum-charts">重點圖表</button>' : ''}${MAP.map(([sec, name], i) => `<button type="button" data-go="#sum-sec-${i}"><span class="n">${S.secLabel(sec)}</span>${name}</button>`).join('')}<button type="button" data-go="#sum-quiz">自我檢測</button></div></div>
-${CHARTS.length ? `<h3 class="sumHead">重點圖表</h3><div class="sumCharts" id="sum-charts"></div>${MAP.length ? '<h3 class="sumHead">各節重點</h3>' : ''}` : ''}
+<div class="card quizCard sumIntro" style="background:transparent;border:0;padding:0"><div class="sumHeadRow"><h2 style="font-family:var(--font-label);font-size:1.5rem;margin:0 0 0.2rem">${heading}</h2><div class="sumPrintOpt"><span class="sumPdf" id="sum-pdf" hidden>PDF：<a href="pdf/${pdfBase}.pdf" download="${pdfName}-重點.pdf">重點</a>・<a href="pdf/${pdfBase}-qa.pdf" download="${pdfName}-含自我檢測與解答.pdf">含自我檢測與解答</a></span></div></div><p class="m-hint">${!MAP.length ? '先看重點圖表，再做自我檢測。' : CHARTS.length ? '本章考點是會考常考的比較，考前先看這裡；各節重點是完整的複習講義。' : '每一節的重點和易錯觀念。'}按下按鈕可以直接打開對應的動畫或互動。</p>
+<div class="sumToc" aria-label="章內目錄">${CHARTS.length ? `<button type="button" data-go="#sum-charts">${MAP.length ? '本章考點' : '重點圖表'}</button>` : ''}${MAP.map(([sec, name], i) => `<button type="button" data-go="#sum-sec-${i}"><span class="n">${S.secLabel(sec)}</span>${name}</button>`).join('')}<button type="button" data-go="#sum-quiz">自我檢測</button></div></div>
+${CHARTS.length ? `<h3 class="sumHead">${MAP.length ? '本章考點' : '重點圖表'}</h3><div class="sumCharts" id="sum-charts"></div>${MAP.length ? '<h3 class="sumHead">各節重點</h3>' : ''}` : ''}
 ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
 <div class="card quizCard" id="sum-quiz"></div>
 <section id="sum-printquiz"></section>
 </td></tr></tbody><tfoot><tr><td><div class="pspace"></div></td></tr></tfoot></table>
 <button class="ctl primary sumJump" type="button" data-go="#sum-quiz">↓ 自我檢測</button>`;
+        // 瀏覽器直接列印：先把收起來的小節和「補充」展開，印完恢復
+        const opened = [];
+        const onBefore = () => { box.querySelectorAll('details:not([open])').forEach((d) => { d.open = true; opened.push(d); }); };
+        const onAfter = () => { opened.splice(0).forEach((d) => { d.open = false; }); };
+        window.addEventListener('beforeprint', onBefore); window.addEventListener('afterprint', onAfter);
         // 章內目錄與手機上的「自我檢測」浮動鈕：捲到對應的位置
         box.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => { const t = box.querySelector(b.dataset.go); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
         // 列印（瀏覽器的列印、或 tools/make_pdfs.py 產生 PDF）：預設只印重點圖表和各節重點；網址加 ?pq=qa 才加印自我檢測和解答
@@ -156,7 +171,7 @@ ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
           if (!link) return '';
           const [iid, k] = link, it = findItem(iid);
           if (!it) return '';
-          return `<div class="btn-row"><button class="ctl small" type="button" data-at="${iid}" data-k="${k || 1}">${it.kind === 'lab' ? '互動' : '動畫'}：${it.title}${it.kind !== 'lab' && k > 1 ? `（第 ${k} 步）` : ''}</button></div>`;
+          return `<div class="btn-row"><button class="ctl small" type="button" data-at="${iid}" data-k="${k || 1}">${it.label}：${it.title}${it.kind !== 'lab' && k > 1 ? `（第 ${k} 步）` : ''}</button></div>`;
         };
         // 表頭的色塊和第一個字黏在一起，換行時色塊不會自己掉成一行
         const swHead = (n) => { const m = /^([^<&\s])([\s\S]*)$/u.exec(n); return m ? `<span class="swn"><span class="sw" aria-hidden="true"></span>${m[1]}</span>${m[2]}` : `<span class="sw" aria-hidden="true"></span>${n}`; };
@@ -167,6 +182,7 @@ ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
           const f = document.createElement('figure');
           f.className = 'card chartCard';
           f.style.margin = '0';
+          if (ch.wide) f.style.gridColumn = '1 / -1'; // 欄多、列多的表：占滿整列
           let body = '';
           if (ch.type === 'table') {
             body = `<div class="tblWrap"><table class="cmp"><thead><tr><th></th>${ch.cols.map(([n, c]) => (c ? `<th style="--c:${c}">${swHead(n)}</th>` : `<th>${n}</th>`)).join('')}</tr></thead><tbody>${ch.rows.map(([h, ...cells]) => `<tr><th scope="row">${rowHead(h)}</th>${cells.map((x) => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
@@ -176,7 +192,7 @@ ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
           f.innerHTML = `<figcaption><h3>${ch.title}</h3></figcaption>${body}${ch.note ? `<p class="note">${ch.note}</p>` : ''}${linkBtn(ch.link)}`;
           if (ch.type === 'svg') {
             const wrap = document.createElement('div');
-            wrap.className = 'svgWrap lab-stage dia-wrap'; // lab-stage：引擎會替它加上「放大」按鈕
+            wrap.className = 'svgWrap dia-wrap'; // 引擎會替 .dia-wrap 加上「放大」按鈕（不能用 lab-stage，否則字會被放大到 24）
             const sv = S.el('svg', { viewBox: `0 0 ${ch.w} ${ch.h}`, class: 'dia', role: 'img', 'aria-label': ch.title }, wrap);
             f.insertBefore(wrap, f.children[1]);
             ch.draw(sv);
@@ -189,14 +205,20 @@ ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
         }
 
         const map = box.querySelector('#sum-map');
-        const li = (p) => (Array.isArray(p) ? `<li>${p[0]}<ul>${p[1].map(li).join('')}</ul></li>` : `<li>${p}</li>`);
+        // 補充區塊裡的條目不用再寫「（補充）」
+        const SUP_RE = /^（補充）\s*|^補充：\s*|\s*（補充）$/g;
+        const unSup = (x) => (Array.isArray(x) ? [x[0].replace(SUP_RE, ''), x[1]] : String(x).replace(SUP_RE, ''));
+        const printing = new URLSearchParams(location.search).has('pq'); // tools/make_pdfs.py 印 PDF 時：補充段落展開
+        const li = (p) => (Array.isArray(p) ? (p[0] === '補充' || p[0] === '（補充）'
+          ? `<li class="sup"><details${printing ? ' open' : ''}><summary>補充（課本以外、常考數字）</summary><ul>${p[1].map((x) => li(unSup(x))).join('')}</ul></details></li>`
+          : `<li>${p[0]}<ul>${p[1].map(li).join('')}</ul></li>`) : `<li>${p}</li>`);
         if (map) MAP.forEach(([sec, name, pts, trap], i) => {
-          const c = document.createElement('section');
-          c.className = 'card sumCard'; c.id = `sum-sec-${i}`;
-          const links = S.itemsOf(sec).map((it) => `<button class="ctl small" type="button" data-id="${it.id}">${it.kind === 'lab' ? '互動' : '動畫'}：${it.title}</button>`).join('');
+          const c = document.createElement('details');
+          c.className = 'card sumCard'; c.id = `sum-sec-${i}`; c.open = true;
+          const links = S.itemsOf(sec).map((it) => `<button class="ctl small" type="button" data-id="${it.id}">${it.label}：${it.title}</button>`).join('');
           const traps = (Array.isArray(trap) ? trap : [trap]).filter(Boolean);
           const trapHtml = !traps.length ? '' : traps.length === 1 ? `<p class="trap"><b>易錯：</b>${traps[0]}</p>` : `<div class="trap"><b>易錯：</b><ul>${traps.map((t) => `<li>${t}</li>`).join('')}</ul></div>`;
-          c.innerHTML = `<h2><span class="n">${S.secLabel(sec)}</span>${name}</h2><ul>${pts.map(li).join('')}</ul>${trapHtml}<div class="btn-row">${links}</div>`;
+          c.innerHTML = `<summary><h2><span class="n">${S.secLabel(sec)}</span>${name}</h2></summary><div class="sumBody"><ul>${pts.map(li).join('')}</ul>${trapHtml}<div class="btn-row">${links}</div></div>`;
           map.appendChild(c);
         });
         if (map) {
@@ -210,7 +232,7 @@ ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
           <div class="pq-key"><h3 class="sumHead">解答與解析</h3><ol class="key">${QUIZ.map(([, , a, why]) => `<li><b>${'ABCD'[a]}</b>　${why}</li>`).join('')}</ol></div>`;
 
         const qbox = box.querySelector('#sum-quiz');
-        const titleOf = (iid) => { const it = findItem(iid); return it ? `${it.kind === 'lab' ? '互動' : '動畫'}：${it.title}` : ''; };
+        const titleOf = (iid) => { const it = findItem(iid); return it ? `${it.label}：${it.title}` : ''; };
         // 點圓點切換題目：答對過的題目直接顯示解析
         S.onDots(qbox, (k) => { qi = k; picked = -1; solved = solvedK.has(k); drawQuiz(); });
         function drawQuiz() {
@@ -257,6 +279,7 @@ ${MAP.length ? '<div class="sumMap" id="sum-map"></div>' : ''}
         // 首頁的錯題本：跳到這份總整理的第 k 題
         S.quizJump[id] = (k) => { qi = k; picked = -1; solved = solvedK.has(k); drawQuiz(); qbox.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
         drawQuiz();
+        return { unmount() { window.removeEventListener('beforeprint', onBefore); window.removeEventListener('afterprint', onAfter); } };
       },
     });
   };

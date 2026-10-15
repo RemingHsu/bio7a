@@ -60,7 +60,7 @@
   }
 
   S.register({
-    id: 'microbes', section: '下4-1', title: '原核、原生生物與菌物界',
+    id: 'microbes', cards: true, section: '下4-1', title: '原核、原生生物與菌物界',
     build(root) {
       const tl = gsap.timeline({ paused: true });
 

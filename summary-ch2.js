@@ -91,40 +91,33 @@
         '本氏液能測葡萄糖、麥芽糖等；<b>蔗糖、澱粉測不出來</b>',
         '（補充）脂質：滴在紙上留下半透明的油斑，乾了也不消失',
         '蛋白質：用碘液、本氏液都測不出來',
-      ]],
-      ['<b>互動：養分檢測</b>', [
-        '米飯糊＋碘液 → 藍黑色：米飯含很多澱粉',
-        '葡萄糖水＋本氏液：不加熱仍是藍色；隔水加熱才變色',
-        '比多少：A 變綠色、B 變磚紅色 → B 的葡萄糖比較多',
-        '砂糖水＋本氏液、隔水加熱 → 仍是藍色：甜不代表有葡萄糖',
-        '碘液變藍黑、本氏液仍藍 → 主要含澱粉（例：米飯、馬鈴薯）',
+        '碘液變藍黑、本氏液仍藍 → 主要含澱粉（例：米飯、馬鈴薯）；砂糖水（蔗糖）很甜，本氏液仍是藍色',
         '為什麼隔水加熱：試管受熱均勻，液體不會突然沸騰噴出，比較安全',
       ]],
-      ['<b>互動：食物熱量</b>', [
-        '目的：燃燒食物加熱水，估算食物含有的熱量',
-        '步驟：燃燒 1 g 花生，加熱鋁罐中 100 mL（約 100 g）的水',
-        '燒完後，讀出水溫上升了多少',
+      ['<b>實驗：測量食物的熱量</b>', [
+        '做法：燃燒 1 g 花生，加熱鋁罐中 100 mL（約 100 g）的水，燒完後讀出水溫上升了多少（注意用火安全，要在老師指導下進行）',
         '公式：<b>熱量（卡）＝ 水的質量（g）× 上升的溫度（°C）</b>',
         '1 g 水上升 1 °C 需要 1 卡；<b>1 大卡 ＝ 1000 卡</b>',
         '例：100 g × 14.5 °C＊ ＝ 1450 卡 ＝ 1.45 大卡',
-        '測得的比包裝標示少（花生約 5.8 大卡／g＊）',
-        '原因：熱散失到空氣中、鋁罐和溫度計吸熱、變成光、沒燒完',
+        '測得的比包裝標示少（花生約 5.8 大卡／g＊）：熱散失到空氣中、鋁罐和溫度計吸熱、變成光、沒燒完',
         '加<b>防風罩</b>：熱比較不容易散失，測得的值更接近實際',
         '公平比較：只改食物種類；食物質量、水量、裝置都要相同',
         '相同質量：花生（脂質多）比棉花糖（醣類多）放出的熱量多',
-        '注意用火安全，要在老師指導下進行',
       ]],
       ['<b>看營養標示</b>', [
         '「碳水化合物」就是<b>醣類</b>；「脂肪」屬於脂質',
         '飽和脂肪、反式脂肪已算在脂肪裡；糖已算在碳水化合物裡',
-        '分清楚「每份」和「每 100 公克」；整包 ＝ 每份 × 份數',
+        '分清楚「每份」和「每 100 公克」；整包 ＝ 每份 × 份數（例：每份 147 大卡＊、一包 4 份 → 147 × 4 ＝ 588 大卡）',
+        '熱量 ＝ 每公克熱量 × 公克數，三類養分各算一次再相加',
         '例：一份有蛋白質 2 公克、脂肪 10 公克、碳水化合物 16 公克',
         '→ 2 × 4 ＋ 10 × 9 ＋ 16 × 4 ＝ 162 大卡',
       ]],
-      ['<b>常考數字</b>', [
-        '醣類、蛋白質約 4 大卡／g；脂質約 9 大卡／g',
-        '1 大卡 ＝ 1000 卡；1 g 水上升 1 °C ＝ 1 卡',
-        '水約占身體重量的 2/3',
+      ['補充', [
+        ['<b>常考數字</b>', [
+          '醣類、蛋白質約 4 大卡／g；脂質約 9 大卡／g（1 公克脂肪的熱量，是醣類的 2 倍多）',
+          '1 大卡 ＝ 1000 卡；1 g 水上升 1 °C ＝ 1 卡',
+          '水約占身體重量的 2/3',
+        ]],
       ]],
     ], [
       '「本氏液加進去就會變色」不對：要隔水加熱才會變色',
@@ -168,9 +161,7 @@
         '合成和分解用的是不同的酵素',
       ]],
       ['<b>實驗：唾液對澱粉的作用</b>', [
-        '目的：唾液能不能分解澱粉？溫度、酸鹼有沒有影響？',
-        '步驟：澱粉液＋唾液，放進 37 °C 水浴',
-        '每 1 分鐘取一滴到點滴板，加碘液',
+        '做法：澱粉液＋唾液放進 37 °C 水浴，每 1 分鐘取一滴到點滴板加碘液，看唾液能不能分解澱粉、溫度和酸鹼有沒有影響',
         '結果：一開始變藍黑色；幾分鐘後不再變藍黑色',
         '結論：澱粉被唾液中的<b>澱粉酶</b>分解了（變成麥芽糖等較小的醣）',
         '對照組：唾液換成清水 → 一直變藍黑色',
@@ -240,12 +231,7 @@
         '<b>藍綠菌</b>：沒有葉綠體，但含有葉綠素',
       ]],
       ['<b>實驗：遮光實驗</b>', [
-        '目的：光合作用需不需要光？',
-        '① 放在暗處一天 → 消耗葉片中<b>原有的澱粉</b>',
-        '② 用鋁箔紙把葉片部分遮光，照光數小時',
-        '③ 放入熱水中煮 → <b>破壞細胞、軟化葉片</b>，酒精和碘液較易進入',
-        '④ 放入酒精、<b>隔水加熱</b> → <b>溶出葉綠素</b>，葉片變淡，方便看顏色',
-        '⑤ 用清水沖洗後，滴<b>碘液</b>',
+        '做法（光合作用需不需要光？）：放在暗處一天（消耗葉片中<b>原有的澱粉</b>）→ 用鋁箔紙把葉片部分遮光，照光數小時 → 放入熱水中煮（<b>破壞細胞、軟化葉片</b>，酒精和碘液較易進入）→ 放入酒精、<b>隔水加熱</b>（<b>溶出葉綠素</b>，葉片變淡，方便看顏色）→ 用清水沖洗後，滴<b>碘液</b>',
         '結果：照光部分變<b>藍黑色</b>（有澱粉）；遮光部分不變藍黑色',
         '結論：光合作用<b>需要光</b>；製造的葡萄糖轉變成澱粉',
         '酒精為什麼要隔水加熱：酒精容易著火，不能直接加熱',
@@ -255,14 +241,11 @@
         '同樣照光、處理後滴碘液：綠色部分變藍黑色，白色部分不變',
         '結論：光合作用<b>需要葉綠素</b>',
       ]],
-      ['<b>互動：水蘊草實驗</b>', [
-        '開燈：水蘊草冒出氣泡（光合作用產生的<b>氧</b>）',
-        '燈越近（光越強）→ 每分鐘的氣泡越多',
-        '變因：只改燈的距離；水的種類、水蘊草的量、水溫都要相同',
-        '燒杯裡放小蘇打水：提供二氧化碳',
-        '換成煮沸後冷卻的開水（二氧化碳被趕走）→ 氣泡很少',
-        '收集的氣體能使<b>線香的餘燼復燃</b> → 是<b>氧</b>',
-        '關燈 → 幾乎沒有氣泡：光合作用需要光',
+      ['<b>實驗：水蘊草</b>', [
+        '做法：只改燈的距離（光的強弱），數每分鐘冒出的氣泡；水的種類、水蘊草的量、水溫都要相同',
+        '結果：開燈冒出氣泡，燈越近（光越強）氣泡越多；關燈幾乎沒有氣泡 → 光合作用需要光',
+        '氣泡是光合作用產生的<b>氧</b>：收集的氣體能使<b>線香的餘燼復燃</b>',
+        '燒杯裡放小蘇打水：提供二氧化碳；換成煮沸後冷卻的開水（二氧化碳被趕走）→ 氣泡很少',
         '燈太近，水會變熱：可用 LED 燈，或在中間放一杯水隔熱',
       ]],
       ['<b>植物的養分從哪裡來</b>', [
@@ -276,7 +259,7 @@
         '光合作用：在葉綠體，需要光；製造養分、儲存能量',
         '呼吸作用：在粒線體；分解養分、釋放能量',
         '植物的細胞白天、晚上都進行呼吸作用；有光時才行光合作用',
-        '更多比較見「總複習 → 跨章比較」',
+        '更多比較見第六章「光合作用 vs 呼吸作用」',
       ]],
     ], [
       '「光合作用的主要目的是放出氧」不對：主要目的是製造養分',
@@ -406,213 +389,61 @@
   const W = (...p) => p.map((s) => `<span style="white-space:nowrap">${s}</span>`).join('');
 
   const CHARTS = [
-    { type: 'table', title: '六大類養分', cols: [['主要功能', ''], [W('能量'), '#ffd166'], ['檢測', '#62d0c0']],
+    // ===== 3-1 =====
+    { type: 'table', title: '六大類養分', cols: [['主要功能', ''], [W('能量'), '#ffd166']],
       rows: [
-        ['醣類', W('最主要的', '能量來源'), '約 4 ' + W('大卡＊'), W('澱粉：', '<b>碘液</b>') + '<br>' + W('葡萄糖：', '<b>本氏液</b>')],
-        [W('蛋白質'), '構成身體，<br>' + W('幫助生長', '和修補'), '約 4 ' + W('大卡＊'), '—'],
-        ['脂質', W('儲存能量、', '保持體溫'), '約 9 ' + W('大卡＊') + '<br><small>' + W('同質量時', '最多') + '</small>', '紙片油斑<br><small>' + W('（補充）') + '</small>'],
-        [W('維生素'), '調節生理作用<br><small>例：缺維生素 C 會得壞血病</small>', '不提供', '—'],
-        [W('礦物質'), W('構成身體、', '調節', '生理作用') + '<br><small>例：鈣構成骨骼和牙齒</small>', '不提供', '—'],
-        ['水', W('運送物質、', '調節體溫'), '不提供', '—'],
-      ], note: '＊每公克提供的能量，是常用的近似值（1 大卡 ＝ 1000 卡）。澱粉遇碘液變藍黑色；葡萄糖加本氏液要隔水加熱，依含量由藍變綠、黃、橙、紅。蛋白質用這兩種試劑都測不出來。纖維素也是醣類，但人體不能消化，能促進腸道蠕動。', link: ['nutrients', 2] },
-    { type: 'svg', title: '大分子 → 小分子', w: 560, h: 316, link: ['nutrients', 3],
-      note: '＊示意：分子都畫得很大，也把長鏈畫得很短；真實的澱粉由成千上萬個葡萄糖連成。分解成小分子，身體才能吸收（3-4 消化與吸收）。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const STA = C.sugar, PRO = '#ff8f8f', FAT = '#ffb35c', GLY = '#f3e6b0';
-        const Y1 = 70, Y2 = 160, Y3 = 246;
-        const hex = (cx, cy) => { let d = ''; for (let i = 0; i < 6; i++) { const a = (i / 6) * 6.283 + 0.52; d += (i ? 'L' : 'M') + `${(cx + Math.cos(a) * 14).toFixed(1)},${(cy + Math.sin(a) * 14).toFixed(1)}`; } el('path', { d: d + 'Z', fill: '#3a3320', stroke: STA, 'stroke-width': 3 }, svg); };
-        const arrow = (y) => { el('line', { x1: 328, y1: y, x2: 372, y2: y, stroke: C.ink2, 'stroke-width': 3 }, svg); el('path', { d: `M 386,${y} l -14,-8 l 0,16 Z`, fill: C.ink2 }, svg); text(svg, 356, y - 16, '分解', { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute }); };
-        const tail = (x, y, n) => { let d = `M ${x},${y}`; for (let i = 1; i <= n; i++) d += ` L ${x + i * 16},${y + (i % 2 ? -7 : 7)}`; el('path', { d, fill: 'none', stroke: FAT, 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg); };
-        const label = (y, a, b, c) => { text(svg, 16, y + 2, a, { 'font-size': 22, 'font-weight': 700, fill: c }); if (b) text(svg, 16, y + 26, b, { 'font-size': 17, fill: C.mute }); };
-        text(svg, 210, 28, '大分子', { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: C.mute });
-        text(svg, 470, 28, '小分子', { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: C.mute });
-        // 澱粉 → 葡萄糖
-        label(Y1, '澱粉', '（醣類）', STA);
-        el('line', { x1: 112, y1: Y1, x2: 292, y2: Y1, stroke: STA, 'stroke-width': 3 }, svg);
-        for (let i = 0; i < 6; i++) hex(112 + i * 36, Y1);
-        arrow(Y1);
-        hex(414, Y1);
-        text(svg, 440, Y1 + 7, '葡萄糖', { 'font-size': 21, 'font-weight': 700, fill: STA });
-        // 蛋白質 → 胺基酸
-        label(Y2, '蛋白質', null, PRO);
-        el('line', { x1: 112, y1: Y2, x2: 304, y2: Y2, stroke: PRO, 'stroke-width': 3 }, svg);
-        ['#ff8f8f', '#ffc2a8', '#e86a7a', '#ff8f8f', '#ffc2a8', '#e86a7a', '#ff8f8f'].forEach((c, i) => el('circle', { cx: 112 + i * 32, cy: Y2, r: 12, fill: c }, svg));
-        arrow(Y2);
-        el('circle', { cx: 414, cy: Y2, r: 12, fill: PRO }, svg);
-        text(svg, 440, Y2 + 7, '胺基酸', { 'font-size': 21, 'font-weight': 700, fill: PRO });
-        // 脂肪 → 脂肪酸＋甘油
-        label(Y3, '脂肪', '（脂質）', FAT);
-        el('rect', { x: 112, y: Y3 - 36, width: 14, height: 72, rx: 5, fill: GLY }, svg);
-        [-26, 0, 26].forEach((dy) => tail(126, Y3 + dy, 10));
-        arrow(Y3);
-        el('rect', { x: 404, y: Y3 - 30, width: 12, height: 60, rx: 5, fill: GLY }, svg);
-        [-22, 0, 22].forEach((dy) => tail(440, Y3 + dy, 6));
-        text(svg, 410, Y3 + 56, '甘油', { 'font-size': 19, 'font-weight': 700, 'text-anchor': 'middle', fill: GLY });
-        text(svg, 488, Y3 + 56, '脂肪酸', { 'font-size': 19, 'font-weight': 700, 'text-anchor': 'middle', fill: FAT });
-      } },
+        ['醣類', W('最主要的', '能量來源'), '約 4 ' + W('大卡＊')],
+        [W('蛋白質'), '構成身體，<br>' + W('幫助生長', '和修補'), '約 4 ' + W('大卡＊')],
+        ['脂質', W('儲存能量、', '保持體溫'), '約 9 ' + W('大卡＊') + '<br><small>' + W('同質量時', '最多') + '</small>'],
+        [W('維生素'), '調節生理作用<br><small>例：缺維生素 C 會得壞血病</small>', '不提供'],
+        [W('礦物質'), W('構成身體、', '調節', '生理作用') + '<br><small>例：鈣構成骨骼和牙齒</small>', '不提供'],
+        ['水', W('運送物質、', '調節體溫'), '不提供'],
+      ], note: '＊每公克提供的能量，是常用的近似值（1 大卡 ＝ 1000 卡）。纖維素也是醣類，但人體不能消化，能促進腸道蠕動。', link: ['nutrients', 2] },
     { type: 'table', title: '養分怎麼檢測？', cols: [['試劑', '#ffd166'], ['加熱', '#ff9a5c'], ['有的話', '#62d0c0']],
       rows: [
         ['澱粉', '<b>碘液</b><br><small>黃褐色</small>', '不用', '<b>藍黑色</b>'],
         ['葡萄糖', '<b>本氏液</b><br><small>藍色</small>', W('<b>隔水加熱</b>'), W('綠 → 黃 →') + ' ' + W('橙 → 紅') + '<br><small>越多越紅</small>'],
         ['脂質<br><small>' + W('（補充）') + '</small>', W('滴在紙上'), '不用', '半透明油斑<br><small>乾了不消失</small>'],
       ], note: '砂糖（蔗糖）很甜，但本氏液測不出來；澱粉也不會讓本氏液變色。蛋白質用碘液、本氏液都測不出來。', link: ['lab-food'] },
-    { type: 'flow', title: '測量食物的熱量', link: ['lab-calorie'],
-      nodes: [[W('燃燒') + ' ' + W('1 g 花生'), W('在鋁罐下方', '點燃'), '#ff9a5c'], ['加熱水', '鋁罐中 100 mL（約 100 g）', '#9fd8ff'], ['讀水溫', W('燒完後', '上升幾 °C'), '#ffd166'], ['算熱量', W('水的質量 ×') + ' ' + W('上升的溫度'), '#8fd07a'], ['換成大卡', '1 大卡 ＝ ' + W('1000 卡'), '#c9a7ff']],
-      note: '例：100 g × 14.5 °C＊ ＝ 1450 卡 ＝ 1.45 大卡。測得的比標示少，因為很多熱散失；加防風罩比較準。比較不同食物時，食物質量、水量、裝置都要相同。' },
-    { type: 'svg', title: '看營養標示算熱量', w: 600, h: 404, link: ['lab-calorie'],
-      note: '＊示意的營養標示（一包巧克力餅乾）。醣類、蛋白質每公克約 4 大卡，脂質約 9 大卡。飽和脂肪、糖已經算在脂肪、碳水化合物裡，不要再加一次。這包有 4 份，全部吃完約 588 大卡。',
+    // ===== 3-2 =====
+    { type: 'svg', title: '溫度與酸鹼值對酵素的影響', w: 560, h: 600, link: ['enzyme', 4],
+      note: '＊示意曲線，形狀和數值都是簡化的。上：人體的酵素約 37 °C 最快；生活在溫泉中的細菌，酵素在較高的溫度（約 70 °C＊）最快。下：每種酵素都有最適合的酸鹼環境；唾液中的澱粉酶進入強酸的胃，幾乎不再作用。',
       draw(svg) {
         const { el, text, C } = S;
-        const K = { fill: '#1d2328' };
-        el('rect', { x: 14, y: 14, width: 330, height: 376, rx: 8, fill: '#fbfaf5', stroke: '#c9c4b4', 'stroke-width': 2 }, svg);
-        text(svg, 28, 48, '營養標示', { 'font-size': 24, 'font-weight': 700, ...K });
-        el('line', { x1: 24, y1: 58, x2: 334, y2: 58, stroke: '#1d2328', 'stroke-width': 3 }, svg);
-        text(svg, 28, 84, '每一份量 30 公克', { 'font-size': 18, ...K });
-        text(svg, 28, 108, '本包裝含 4 份', { 'font-size': 18, ...K });
-        el('line', { x1: 24, y1: 120, x2: 334, y2: 120, stroke: '#1d2328', 'stroke-width': 1.5 }, svg);
-        text(svg, 224, 144, '每份', { 'font-size': 17, 'font-weight': 700, 'text-anchor': 'end', ...K });
-        text(svg, 332, 144, '每 100 公克', { 'font-size': 17, 'font-weight': 700, 'text-anchor': 'end', ...K });
-        const R = [['熱量', '147 大卡', '490 大卡'], ['蛋白質', '2.0 公克', '6.7 公克'], ['脂肪', '7.0 公克', '23.3 公克'], ['　飽和脂肪', '4.0 公克', '13.3 公克'], ['　反式脂肪', '0 公克', '0 公克'], ['碳水化合物', '19.0 公克', '63.3 公克'], ['　糖', '9.0 公克', '30.0 公克'], ['鈉', '75 毫克', '250 毫克']];
-        R.forEach(([n, a, b], i) => {
-          const y = 176 + i * 28, bold = i === 0 ? 700 : 400;
-          el('line', { x1: 24, y1: y - 20, x2: 334, y2: y - 20, stroke: '#c9c4b4', 'stroke-width': 1 }, svg);
-          text(svg, 28, y, n, { 'font-size': n.startsWith('　') ? 17 : 18, 'font-weight': bold, ...K });
-          text(svg, 228, y, a, { 'font-size': 18, 'font-weight': bold, 'text-anchor': 'end', ...K });
-          text(svg, 332, y, b, { 'font-size': 18, 'font-weight': bold, 'text-anchor': 'end', ...K });
-        });
-        // 右：算一份的熱量
-        text(svg, 474, 48, '巧克力餅乾一份的熱量', { 'font-size': 21, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink });
-        text(svg, 474, 78, '碳水化合物 ＝ 醣類', { 'font-size': 17, 'text-anchor': 'middle', fill: C.sugar });
-        text(svg, 474, 102, '脂肪屬於脂質', { 'font-size': 17, 'text-anchor': 'middle', fill: '#ffb35c' });
-        const P = [['蛋白質', '2 × 4 ＝ 8', 8, '#ff8f8f'], ['脂肪', '7 × 9 ＝ 63', 63, '#ffb35c'], ['碳水化合物', '19 × 4 ＝ 76', 76, C.sugar]];
-        P.forEach(([n, f, , c], i) => { text(svg, 362, 150 + i * 36, n, { 'font-size': 18, 'font-weight': 700, fill: c }); text(svg, 588, 150 + i * 36, f, { 'font-size': 18, 'text-anchor': 'end', fill: C.ink }); });
-        el('line', { x1: 362, y1: 250, x2: 588, y2: 250, stroke: '#4a6272', 'stroke-width': 2 }, svg);
-        text(svg, 474, 284, '約 147 大卡', { 'font-size': 24, 'font-weight': 700, 'text-anchor': 'middle', fill: C.hi });
-        let bx = 362;
-        P.forEach(([, , v, c]) => { const w = (v / 147) * 226; el('rect', { x: bx, y: 302, width: w - 2, height: 22, rx: 4, fill: c }, svg); bx += w; });
-        text(svg, 474, 352, '1 公克脂肪的熱量，', { 'font-size': 17, 'text-anchor': 'middle', fill: C.ink2 });
-        text(svg, 474, 376, '是醣類的 2 倍多', { 'font-size': 17, 'text-anchor': 'middle', fill: C.ink2 });
-      } },
-    { type: 'svg', title: '酵素的特性：條件 → 結果', w: 600, h: 430, link: ['enzyme', 4],
-      note: '人體的酵素約 37 °C 作用最快；不同生物的酵素，最適溫度不一樣。',
-      draw(svg) {
-        const { el, text, C } = S;
-        text(svg, 136, 30, '條件', { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: C.mute });
-        text(svg, 454, 30, '結果', { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: C.mute });
-        const ROW = [['溫度太低', '#62a8ff', 0.15, '作用變慢；回溫可以恢復'], ['約 37 °C（人體）', C.hi, 0.55, '作用最快'], ['溫度太高', '#ff8f8f', 0.95, '酵素被破壞；降溫也不能恢復'], ['酸鹼不合適', '#c9a7ff', -1, '作用變慢，或幾乎不作用']];
-        ROW.forEach(([a, c, lvl, b], i) => {
-          const y = 72 + i * 66;
-          el('rect', { x: 16, y: y - 26, width: 240, height: 52, rx: 12, fill: c, 'fill-opacity': 0.14, stroke: c, 'stroke-width': 2 }, svg);
-          if (lvl >= 0) { // 溫度計
-            el('rect', { x: 36, y: y - 19, width: 9, height: 30, rx: 4.5, fill: '#16293a', stroke: '#cfe8ff', 'stroke-width': 1.5 }, svg);
-            el('circle', { cx: 40.5, cy: y + 14, r: 7, fill: c }, svg);
-            el('rect', { x: 38.5, y: y + 8 - lvl * 24, width: 4, height: lvl * 24 + 4, fill: c }, svg);
-          } else text(svg, 41, y + 6, 'pH', { 'font-size': 17, 'font-weight': 700, 'text-anchor': 'middle', fill: c });
-          text(svg, 146, y + 7, a, { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle', fill: c });
-          el('line', { x1: 264, y1: y, x2: 302, y2: y, stroke: C.ink2, 'stroke-width': 3 }, svg);
-          el('path', { d: `M 314,${y} l -13,-8 l 0,16 Z`, fill: C.ink2 }, svg);
-          el('rect', { x: 322, y: y - 26, width: 262, height: 52, rx: 12, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, svg);
-          text(svg, 453, y + 6, b, { 'font-size': 18, 'text-anchor': 'middle', fill: C.ink });
-        });
-        el('rect', { x: 16, y: 324, width: 568, height: 92, rx: 12, fill: 'rgba(98,208,192,0.08)', stroke: '#62d0c0', 'stroke-width': 2 }, svg);
-        text(svg, 32, 360, '專一性：一種酵素只作用於特定的物質', { 'font-size': 18, fill: C.ink });
-        text(svg, 32, 394, '反應前後不變、可重複使用；能分解，也能合成', { 'font-size': 18, fill: C.ink });
-      } },
-    { type: 'svg', title: '不同生物的酵素，最適溫度不同', w: 560, h: 300, link: ['enzyme', 7],
-      note: '＊示意曲線：人體的酵素約 37 °C 最快；生活在溫泉中的細菌，酵素在較高的溫度（約 70 °C＊）最快。',
-      draw(svg) { enzCurves(svg, 560, 300, ['人體的酵素', '溫泉中細菌的酵素']); } },
-    { type: 'svg', title: '酸鹼值與酵素', w: 560, h: 290, link: ['enzyme', 5],
-      note: '＊示意曲線，形狀和數值都是簡化的。每種酵素都有最適合的酸鹼環境；唾液中的澱粉酶進入強酸的胃，幾乎不再作用。',
-      draw(svg) {
-        const { el, text, C } = S;
+        // 上：不同生物的酵素，最適溫度不同
+        enzCurves(svg, 560, 300, ['人體的酵素', '溫泉中細菌的酵素']);
+        el('line', { x1: 20, y1: 304, x2: 540, y2: 304, stroke: '#2b4252', 'stroke-width': 2 }, svg);
+        // 下：酸鹼值與酵素
+        const g = S.g(svg, { transform: 'translate(0 310)' });
         const PX = (ph) => 44 + (ph - 1) * (480 / 11), PY = (a) => 224 - a * 140;
-        el('line', { x1: 44, y1: 224, x2: 530, y2: 224, stroke: '#4a6272', 'stroke-width': 2.5 }, svg);
-        el('line', { x1: 44, y1: 224, x2: 44, y2: 44, stroke: '#4a6272', 'stroke-width': 2.5 }, svg);
-        text(svg, 52, 34, '作用快慢', { 'font-size': 17, fill: C.mute });
-        [1, 3, 5, 7, 9, 11].forEach((ph) => text(svg, PX(ph), 248, `pH ${ph}`, { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute }));
-        [['酸性', 2, '#ff8f8f'], ['中性', 7, C.mute], ['鹼性', 10, '#62a8ff']].forEach(([s, ph, c]) => text(svg, PX(ph), 276, s, { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: c }));
+        el('line', { x1: 44, y1: 224, x2: 530, y2: 224, stroke: '#4a6272', 'stroke-width': 2.5 }, g);
+        el('line', { x1: 44, y1: 224, x2: 44, y2: 44, stroke: '#4a6272', 'stroke-width': 2.5 }, g);
+        text(g, 52, 34, '作用快慢', { 'font-size': 17, fill: C.mute });
+        [1, 3, 5, 7, 9, 11].forEach((ph) => text(g, PX(ph), 248, `pH ${ph}`, { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute }));
+        [['酸性', 2, '#ff8f8f'], ['中性', 7, C.mute], ['鹼性', 10, '#62a8ff']].forEach(([s, ph, c]) => text(g, PX(ph), 276, s, { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: c }));
         [['胃液中的酵素', 2, 1.1, '#ff8f8f', 'middle', 0], ['唾液中的酵素', 7, 1.2, C.sugar, 'end', -8], ['胰液中的酵素', 8, 1.2, '#62d0c0', 'start', 8]].forEach(([n, c, w, col, anc, dx]) => {
           let d = '';
           for (let k = 0; k <= 110; k++) { const ph = 1 + k / 10; d += (k ? 'L' : 'M') + `${PX(ph).toFixed(1)},${PY(Math.exp(-Math.pow((ph - c) / w, 2))).toFixed(1)}`; }
-          el('path', { d, fill: 'none', stroke: col, 'stroke-width': 3.5 }, svg);
-          text(svg, PX(c) + dx, PY(1) - 10, n, { 'font-size': 18, 'font-weight': 700, 'text-anchor': anc, fill: col });
+          el('path', { d, fill: 'none', stroke: col, 'stroke-width': 3.5 }, g);
+          text(g, PX(c) + dx, PY(1) - 10, n, { 'font-size': 18, 'font-weight': 700, 'text-anchor': anc, fill: col });
         });
       } },
     { type: 'table', title: '唾液實驗：哪一管的澱粉被分解？', cols: [[W('滴碘液＊'), '#8fa8ff'], ['說明', '#62d0c0']],
       rows: [
-        [W('唾液、', '37 °C'), '<b>' + W('不變', '藍黑色') + '</b>', '澱粉被唾液中的酵素分解了'],
+        [W('唾液、', '37 °C'), '<b>' + W('不變', '藍黑色') + '</b>', '澱粉被唾液中的酵素分解了<br><small>約 37 °C（人體）作用最快</small>'],
         [W('清水、', '37 °C'), '藍黑色', W('對照組：', '清水', '沒有酵素')],
         [W('唾液、', '0 °C'), '藍黑色', '低溫作用很慢<br><small>回到 37 °C 可以恢復</small>'],
         [W('唾液、', '80 °C'), '藍黑色', '酵素被破壞<br><small>降溫也不能恢復</small>'],
         [W('煮沸過的', '唾液'), '藍黑色', '酵素已被破壞'],
-        [W('唾液＋', '稀鹽酸'), '藍黑色', '酸性時幾乎不作用'],
-      ], note: '＊示意：約 10 分鐘後滴碘液的結果；實際時間會因唾液的濃度而不同。用 37 °C 水浴，是因為接近人的體溫。', link: ['enzyme', 6] },
-    { type: 'svg', title: '光合作用', w: 600, h: 390, link: ['photo', 2],
-      note: '在葉綠體中進行，需要光（遮光的部分不會產生澱粉）。光能轉變成化學能，儲存在葡萄糖中；葡萄糖可轉變成澱粉儲存、用來構成身體，或經呼吸作用釋放能量。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const CHL = '#6fce62';
-        const arrow = (x1, y1, x2, y2, c, dash) => {
-          const a = Math.atan2(y2 - y1, x2 - x1), h = 11;
-          el('line', { x1, y1, x2: x2 - Math.cos(a) * 4, y2: y2 - Math.sin(a) * 4, stroke: c, 'stroke-width': 3, 'stroke-dasharray': dash || null }, svg);
-          el('path', { d: `M ${x2},${y2} L ${x2 - h * Math.cos(a - 0.45)},${y2 - h * Math.sin(a - 0.45)} L ${x2 - h * Math.cos(a + 0.45)},${y2 - h * Math.sin(a + 0.45)} Z`, fill: c }, svg);
-        };
-        // 光能
-        for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2; el('line', { x1: 300 + Math.cos(a) * 26, y1: 44 + Math.sin(a) * 26, x2: 300 + Math.cos(a) * 34, y2: 44 + Math.sin(a) * 34, stroke: C.hi, 'stroke-width': 3, 'stroke-linecap': 'round' }, svg); }
-        el('circle', { cx: 300, cy: 44, r: 19, fill: C.hi }, svg);
-        text(svg, 346, 52, '光能', { 'font-size': 22, 'font-weight': 700, fill: C.hi });
-        text(svg, 254, 51, '條件', { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'end', fill: C.mute });
-        text(svg, 216, 111, '場所', { 'font-size': 18, 'font-weight': 700, fill: C.mute });
-        arrow(300, 84, 300, 116, C.hi, '6 5');
-        // 葉綠體（場所）
-        el('rect', { x: 210, y: 120, width: 180, height: 118, rx: 18, fill: CHL, 'fill-opacity': 0.14, stroke: CHL, 'stroke-width': 2.5 }, svg);
-        text(svg, 300, 160, '葉綠體', { 'font-size': 24, 'font-weight': 700, 'text-anchor': 'middle', fill: CHL });
-        text(svg, 300, 188, '（主要在葉肉細胞）', { 'font-size': 17, 'text-anchor': 'middle', fill: C.ink2 });
-        text(svg, 300, 220, '光能 → 化學能', { 'font-size': 18, 'text-anchor': 'middle', fill: C.hi });
-        // 原料
-        text(svg, 16, 108, '原料', { 'font-size': 18, 'font-weight': 700, fill: C.mute });
-        text(svg, 16, 146, '二氧化碳', { 'font-size': 22, 'font-weight': 700, fill: C.co2 });
-        text(svg, 16, 170, '從空氣經氣孔進入', { 'font-size': 17, fill: C.mute });
-        text(svg, 16, 214, '水', { 'font-size': 22, 'font-weight': 700, fill: C.water });
-        text(svg, 16, 238, '從根吸收、', { 'font-size': 17, fill: C.mute });
-        text(svg, 16, 260, '經葉脈運來', { 'font-size': 17, fill: C.mute });
-        arrow(162, 150, 204, 166, C.co2);
-        arrow(52, 207, 204, 194, C.water);
-        // 產物
-        text(svg, 440, 108, '產物', { 'font-size': 18, 'font-weight': 700, fill: C.mute });
-        text(svg, 440, 146, '葡萄糖', { 'font-size': 22, 'font-weight': 700, fill: C.sugar });
-        text(svg, 440, 170, '可轉變成澱粉儲存', { 'font-size': 17, fill: C.mute });
-        text(svg, 440, 214, '氧', { 'font-size': 22, 'font-weight': 700, fill: C.oxygen });
-        text(svg, 440, 238, '經氣孔釋出', { 'font-size': 17, fill: C.mute });
-        arrow(396, 166, 432, 150, C.sugar);
-        arrow(396, 194, 432, 207, C.oxygen);
-        // 反應式
-        el('rect', { x: 16, y: 290, width: 568, height: 84, rx: 16, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, svg);
-        text(svg, 130, 340, '二氧化碳 ＋ 水', { 'font-size': 22, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink });
-        arrow(226, 332, 372, 332, C.ink);
-        text(svg, 298, 320, '光', { 'font-size': 18, 'text-anchor': 'middle', fill: C.hi });
-        text(svg, 298, 358, '葉綠體', { 'font-size': 18, 'text-anchor': 'middle', fill: CHL });
-        text(svg, 470, 340, '葡萄糖 ＋ 氧', { 'font-size': 22, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink });
-      } },
-    { type: 'table', title: '葉的構造與功能', cols: [['功能', '#62d0c0'], ['葉綠體', '#6fce62']],
-      rows: [
-        ['角質層', '減少水分散失', '—'],
-        ['表皮', '保護葉片', '大多沒有'],
-        ['葉肉', '光合作用的主要位置', '<b>很多</b>'],
-        ['葉脈', '運輸水分和養分', '—'],
-        ['氣孔', '氣體進出<br><small>二氧化碳進、氧出</small>', '—'],
-        ['保衛細胞', '控制氣孔開閉', '有'],
-      ], note: '大多數陸生植物，下表皮的氣孔比上表皮多（可觀察鴨跖草的下表皮）。', link: ['photo', 3] },
-    { type: 'flow', title: '遮光實驗的步驟', link: ['photo', 4],
-      nodes: [['放暗處一天', W('消耗', '原有的澱粉'), '#8aa1ae'], ['部分遮光', '照光數小時', '#ffd166'], ['熱水煮', W('破壞細胞、', '軟化葉片'), '#ff9a5c'], [W('酒精', '隔水加熱'), '溶出葉綠素', '#6fce62'], [W('沖洗後', '滴碘液'), W('照光處', '變藍黑色'), '#8fa8ff']],
-      note: '結論：光合作用需要光，製造的養分轉變成澱粉。斑葉的白色部分（沒有葉綠素）滴碘液不變藍黑色，表示也需要葉綠素。' },
+        [W('唾液＋', '稀鹽酸'), '藍黑色', '酸性時幾乎不作用（酸鹼不合適：作用變慢，或幾乎不作用）'],
+      ], note: '＊示意：約 10 分鐘後滴碘液的結果；實際時間會因唾液的濃度而不同。用 37 °C 水浴，是因為接近人的體溫。酵素有專一性（一種酵素只作用於特定的物質），反應前後本身不變、可重複使用；能分解，也能合成。', link: ['enzyme', 6] },
+    // ===== 3-3 =====
     { type: 'table', title: '遮光＋斑葉：哪裡會變藍黑色？', cols: [['照光', '#ffd166'], ['葉綠素', '#6fce62'], ['滴碘液', '#8fa8ff']],
       rows: [
         ['甲<br><small>綠色部分</small>', '有', '有', '<b>藍黑色</b>'],
         ['乙<br><small>綠色、遮光</small>', '沒有', '有', '不變'],
         ['丙<br><small>白色部分</small>', '有', '沒有', '不變'],
-      ], note: '比較甲、乙（只差有沒有光）→ 光合作用需要光；比較甲、丙（只差有沒有葉綠素）→ 需要葉綠素。乙和丙有兩個條件不同，不能拿來比較。', link: ['photo', 4] },
+      ], note: '步驟：放暗處一天（消耗原有的澱粉）→ 部分遮光、照光數小時 → 熱水煮（破壞細胞、軟化葉片）→ 酒精隔水加熱（溶出葉綠素）→ 沖洗後滴碘液。比較甲、乙（只差有沒有光）→ 光合作用需要光；比較甲、丙（只差有沒有葉綠素）→ 需要葉綠素；製造的養分轉變成澱粉。乙和丙有兩個條件不同，不能拿來比較。', link: ['photo', 4] },
     { type: 'table', title: '水蘊草實驗', cols: [['結果', '#62d0c0'], ['說明', '#ffd166']],
       rows: [
         ['開燈', W('冒出氣泡'), '光合作用產生氧'],
@@ -621,9 +452,7 @@
         ['關燈', W('幾乎沒有', '氣泡'), '光合作用需要光'],
         ['線香測試', W('餘燼復燃'), '氣體是氧'],
       ], note: '燒杯裡的小蘇打水能提供二氧化碳。只改變一個條件，水的種類、水蘊草的量、水溫等都要相同。', link: ['lab-photo'] },
-    { type: 'flow', title: '食物經過的路線（消化管）', link: ['digest', 1],
-      nodes: [['口腔', W('唾液：') + W('澱粉 →') + ' ' + W('麥芽糖'), '#ffcf5c'], ['咽', W('食物和空氣', '的通道'), '#c9d6dc'], ['食道', W('把食物', '送到胃'), '#c9d6dc'], ['胃', W('胃液：', '初步分解', '蛋白質'), '#ff8f8f'], ['小腸', W('分解完成、', '吸收養分'), '#62d0c0'], ['大腸', '吸收剩下的水分', '#9fd8ff'], ['肛門', '排出糞便（排遺）', '#b08a5a']],
-      note: '消化腺：唾腺、胃腺、腸腺、肝臟、胰臟。膽囊只儲存膽汁。咽、食道、大腸不分泌消化酵素。' },
+    // ===== 3-4 =====
     { type: 'table', title: '物理性消化 vs 化學性消化', cols: [['物理性消化', '#9fd8ff'], ['化學性消化', '#62d0c0']],
       rows: [
         [W('做什麼'), '食物變小塊', W('大分子', '分解成', '小分子')],
@@ -631,50 +460,13 @@
         [W('靠什麼'), W('牙齒、', '舌頭、', '胃腸蠕動、', '膽汁'), '<b>酵素</b>'],
         [W('例子'), W('咀嚼；') + W('膽汁把脂質', '乳化成', '小油滴'), W('唾液把澱粉', '分解成', '麥芽糖')],
       ], note: '小分子才能被小腸吸收。', link: ['digest', 2] },
-    { type: 'svg', title: '消化與吸收：養分在哪裡被分解？', w: 600, h: 476, link: ['digest', 3],
-      note: '膽汁由肝臟製造、儲存在膽囊，不含酵素，只把脂質乳化成小油滴（物理性消化）。小腸是消化和吸收的主要場所。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const STA = C.sugar, PRO = '#ff8f8f', FAT = '#ffb35c', ENZ = '#62d0c0';
-        const X = [250, 380, 510], NUT = [['澱粉', STA], ['蛋白質', PRO], ['脂質', FAT]];
-        const band = (y, h) => el('rect', { x: 8, y, width: 584, height: h, rx: 12, fill: 'rgba(255,255,255,0.03)', stroke: '#2b4252', 'stroke-width': 2 }, svg);
-        const arrowDown = (x, y, c) => el('path', { d: `M ${x - 7},${y - 7} L ${x},${y} L ${x + 7},${y - 7}`, fill: 'none', stroke: c, 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, svg);
-        // 四段消化管
-        [[56, 80], [146, 70], [226, 158], [394, 70]].forEach(([y, h]) => band(y, h));
-        el('line', { x1: 24, y1: 316, x2: 576, y2: 316, stroke: '#2b4252', 'stroke-width': 2, 'stroke-dasharray': '6 6' }, svg);
-        [['口腔', '唾液', 88], ['胃', '胃液（酸性）', 173], ['小腸', '胰液、腸液、膽汁', 258]].forEach(([n, j, y]) => {
-          text(svg, 24, y, n, { 'font-size': 22, 'font-weight': 700, fill: C.ink });
-          text(svg, 24, y + 24, j, { 'font-size': 17, fill: ENZ });
-        });
-        text(svg, 24, 357, '絨毛吸收', { 'font-size': 19, 'font-weight': 700, fill: C.ink2 });
-        text(svg, 24, 437, '大腸', { 'font-size': 22, 'font-weight': 700, fill: C.ink });
-        text(svg, 185, 424, '吸收剩下的水分', { 'font-size': 20, 'font-weight': 700, fill: C.water });
-        text(svg, 185, 450, '殘渣形成糞便，由肛門排出（排遺）', { 'font-size': 17, fill: C.mute });
-        // 三種養分往下經過各段：虛線表示這一段沒有分解
-        NUT.forEach(([n, c], i) => {
-          const x = X[i];
-          text(svg, x, 38, n, { 'font-size': 22, 'font-weight': 700, 'text-anchor': 'middle', fill: c });
-          el('line', { x1: x, y1: 48, x2: x, y2: 220, stroke: c, 'stroke-width': 2.5, 'stroke-dasharray': '4 6', opacity: 0.6 }, svg);
-          [142, 222].forEach((y) => arrowDown(x, y, c));
-        });
-        const act = (x, y1, y2, w, c, lines) => {
-          el('rect', { x: x - w / 2, y: y1, width: w, height: y2 - y1, rx: 10, fill: '#0f1c26', stroke: c, 'stroke-width': 2 }, svg);
-          el('rect', { x: x - w / 2, y: y1, width: w, height: y2 - y1, rx: 10, fill: c, 'fill-opacity': 0.16 }, svg);
-          lines.forEach(([s, f, b], k) => text(svg, x, y1 + 25 + k * 23, s, { 'font-size': 18, 'font-weight': b ? 700 : 400, 'text-anchor': 'middle', fill: f }));
-        };
-        act(X[0], 68, 124, 116, STA, [['部分分解', STA, 1], ['→ 麥芽糖', C.ink]]);
-        act(X[1], 160, 202, 116, PRO, [['初步分解', PRO, 1]]);
-        // 小腸：三大類都分解完成 → 最後產物
-        [['葡萄糖', 100], ['胺基酸', 100], ['脂肪酸＋甘油', 130]].forEach(([p, w], i) => {
-          const x = X[i], c = NUT[i][1];
-          text(svg, x, 252, '分解完成', { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute });
-          el('rect', { x: x - w / 2, y: 264, width: w, height: 38, rx: 19, fill: '#0f1c26', stroke: c, 'stroke-width': 2.5 }, svg);
-          text(svg, x, 290, p, { 'font-size': 19, 'font-weight': 700, 'text-anchor': 'middle', fill: c });
-          el('line', { x1: x, y1: 306, x2: x, y2: 334, stroke: C.mute, 'stroke-width': 2.5 }, svg);
-          arrowDown(x, 336, C.mute);
-        });
-        [['微血管', '#ff5f74'], ['微血管', '#ff5f74'], ['乳糜管', '#f3e6b0']].forEach(([s, c], i) => text(svg, X[i], 362, s, { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle', fill: c }));
-      } },
+    { type: 'table', title: '消化與吸收：養分在哪裡被分解？', cols: [['澱粉', '#ffcf5c'], ['蛋白質', '#ff8f8f'], ['脂質', '#ffb35c']],
+      rows: [
+        ['口腔<br><small>唾液</small>', W('部分分解') + '<br>' + W('→ 麥芽糖'), '—', '—'],
+        ['胃<br><small>' + W('胃液', '（酸性）') + '</small>', '—', W('初步分解'), '—'],
+        ['小腸<br><small>' + W('胰液、', '腸液、', '膽汁') + '</small>', W('分解完成') + '<br>→ <b>葡萄糖</b>', W('分解完成') + '<br>→ <b>胺基酸</b>', W('分解完成') + '<br>→ <b>' + W('脂肪酸', '＋甘油') + '</b>'],
+        [W('絨毛', '吸收'), '微血管', '微血管', '乳糜管'],
+      ], note: '—：這一段不分解。膽汁由肝臟製造、儲存在膽囊，不含酵素，只把脂質乳化成小油滴（物理性消化）。小腸是消化和吸收的主要場所；大腸吸收剩下的水分，殘渣形成糞便，由肛門排出（排遺）。', link: ['digest', 3] },
     { type: 'table', title: '五種消化液比一比', cols: [[W('由哪裡', '分泌'), '#a8e39a'], [W('酸鹼'), '#c9a7ff'], [W('作用'), '#ffd166']],
       rows: [
         [W('唾液'), W('唾腺'), W('近中性'), W('有酵素：', '澱粉 →') + ' ' + W('麥芽糖') + '<br><small>部分分解</small>'],

@@ -13,6 +13,7 @@
         '<b>純品系</b>：自花授粉後，子代的特徵都和親代相同（例：TT、tt）',
       ]],
       ['<b>基因的名詞</b>', [
+        '<b>細胞核</b>含有遺傳物質；<b>染色體</b>由 DNA 和蛋白質組成，成對存在；<b>DNA</b> 像扭轉的梯子',
         '孟德爾說的<b>遺傳因子</b>，就是現在說的<b>基因</b>',
         '<b>基因</b>：控制性狀的基本單位，是 DNA 上的片段，位在染色體上',
         '<b>等位基因</b>（有些課本稱對偶基因）：成對染色體相同位置、控制同一性狀的一對基因',
@@ -58,13 +59,6 @@
         'Aa × aa → Aa：aa ＝ 1：1；顯性：隱性 ＝ 1：1',
         'aa × aa → 全部 aa；全部隱性',
       ]],
-      ['<b>互動：棋盤方格</b>（種子圓形 R 顯性、皺縮 r 隱性）', [
-        'Rr × Rr → 圓形：皺縮 ＝ 3：1（RR：Rr：rr ＝ 1：2：1）',
-        'Rr × rr → 圓形：皺縮 ＝ 1：1',
-        '圓形 × rr，子代很多且全部圓形 → 這株圓形是 RR',
-        '子代的圓形：皺縮 ≈ 1：1 → 親代是 Rr × rr',
-        '兩株圓形交配，子代出現皺縮 → 兩株都是 Rr',
-      ]],
       ['<b>推理的方法</b>', [
         '親代特徵相同，子代出現另一種特徵 → 那種特徵是隱性',
         '子代出現隱性（aa）→ 兩個 a 分別來自雙親，雙親一定都帶 a',
@@ -82,7 +76,6 @@
     ['下2-2', '人類的遺傳', [
       ['<b>人類的性狀</b>', [
         '肉眼看得到：有沒有美人尖、雙眼皮、酒窩，能不能捲舌',
-        '美人尖、雙眼皮、酒窩、捲舌：課本常當作一對等位基因的例子；實際大多比較複雜（補充）',
         '要檢驗才知道：<b>ABO 血型</b>',
       ]],
       ['<b>人類的染色體</b>', [
@@ -108,16 +101,6 @@
         `AB 型：${IA}${IB}；O 型：ii`,
         '6 種基因型 → 4 種血型；輸血時血型要吻合',
       ]],
-      ['<b>互動：血型推理</b>', [
-        `${IA}i × ${IB}i → AB、A、B、O 型，機率各 1/4`,
-        'A 型和 B 型的父母，也可能生下 O 型或 AB 型的孩子',
-        `AB 型（${IA}${IB}）× O 型（ii）→ 只會是 A 型或 B 型`,
-        `A 型父親 × O 型母親，生下 O 型孩子 → 父親是 ${IA}i`,
-        `O 型一定是 ii；AB 型一定是 ${IA}${IB}`,
-        '只模擬生 10 個孩子，四種血型常常不平均',
-        '全班合計 200 個，比例就更接近 1：1：1：1',
-        '每一胎是男孩的機率都是 1/2，不受前面生的孩子影響',
-      ]],
       ['<b>譜系圖</b>', [
         '□ 代表男性、○ 代表女性；塗色表示有某種特徵',
         '先找「親代相同、子代不同」→ 子代的那種特徵是隱性',
@@ -129,7 +112,10 @@
         '<b>同卵雙胞胎</b>：1 個受精卵分成兩個胚胎 → 基因相同',
         '同卵雙胞胎長得非常像，性別一定相同',
         '<b>異卵雙胞胎</b>：2 個卵分別受精 → 基因不完全相同',
-        '異卵雙胞胎像同時出生的兄弟姊妹，性別可能不同',
+        '異卵雙胞胎像同時出生的兄弟姊妹：外貌不一定像，性別可能不同',
+      ]],
+      ['補充', [
+        '美人尖、雙眼皮、酒窩、捲舌：課本常當作一對等位基因的例子；實際大多比較複雜（補充）',
       ]],
     ], [
       '體細胞中也有性染色體（女 XX、男 XY），不是只在精子和卵中',
@@ -148,7 +134,7 @@
       ]],
       ['<b>突變的原因</b>', [
         '自然狀態下也會發生，但<b>機率很低</b>',
-        '物理因子：<b>紫外線</b>（強烈的陽光）、<b>X 光</b>、<b>核輻射</b>',
+        '物理因子：<b>紫外線</b>（強烈的陽光）、<b>X 光</b>、<b>核輻射</b>（輻射物質外洩）',
         '化學因子：<b>黃麴毒素</b>（花生、玉米發霉）、亞硝酸鹽等',
         '接觸這些因子，突變的機率會<b>大增</b>',
         '照 X 光時穿防護衣，減少不需要檢查的部位受到照射',
@@ -175,8 +161,6 @@
           '地中海型貧血：紅血球較小、容易破裂，帶氧能力變差',
           '血友病：受傷出血時，血液不容易凝固',
           '紅綠色盲：不容易分辨紅色和綠色',
-          '血友病、紅綠色盲的基因在 X 染色體上，男性患者較多（補充）',
-          '蠶豆症（G6PD 缺乏症）也是遺傳疾病，新生兒篩檢會檢查（補充）',
         ]],
       ]],
       ['<b>隱性遺傳疾病的推算</b>', [
@@ -192,6 +176,10 @@
         '<b>產前檢查</b>：懷孕時定期檢查，及早發現胎兒的疾病',
         '產前檢查例：超音波、抽取羊水檢查染色體（羊膜穿刺，補充）',
         '<b>新生兒篩檢</b>：寶寶出生後及早發現、及早治療',
+      ]],
+      ['補充', [
+        '血友病、紅綠色盲的基因在 X 染色體上，男性患者較多（補充）',
+        '蠶豆症（G6PD 缺乏症）也是遺傳疾病，新生兒篩檢會檢查（補充）',
       ]],
     ], [
       '突變不一定有害：大多有害或沒有影響，少數有利，是演化和育種的原料',
@@ -226,7 +214,6 @@
         '<b>基改作物</b>：轉殖抗病、抗蟲的基因，減少農藥的使用',
         '例：基改木瓜能抵抗木瓜輪點病毒',
         '轉殖生長激素基因的魚，同樣的時間長得更大',
-        '補充：細菌體內的小型環狀 DNA 稱為質體，常用來攜帶要轉殖的基因（高中）',
       ]],
       ['<b>複製動物：桃莉羊</b>（1996 年，英國）', [
         '白面母羊的<b>乳腺細胞</b> → 取出<b>細胞核</b>',
@@ -253,6 +240,9 @@
       ['<b>比較：無性還是有性？</b>', [
         '無性：桃莉羊（細胞核中的基因和白面母羊相同）、組織培養、扦插（子代和親代的基因相同）',
         '有性：試管嬰兒（有受精，基因來自父母雙方）',
+      ]],
+      ['補充', [
+        '補充：細菌體內的小型環狀 DNA 稱為質體，常用來攜帶要轉殖的基因（高中）',
       ]],
     ], [
       '桃莉羊細胞核中的基因和提供細胞核的白面母羊相同，不是和提供卵細胞的羊或代理孕母相同',
@@ -294,168 +284,25 @@
     ['桃莉羊細胞核中的基因，和哪一隻羊相同？', ['提供卵細胞的黑面母羊', '提供細胞核的白面母羊', '代理孕母（黑面母羊）', '和三隻羊都不同'], 1, '基因主要在細胞核中。桃莉羊由白面母羊乳腺細胞的細胞核發育而來，所以細胞核中的基因和白面母羊相同，外表也是白面。', 'biotech'],
   ];
 
-  // 重點圖表：基因的顏色和動畫一樣（I^A 橘、I^B 青、i 藍；顯性 T 黃、隱性 t 藍）
+  // 重點圖表：基因的顏色和動畫一樣（I^A 橘、I^B 青、i 藍；顯性 A 黃、隱性 a 藍）
   const AC = { A: '#ffb35c', B: '#7fe0c8', AB: '#d6a8ff', O: '#8fd3ff' };
   const cA = `<span style="color:${AC.A}">I<sup>A</sup></span>`, cB = `<span style="color:${AC.B}">I<sup>B</sup></span>`, ci = `<span style="color:${AC.O}">i</span>`;
   const gt = (s) => `<b style="font-family:var(--font-mono);font-size:1.05em">${s}</b>`;
   const bt = (t) => `<b style="color:${AC[t]}">${t} 型</b>`;
+  // 基因型的字串：大寫 A 黃色（顯性）、小寫 a 藍色（隱性），其他字照原樣
+  const ga = (s) => `<b style="font-family:var(--font-mono);font-size:1.05em">${[...s].map((ch) => (ch === 'A' ? '<span style="color:#ffd166">A</span>' : ch === 'a' ? '<span style="color:#8fd3ff">a</span>' : ch)).join('')}</b>`;
   // 只在詞語之間換行（表格窄時不會把一個詞拆成兩行）
   const W = (...p) => p.map((s) => `<span style="white-space:nowrap">${s}</span>`).join('');
   const CHARTS = [
-    { type: 'svg', title: '遺傳名詞的關係：從染色體到表現型', w: 620, h: 470, link: ['mendel', 6],
-      note: '一層一層放大：細胞核裡有染色體，染色體主要由 DNA 和蛋白質組成，基因是 DNA 上的一段。成對染色體相同位置的一對基因是等位基因。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const DOM = '#ffd166', REC = '#8fd3ff', FA = '#62a8ff', MO = '#ff7d9a', MONO = 'font-family: var(--font-mono)';
-        const PW = 140, PG = 12, PY = 14, PH = 236;
-        const px = (i) => 10 + i * (PW + PG);
-        const arrowR = (x, y) => { el('path', { d: `M ${x - 6},${y - 8} L ${x + 4},${y} L ${x - 6},${y + 8} Z`, fill: C.ink2 }, svg); };
-        [['細胞核', '含有遺傳物質', ''], ['染色體', 'DNA＋蛋白質', '成對存在'], ['DNA', '遺傳物質', '像扭轉的梯子'], ['基因', 'DNA 上的一段', '控制性狀']].forEach(([n, a, b], i) => {
-          el('rect', { x: px(i), y: PY, width: PW, height: PH, rx: 12, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, svg);
-          text(svg, px(i) + PW / 2, PY + 168, n, { 'font-size': 22, 'text-anchor': 'middle', 'font-weight': 700, fill: i === 3 ? C.hi : C.ink });
-          text(svg, px(i) + PW / 2, PY + 196, a, { 'font-size': 17, 'text-anchor': 'middle', fill: C.ink2 });
-          if (b) text(svg, px(i) + PW / 2, PY + 220, b, { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute });
-          if (i) arrowR(px(i) - 2, PY + 74);
-        });
-        // 1 細胞核：細絲狀的遺傳物質
-        const c0 = px(0) + PW / 2, cy = PY + 74;
-        el('circle', { cx: c0, cy, r: 52, fill: 'rgba(167,150,255,0.14)', stroke: C.nucleus, 'stroke-width': 3 }, svg);
-        const rt = S.rng(7);
-        for (let k = 0; k < 7; k++) {
-          let x = c0 + (rt() - 0.5) * 50, y = cy + (rt() - 0.5) * 50, d = `M ${x.toFixed(1)},${y.toFixed(1)}`;
-          for (let j = 0; j < 3; j++) { const nx = S.clamp(x + (rt() - 0.5) * 44, c0 - 38, c0 + 38), ny = S.clamp(y + (rt() - 0.5) * 44, cy - 38, cy + 38); d += ` Q ${(x + (rt() - 0.5) * 30).toFixed(1)},${(y + (rt() - 0.5) * 30).toFixed(1)} ${nx.toFixed(1)},${ny.toFixed(1)}`; x = nx; y = ny; }
-          el('path', { d, fill: 'none', stroke: '#cbbcff', 'stroke-width': 2, opacity: 0.85, 'stroke-linecap': 'round' }, svg);
-        }
-        // 2 一對染色體（同源染色體），同一位置的帶紋是等位基因 T、t
-        const c1 = px(1) + PW / 2;
-        const rod = (x, col) => {
-          const top = PY + 22, bot = PY + 136, w = 26, cen = PY + 58;
-          el('path', { d: `M ${x - w / 2},${top + w / 2} A ${w / 2},${w / 2} 0 0,1 ${x + w / 2},${top + w / 2} L ${x + w / 2},${cen - 6} Q ${x + w / 2 - 5},${cen} ${x + w / 2},${cen + 6} L ${x + w / 2},${bot - w / 2} A ${w / 2},${w / 2} 0 0,1 ${x - w / 2},${bot - w / 2} L ${x - w / 2},${cen + 6} Q ${x - w / 2 + 5},${cen} ${x - w / 2},${cen - 6} Z`, fill: col, stroke: '#e8f0f2', 'stroke-width': 1.5 }, svg);
-        };
-        rod(c1 - 22, FA); rod(c1 + 22, MO);
-        const BAND = PY + 96;
-        [[c1 - 22, 'T', DOM], [c1 + 22, 't', REC]].forEach(([x, ch, col]) => {
-          el('rect', { x: x - 12, y: BAND - 13, width: 24, height: 26, fill: '#16293a' }, svg);
-          text(svg, x, BAND + 7, ch, { 'font-size': 20, 'text-anchor': 'middle', 'font-weight': 700, fill: col, style: MONO });
-        });
-        el('rect', { x: c1 - 40, y: BAND - 17, width: 80, height: 34, rx: 8, fill: 'none', stroke: C.hi, 'stroke-width': 2.5 }, svg);
-        // 3 DNA（雙股螺旋）、4 基因（DNA 上標出一段）
-        const helix = (x0, hiSeg) => {
-          const y0 = PY + 20, y1 = PY + 132, amp = 22, per = 64;
-          if (hiSeg) el('rect', { x: x0 - 34, y: PY + 56, width: 68, height: 40, rx: 8, fill: 'rgba(255,209,102,0.22)', stroke: C.hi, 'stroke-width': 2 }, svg);
-          for (let y = y0 + 4; y < y1; y += 9) { const ph = ((y - y0) / per) * 6.283; el('line', { x1: x0 + amp * Math.sin(ph), y1: y, x2: x0 + amp * Math.sin(ph + Math.PI), y2: y, stroke: ['#ff9a5c', '#6fce62', '#ffd166', '#62a8ff'][Math.round(y / 9) % 4], 'stroke-width': 3, opacity: 0.8 }, svg); }
-          [0, Math.PI].forEach((o, i) => { const pts = []; for (let y = y0; y <= y1; y += 3) pts.push(`${(x0 + amp * Math.sin(((y - y0) / per) * 6.283 + o)).toFixed(1)},${y}`); el('path', { d: 'M ' + pts.join(' L '), fill: 'none', stroke: i ? '#9be0ff' : '#e8f6ff', 'stroke-width': 3.5, 'stroke-linecap': 'round' }, svg); });
-        };
-        helix(px(2) + PW / 2, false);
-        helix(px(3) + PW / 2, true);
-        // 下排：等位基因 → 基因型 → 表現型
-        const BY = 300, BW = 176, BH = 150, BG = 36;
-        const bx = (i) => 10 + i * (BW + BG);
-        // 虛線：從染色體那一格連到「等位基因」
-        el('path', { d: `M ${c1},${PY + PH + 2} L ${c1},${BY - 22} L ${bx(0) + BW / 2},${BY - 22} L ${bx(0) + BW / 2},${BY - 4}`, fill: 'none', stroke: C.hi, 'stroke-width': 2, 'stroke-dasharray': '5 5' }, svg);
-        [['等位基因', [['T', DOM], ['、', C.ink], ['t', REC]], '成對染色體的', '相同位置'], ['基因型', [['T', DOM], ['t', REC]], '等位基因的組合', ''], ['表現型', [['高莖', DOM]], '表現出來的特徵', '']].forEach(([n, parts, a, b], i) => {
-          const x = bx(i);
-          el('rect', { x, y: BY, width: BW, height: BH, rx: 12, fill: '#122230', stroke: i ? '#2b4252' : C.hi, 'stroke-width': 2 }, svg);
-          text(svg, x + BW / 2, BY + 32, n, { 'font-size': 21, 'text-anchor': 'middle', 'font-weight': 700 });
-          const t = el('text', { x: x + BW / 2, y: BY + 78, 'font-size': 30, 'text-anchor': 'middle', 'font-weight': 700, style: parts.length > 1 ? MONO : null }, svg);
-          parts.forEach(([str, col]) => { el('tspan', { fill: col }, t).textContent = str; });
-          text(svg, x + BW / 2, BY + 110, a, { 'font-size': 17, 'text-anchor': 'middle', fill: C.ink2 });
-          if (b) text(svg, x + BW / 2, BY + 134, b, { 'font-size': 17, 'text-anchor': 'middle', fill: C.ink2 });
-          if (i) { el('line', { x1: x - BG + 6, y1: BY + BH / 2, x2: x - 12, y2: BY + BH / 2, stroke: C.ink2, 'stroke-width': 3 }, svg); arrowR(x - 6, BY + BH / 2); }
-        });
-      } },
-    { type: 'flow', title: '孟德爾的豌豆實驗', nodes: [
-        ['親代', W('純品系', '高莖 TT') + '<br>' + W('× 純品系', '矮莖 tt'), '#c9d6dc'],
-        ['第一子代', W('全部高莖', '（Tt）'), '#ffd166'],
-        ['自花授粉', W('Tt × Tt'), '#9fd77a'],
-        ['第二子代', '高莖 787 株<br>矮莖 277 株<br>≈ 3：1', '#ffd166'],
-      ], note: '第一子代表現出來的高莖是顯性，沒表現的矮莖是隱性。矮莖在第二子代又出現，表示隱性的遺傳因子沒有消失。', link: ['mendel', 3] },
-    { type: 'svg', title: '棋盤方格法：Tt × Tt', w: 520, h: 520, link: ['mendel', 5],
-      note: '每一格出現的機會都一樣（各 1/4）。比例是機率，子代數量越多，結果越接近 3：1（孟德爾：787：277）。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const DOM = '#ffd166', REC = '#8fd3ff', MONO = 'font-family: var(--font-mono)';
-        const geno = (x, y, str, size, attrs = {}) => {
-          const t = el('text', { x, y, 'font-size': size, 'text-anchor': 'middle', 'font-weight': 700, style: MONO, ...attrs }, svg);
-          for (const ch of str) el('tspan', { fill: ch === ch.toUpperCase() ? DOM : REC }, t).textContent = ch;
-          return t;
-        };
-        const gamete = (x, y, ch) => {
-          el('circle', { cx: x, cy: y, r: 24, fill: '#1a2c3a', stroke: ch === 'T' ? DOM : REC, 'stroke-width': 3 }, svg);
-          geno(x, y + 9, ch, 26);
-        };
-        const GX = 190, GY = 114, CS = 132;
-        text(svg, GX + CS, 34, '高莖 Tt 的精細胞（在花粉中）', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
-        text(svg, 82, GY + CS - 12, '高莖 Tt', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
-        text(svg, 82, GY + CS + 16, '的卵細胞', { 'font-size': 20, 'text-anchor': 'middle', fill: C.ink2 });
-        ['T', 't'].forEach((ch, j) => gamete(GX + CS / 2 + j * CS, 76, ch));
-        ['T', 't'].forEach((ch, i) => gamete(GX - 40, GY + CS / 2 + i * CS, ch));
-        [['TT', 'Tt'], ['Tt', 'tt']].forEach((row, i) => row.forEach((s, j) => {
-          const x = GX + j * CS, y = GY + i * CS, tall = s.includes('T');
-          el('rect', { x: x + 4, y: y + 4, width: CS - 8, height: CS - 8, rx: 10, fill: tall ? 'rgba(255,209,102,0.10)' : 'rgba(143,211,255,0.14)' }, svg);
-          geno(x + CS / 2, y + 62, s, 34);
-          text(svg, x + CS / 2, y + 100, tall ? '高莖' : '矮莖', { 'font-size': 21, 'text-anchor': 'middle', 'font-weight': 700, fill: tall ? DOM : REC });
-        }));
-        for (let k = 0; k <= 2; k++) {
-          el('line', { x1: GX, y1: GY + k * CS, x2: GX + 2 * CS, y2: GY + k * CS, stroke: '#4a6272', 'stroke-width': 3 }, svg);
-          el('line', { x1: GX + k * CS, y1: GY, x2: GX + k * CS, y2: GY + 2 * CS, stroke: '#4a6272', 'stroke-width': 3 }, svg);
-        }
-        // 結果
-        const RY = GY + 2 * CS + 30;
-        el('rect', { x: 16, y: RY, width: 488, height: 102, rx: 14, fill: '#122230', stroke: '#2b4252', 'stroke-width': 2 }, svg);
-        text(svg, 36, RY + 38, '基因型', { 'font-size': 20, fill: C.mute });
-        const r1 = el('text', { x: 300, y: RY + 39, 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700 }, svg);
-        [['TT', 1], ['：', 0], ['Tt', 1], ['：', 0], ['tt', 1], [' ＝ 1：2：1', 0]].forEach(([s, isG]) => {
-          if (!isG) { el('tspan', { fill: C.ink }, r1).textContent = s; return; }
-          for (const ch of s) el('tspan', { fill: ch === 'T' ? DOM : REC, style: MONO }, r1).textContent = ch;
-        });
-        text(svg, 36, RY + 80, '表現型', { 'font-size': 20, fill: C.mute });
-        text(svg, 300, RY + 81, '高莖：矮莖 ＝ 3：1', { 'font-size': 24, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
-      } },
-    { type: 'svg', title: '六種親代組合 → 子代的比例', w: 620, h: 604, link: ['lab-punnett'],
-      note: 'A 是顯性的等位基因、a 是隱性。方格裡黃色＝表現顯性（有 A），藍色＝表現隱性（aa）；每一格的機會都一樣（各 1/4）。子代出現隱性 → 雙親一定都帶 a。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const DOM = '#ffd166', REC = '#8fd3ff', MONO = 'font-family: var(--font-mono)';
-        // 一串文字：大寫 A 黃色、小寫 a 藍色，其他字用 ink
-        const rich = (x, y, str, size, attrs = {}) => {
-          const t = el('text', { x, y, 'font-size': size, 'text-anchor': 'middle', 'font-weight': 700, ...attrs }, svg);
-          for (const ch of str) { const sp = el('tspan', { fill: ch === 'A' ? DOM : ch === 'a' ? REC : C.ink, style: /[Aa]/.test(ch) ? MONO : null }, t); sp.textContent = ch; }
-          return t;
-        };
-        const COL = [85, 210, 356, 535];
-        ['親代', '棋盤方格', '子代的基因型', '子代的表現型'].forEach((s, i) => text(svg, COL[i], 30, s, { 'font-size': 18, 'text-anchor': 'middle', fill: C.mute, 'font-weight': 700 }));
-        const sort = (a, b) => (a === 'A' ? a + b : b === 'A' ? b + a : a + b);
-        const CROSS = [['AA', 'AA'], ['AA', 'Aa'], ['AA', 'aa'], ['Aa', 'Aa'], ['Aa', 'aa'], ['aa', 'aa']];
-        const RH = 90, Y0 = 46, CS = 36;
-        CROSS.forEach(([p1, p2], i) => {
-          const top = Y0 + i * RH;
-          el('rect', { x: 6, y: top, width: 608, height: RH - 8, rx: 12, fill: i === 3 ? 'rgba(255,209,102,0.08)' : '#122230', stroke: i === 3 ? C.hi : '#2b4252', 'stroke-width': 2 }, svg);
-          rich(COL[0], top + 50, `${p1} × ${p2}`, 23);
-          // 迷你棋盤方格：上面是一方的配子、左邊是另一方的配子
-          const cells = [p2[0], p2[1]].map((l) => [p1[0], p1[1]].map((t) => sort(t, l)));
-          const gx = COL[1] - CS, gy = top + 5;
-          cells.forEach((row, r) => row.forEach((gt, c) => {
-            const dom = gt.includes('A');
-            el('rect', { x: gx + c * CS, y: gy + r * CS, width: CS, height: CS, fill: dom ? 'rgba(255,209,102,0.22)' : 'rgba(143,211,255,0.25)', stroke: '#4a6272', 'stroke-width': 1.5 }, svg);
-            rich(gx + c * CS + CS / 2, gy + r * CS + 24, gt, 17);
-          }));
-          // 基因型、表現型的比例
-          const flat = cells.flat(), n = { AA: 0, Aa: 0, aa: 0 };
-          flat.forEach((x) => { n[x]++; });
-          const kinds = ['AA', 'Aa', 'aa'].filter((k) => n[k]);
-          const g = kinds.reduce((m, k) => { const f = (a, b) => (b ? f(b, a % b) : a); return f(m, n[k]); }, 0);
-          if (kinds.length === 1) rich(COL[2], top + 50, `全部是 ${kinds[0]}`, 20);
-          else { rich(COL[2], top + 34, kinds.join('：'), 20); text(svg, COL[2], top + 64, '＝ ' + kinds.map((k) => n[k] / g).join('：'), { 'font-size': 20, 'text-anchor': 'middle', 'font-weight': 700 }); }
-          const d = flat.filter((x) => x.includes('A')).length;
-          if (d === 4 || d === 0) text(svg, COL[3], top + 50, d ? '全部顯性' : '全部隱性', { 'font-size': 21, 'text-anchor': 'middle', 'font-weight': 700, fill: d ? DOM : REC });
-          else {
-            const t = el('text', { x: COL[3], y: top + 34, 'font-size': 20, 'text-anchor': 'middle', 'font-weight': 700 }, svg);
-            [['顯性', DOM], ['：', C.ink], ['隱性', REC]].forEach(([s2, c2]) => { el('tspan', { fill: c2 }, t).textContent = s2; });
-            text(svg, COL[3], top + 64, d === 3 ? '＝ 3：1' : '＝ 1：1', { 'font-size': 20, 'text-anchor': 'middle', 'font-weight': 700, fill: C.hi });
-          }
-        });
-      } },
+    { type: 'table', title: '六種親代組合 → 子代的比例', cols: [['棋盤方格', '#c9d6dc'], ['基因型', '#ffd166'], ['表現型', '#8fd3ff']],
+      rows: [
+        [ga('AA × AA'), ga('AA AA') + '<br>' + ga('AA AA'), W('全部 ' + ga('AA')), '全部顯性'],
+        [ga('AA × Aa'), ga('AA AA') + '<br>' + ga('Aa Aa'), W(ga('AA') + '：' + ga('Aa')) + '<br>' + W('＝ 1：1'), '全部顯性'],
+        [ga('AA × aa'), ga('Aa Aa') + '<br>' + ga('Aa Aa'), W('全部 ' + ga('Aa')), '全部顯性'],
+        [ga('Aa × Aa'), ga('AA Aa') + '<br>' + ga('Aa aa'), W(ga('AA') + '：' + ga('Aa') + '：' + ga('aa')) + '<br>' + W('＝ <b>1：2：1</b>'), W('顯性：隱性') + '<br>' + W('＝ <b>3：1</b>')],
+        [ga('Aa × aa'), ga('Aa aa') + '<br>' + ga('Aa aa'), W(ga('Aa') + '：' + ga('aa')) + '<br>' + W('＝ 1：1'), W('顯性：隱性') + '<br>' + W('＝ <b>1：1</b>')],
+        [ga('aa × aa'), ga('aa aa') + '<br>' + ga('aa aa'), W('全部 ' + ga('aa')), '全部隱性'],
+      ], note: 'A 是顯性的等位基因、a 是隱性。棋盤方格：上面寫一方的配子（精細胞）、左邊寫另一方的配子（卵細胞），兩兩組合；每一格出現的機會都一樣（各 1/4）。比例是機率：子代數量越多，結果越接近算出的比例（孟德爾 Tt × Tt 的第二子代：高莖 787 株、矮莖 277 株 ≈ 3：1）。子代出現隱性 → 雙親一定都帶 a。', link: ['lab-punnett'] },
     { type: 'table', title: '由子代反推親代（圓形 R、皺縮 r）', cols: [['親代的基因型', '#ffd166']],
       rows: [
         [W('圓形 × rr') + '<br>' + W('子代很多、', '全部圓形'), W('這株圓形是') + ' ' + W('<b>RR</b>')],
@@ -464,11 +311,6 @@
         [W('兩株圓形') + '<br>' + W('子代', '出現皺縮'), W('兩株都是') + ' ' + W('<b>Rr</b>')],
         [W('子代全部', '皺縮'), W('<b>rr × rr</b>')],
       ], note: '子代的皺縮（rr）中，兩個 r 分別來自父方和母方：子代出現隱性時，雙親一定都帶 r。', link: ['lab-punnett'] },
-    { type: 'table', title: '性別的決定', cols: [['精子帶 X', '#ff9aa8'], ['精子帶 Y', '#62a8ff']],
-      rows: [
-        [W('卵', '（都帶 X）'), 'XX<br><b>女孩</b>', 'XY<br><b>男孩</b>'],
-        ['機率', '1/2', '1/2'],
-      ], note: '女性 44＋XX、男性 44＋XY。卵都是 22＋X；精子一半是 22＋X、一半是 22＋Y，所以由精子決定性別。每一胎都是 1/2，和前一胎無關。', link: ['humangen', 3] },
     { type: 'table', title: 'ABO 血型：基因型 → 血型', cols: [[W('血型', '（表現型）'), '#ffd166'], [W('配子的', '基因'), '#c9d6dc']],
       rows: [
         [gt(cA + cA), bt('A'), gt(cA)],
@@ -486,7 +328,7 @@
         [`${gt(cA + ci)} × ${gt(ci + ci)}<br><small>A 型 × O 型</small>`, `${bt('A')}、${bt('O')}<br><small>各 1/2</small>`],
         [`${gt(cA + cB)} × ${gt(cA + cB)}<br><small>AB 型 × AB 型</small>`, `${bt('A')} 1/4、${bt('AB')} 1/2、${bt('B')} 1/4<br><small>不會是 O 型</small>`],
         [`${gt(ci + ci)} × ${gt(ci + ci)}<br><small>O 型 × O 型</small>`, `全部是 ${bt('O')}`],
-      ], note: `O 型一定是 ii，AB 型一定是 ${IA}${IB}；A 型、B 型要看有沒有帶 i。比例是機率，孩子越多，結果越接近算出的比例。`, link: ['lab-blood'] },
+      ], note: `O 型一定是 ii，AB 型一定是 ${IA}${IB}；A 型、B 型要看有沒有帶 i（反推：A 型父親 × O 型母親生下 O 型孩子 → 父親是 ${IA}i）。比例是機率，孩子越多，結果越接近算出的比例。`, link: ['lab-blood'] },
     { type: 'svg', title: '譜系圖：能不能捲舌', w: 600, h: 520, link: ['humangen', 6],
       note: '先找「親代相同、子代不同」：祖父母都能捲舌，卻生出不能捲舌的子女，所以不能捲舌是隱性。能否捲舌在課本中當作一對等位基因的例子（實際比較複雜，補充）。',
       draw(svg) {
@@ -525,40 +367,14 @@
         text(svg, 32, 466, '→ 不能捲舌是隱性（rr），能捲舌是顯性（R）', { 'font-size': 19, 'font-weight': 700, fill: C.hi });
         text(svg, 32, 497, '→ 祖父母都帶有 r，都是 Rr；父親是 RR 或 Rr', { 'font-size': 19, 'font-weight': 700, fill: C.hi });
       } },
-    { type: 'table', title: '同卵雙胞胎 vs 異卵雙胞胎', cols: [['同卵雙胞胎', '#ffd166'], ['異卵雙胞胎', '#8fd3ff']],
-      rows: [
-        ['來自', W('<b>1 個</b>受精卵', '分成兩個胚胎'), W('<b>2 個</b>卵', '分別受精')],
-        ['基因', '<b>相同</b>', W('不完全', '相同') + '<br><small>' + W('像一般的', '兄弟姊妹') + '</small>'],
-        ['性別', '<b>一定相同</b>', W('可能相同，', '也可能不同')],
-        ['外貌', '非常像', '不一定像'],
-      ], link: ['humangen', 7] },
-    { type: 'table', title: '使突變機率大增的因子', cols: [['例子', '#ffb35c']],
-      rows: [
-        [W('物理因子'), W('<b>紫外線</b>', '（強烈的陽光）') + '<br>' + W('<b>X 光</b>', '（檢查時穿防護衣）') + '<br>' + W('<b>核輻射</b>', '（輻射物質外洩）')],
-        [W('化學因子'), W('<b>黃麴毒素</b>', '（花生、玉米發霉）') + '<br>' + W('<b>亞硝酸鹽</b>等', '化學物質')],
-      ], note: '突變在自然狀態下也會發生，但機率很低；接觸這些因子，突變的機率會大增。', link: ['mutation', 2] },
     { type: 'table', title: '哪些改變會遺傳給子代？', cols: [['例子', '#c9d6dc'], [W('會遺傳嗎？'), '#ffd166']],
       rows: [
         [W('生殖細胞的', '突變'), W('形成精子或卵時', '發生的突變'), W('<b>可能遺傳</b>')],
         [W('體細胞的', '突變'), W('皮膚被紫外線', '曬傷而突變'), W('不會遺傳') + '<br><small>' + W('只影響自己') + '</small>'],
         [W('後天獲得的', '改變'), W('整形、', '剪短果蠅的翅、', '練出的肌肉'), W('不會遺傳') + '<br><small>' + W('精子、卵的', '遺傳物質沒變') + '</small>'],
+        [W('遺傳疾病', '（突變基因）'), W('白化症、', '地中海型', '貧血、', '血友病、', '紅綠色盲：') + ' ' + W('<b>突變基因</b>'), W('突變基因', '來自親代，', '可能一代一代', '遺傳') + '<br><small>' + W('致病的基因', '大多是隱性：') + ' ' + W('正常的父母', '（Aa × Aa）', '也可能生下', '患病的孩子', '（aa），', '機率 1/4') + '</small>'],
+        [W('唐氏症'), W('<b>染色體</b>', '<b>數目異常</b>') + '<br><small>' + W('第 21 號', '染色體', '多一條', '（3 條）') + '</small>', W('不是來自', '親代的', '突變基因') + '<br><small>' + W('是形成', '精子或卵時', '染色體', '沒分好') + '</small>'],
       ], note: '突變大多有害或沒有影響；少數有利的突變能一代一代傳下去，是演化的原料（第九章）。', link: ['mutation', 3] },
-    { type: 'table', title: '常見的遺傳疾病', cols: [['原因', '#ffb35c'], ['特徵', '#63d4bf']],
-      rows: [
-        [W('唐氏症'), W('<b>染色體</b>', '<b>數目異常</b>') + '<br><small>' + W('第 21 號', '染色體', '多一條', '（3 條）') + '</small>', W('智力、', '反應較慢，', '有些器官', '發育不完全')],
-        [W('白化症'), W('<b>突變基因</b>') + '<br><small>' + W('控制黑色素', '的基因；', '隱性') + '</small>', W('缺乏黑色素，', '皮膚、毛髮偏白；', '眼睛怕光、', '容易曬傷')],
-        [W('地中海型', '貧血'), W('<b>突變基因</b>'), W('紅血球較小、', '容易破裂，', '帶氧的能力', '變差 → 貧血')],
-        [W('血友病'), W('<b>突變基因</b>') + '<br><small>' + W('在 X 染色體上') + '<br>（補充）</small>', W('受傷出血時，', '血液不容易凝固')],
-        [W('紅綠色盲'), W('<b>突變基因</b>') + '<br><small>' + W('在 X 染色體上') + '<br>（補充）</small>', W('不容易分辨', '紅色和綠色')],
-      ], note: '突變基因來自親代，可能一代一代遺傳。致病的基因大多是隱性：正常的父母（Aa × Aa）也可能生下患病的孩子（aa），機率 1/4。', link: ['mutation', 4] },
-    { type: 'table', title: '預防遺傳疾病', cols: [['做什麼', '#63d4bf']],
-      rows: [
-        [W('遺傳諮詢'), W('家族有遺傳疾病時，', '請醫師評估', '子女罹病的機率')],
-        [W('婚前', '健康檢查'), W('了解自己', '是否帶有', '某些致病的基因')],
-        [W('產前檢查'), W('懷孕時定期檢查，', '及早發現', '胎兒的疾病') + '<br><small>' + W('例：超音波、', '羊膜穿刺', '（補充）') + '</small>'],
-        [W('新生兒', '篩檢'), W('寶寶出生後', '及早發現、', '及早治療')],
-        [W('不近親', '結婚'), W('近親的夫妻', '帶有相同隱性基因', '的機會較高，', '法律規定', '近親不能結婚')],
-      ], link: ['mutation', 6] },
     { type: 'table', title: '生物技術一覽', cols: [['做法', '#63d4bf'], ['例子', '#c9d6dc']],
       rows: [
         ['發酵', W('利用微生物', '製作食品'), W('酵母菌：', '麵包、酒') + '<br>' + W('乳酸菌：', '優酪乳') + '<br>' + W('麴菌：', '醬油')],
@@ -567,25 +383,14 @@
         [W('複製動物'), W('細胞核放進', '去核的卵細胞'), '桃莉羊<br><small>無性生殖</small>'],
         [W('試管嬰兒'), W('體外受精，', '胚胎植回子宮'), W('醫療技術') + '<br><small>有性生殖</small>'],
       ], link: ['biotech', 1] },
-    { type: 'flow', title: '基因轉殖：讓細菌生產胰島素', nodes: [
-        ['取出基因', W('人類製造', '胰島素的基因'), '#ffd166'],
-        ['放進細菌', '基因轉殖', '#63d4bf'],
-        [W('細菌', '大量繁殖'), W('帶著', '這個基因'), '#8fd07a'],
-        ['生產胰島素', W('產量多、', '純度高'), '#ff9aa8'],
-      ], note: '胰島素用來治療糖尿病。以前從豬、牛的胰臟萃取，產量少、價格高。', link: ['biotech', 3] },
-    { type: 'table', title: '桃莉羊：三隻羊各提供什麼？', cols: [['提供', '#d6a8ff'], [W('細胞核的', '基因'), '#ffd166']],
-      rows: [
-        [W('白面母羊'), W('乳腺細胞的', '<b>細胞核</b>'), W('和桃莉羊', '<b>相同</b>')],
-        [W('黑面母羊'), W('去除細胞核的', '<b>卵細胞</b>'), W('和桃莉羊', '不同')],
-        [W('另一隻', '黑面母羊'), W('<b>子宮</b>', '（代理孕母）'), W('和桃莉羊', '不同')],
-      ], note: '基因主要在細胞核中，所以桃莉羊是白面。沒有精子和卵結合，屬於無性生殖。', link: ['biotech', 5] },
     { type: 'table', title: '試管嬰兒 vs 桃莉羊（複製羊）', cols: [['試管嬰兒', '#ffb3c0'], ['桃莉羊', '#d6a8ff']],
       rows: [
+        [W('誰提供', '什麼'), W('父親：精子；') + '<br>' + W('母親：卵、', '子宮'), W('白面母羊：', '乳腺細胞的', '<b>細胞核</b>') + '<br>' + W('黑面母羊：', '去核的', '<b>卵細胞</b>') + '<br>' + W('另一隻', '黑面母羊：', '<b>子宮</b>', '（代理孕母）')],
         [W('精子和卵', '結合'), W('<b>有</b>：', '在體外受精'), '<b>沒有</b><br><small>' + W('細胞核放進', '去核的卵細胞') + '</small>'],
         [W('生殖方式'), '<b>有性生殖</b>', '<b>無性生殖</b>'],
-        [W('細胞核的', '基因來自'), W('父母雙方'), W('提供細胞核的', '白面母羊')],
+        [W('細胞核的', '基因來自'), W('父母雙方'), W('提供細胞核的', '白面母羊') + '<br><small>' + W('所以桃莉羊', '是白面') + '</small>'],
         [W('在哪裡', '發育'), W('胚胎植回', '母親的子宮'), W('胚胎植入', '代理孕母的子宮')],
-      ], note: '「試管嬰兒」其實是在培養皿中受精，只有受精和最初幾天在體外。這是醫療技術；人類自然的生殖仍是體內受精。', link: ['biotech', 6] },
+      ], note: '「試管嬰兒」其實是在培養皿中受精，只有受精和最初幾天在體外。這是醫療技術；人類自然的生殖仍是體內受精。基因主要在細胞核中，桃莉羊的基因和提供卵細胞的羊、代理孕母都不同。', link: ['biotech', 6] },
   ];
 
   S.summaryLab({ id: 'summary-b2', section: '下總2', title: '知識地圖與自我檢測', heading: '第八章 知識地圖', done: '第八章的重點都掌握了。', MAP, QUIZ, CHARTS });

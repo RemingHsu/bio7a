@@ -73,6 +73,8 @@
         '分子會不停地隨機運動',
         '分布均勻後分子仍在動，只是兩邊進出差不多，沒有淨移動',
         '例：一滴紅墨水在靜止的水中慢慢散開（要好幾個小時＊）',
+        '<b>溫度高，擴散比較快</b>（分子運動較快）',
+        '距離變成 10 倍，擴散需要的時間變成 100 倍 → 所以細胞都很小；大型動物需要血液循環來運送物質',
       ]],
       ['<b>細胞膜的選擇性</b>', [
         '水、氧、二氧化碳等小分子可以通過',
@@ -89,7 +91,7 @@
         '<b>半透膜</b>：讓水和某些小分子通過，蔗糖等溶質過不去',
         '水兩個方向都會通過膜',
         '但水往<b>比較濃（水比較少）</b>的一邊移動得比較多',
-        '決定方向的是過不了膜的<b>溶質粒子濃度（數目多少）</b>，不是粒子的大小',
+        '決定方向的是過不了膜的<b>溶質粒子濃度（數目多少）</b>，不是粒子的大小，也不是看溶了幾公克',
         '粒子的大小只決定它能不能通過膜',
         '例：左邊蔗糖水、右邊清水 → 左邊水位上升',
       ]],
@@ -98,19 +100,6 @@
         ['外面和細胞內<b>一樣濃</b>：水進出一樣多，細胞維持原狀', ['紅血球：放在約 0.9% 的食鹽水中，維持原來的形狀', '打點滴用的<b>生理食鹽水</b>就是這個濃度']],
         ['外面比細胞內<b>濃</b>（濃鹽水）：水<b>離開</b>細胞', ['紅血球：失水皺縮', '植物細胞：液胞縮小，<b>細胞膜和細胞壁分開</b>']],
       ]],
-      ['<b>互動：擴散實驗</b>', [
-        '左邊放一群小分子、右邊不放 → 最後兩邊差不多一樣多',
-        '冷水和溫水各做一次 → <b>溫度高，擴散比較快</b>（分子運動較快）',
-        '距離變成 10 倍，擴散需要的時間變成 100 倍',
-        '所以細胞都很小；大型動物需要血液循環來運送物質',
-      ]],
-      ['<b>互動：滲透實驗</b>', [
-        '用半透膜隔開，左邊放蔗糖 → 蔗糖過不去，一直留在左邊',
-        '改看水 → 水往有蔗糖的一邊淨移動，左邊水位上升',
-        '（補充）同樣多的水各溶 10 公克蔗糖和食鹽：水往食鹽水那邊移動',
-        '（補充）溶進去一樣重，粒子數目卻不同：食鹽的份數多很多，每份還分成 2 個離子',
-        '判斷滲透方向要看<b>溶質粒子的濃度（數目）</b>，不是看溶了幾公克，也不是看粒子大小',
-      ]],
       ['<b>生活中的例子</b>', [
         '擴散：墨水在水中散開；肺泡和血液交換氧與二氧化碳',
         '滲透：根毛從土壤吸水',
@@ -118,10 +107,14 @@
         '滲透：青菜撒鹽，會出水變軟',
         '滲透：肥料太濃，反而讓根部細胞失水',
       ]],
-      ['<b>常考數字與真實時間</b>', [
-        '生理食鹽水約 0.9%，和紅血球內的濃度差不多',
-        '紅血球放進清水，實際上幾秒內就會脹大、破裂',
-        '滲透實驗（例如 U 形管）要幾十分鐘以上，水位才看得出變化',
+      ['補充', [
+        '（補充）同樣多的水各溶 10 公克蔗糖和食鹽：水往食鹽水那邊移動',
+        '（補充）溶進去一樣重，粒子數目卻不同：食鹽的份數多很多，每份還分成 2 個離子',
+        ['<b>常考數字與真實時間</b>', [
+          '生理食鹽水約 0.9%，和紅血球內的濃度差不多',
+          '紅血球放進清水，實際上幾秒內就會脹大、破裂',
+          '滲透實驗（例如 U 形管）要幾十分鐘以上，水位才看得出變化',
+        ]],
       ]],
     ], [
       '「擴散到均勻後，分子就停止不動」不對：分子仍在動，只是兩邊進出的數量差不多',
@@ -204,6 +197,9 @@
         '例：2 nm ＝ 2 ÷ 1000 ＝ 0.002 μm',
         '例：細胞 25 μm ÷ 細胞核 5 μm ＝ 5 倍',
       ]],
+      ['補充', [
+        '（補充）人體的組成物質（質量）約：水 60%＊、蛋白質 17%＊、脂質 15%＊、礦物質 6%＊、醣類等 2%＊（含量很少的物質併入「醣類等」）；會因年齡、體型而不同',
+      ]],
     ], [
       '「血液是器官」不對：血液是結締組織',
       '「皮膚是組織」不對：皮膚由多種組織組成，是器官',
@@ -259,86 +255,12 @@
         [W('細胞壁'), '支持、保護<br><small>主要成分是纖維素</small>', '沒有', '<b>有</b>'],
         [W('葉綠體'), '光合作用', '沒有', '<b>有</b><br><small>' + W('根、', '洋蔥表皮', '沒有') + '</small>'],
       ], note: '細胞膜、細胞質、細胞核、粒線體、液胞兩者都有，但植物細胞的液胞大得多；細胞壁、葉綠體是植物細胞的特色。', link: ['cell', 10] },
-    { type: 'svg', title: '細胞壁 vs 細胞膜', w: 560, h: 418, link: ['cell', 7],
-      note: '＊示意圖。細胞壁讓大多數物質通過；真正控制物質進出的是細胞膜。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const WALL = C.wall, MEM = C.membrane, BAD = '#ff8f8f';
-        // 細胞外｜細胞壁｜細胞膜｜細胞內
-        el('rect', { x: 224, y: 58, width: 326, height: 140, rx: 10, fill: MEM, 'fill-opacity': 0.1 }, svg);
-        el('rect', { x: 150, y: 58, width: 60, height: 140 }, el('clipPath', { id: 'sumWallClip' }, el('defs', {}, svg)));
-        const fib = S.g(svg, { 'clip-path': 'url(#sumWallClip)' });
-        el('rect', { x: 150, y: 58, width: 60, height: 140, fill: '#2e2a1c' }, fib);
-        for (let i = -6; i < 8; i++) {
-          el('line', { x1: 130 + i * 16, y1: 210, x2: 190 + i * 16, y2: 50, stroke: '#b9a35f', 'stroke-width': 4 }, fib);
-          el('line', { x1: 130 + i * 16, y1: 50, x2: 190 + i * 16, y2: 210, stroke: WALL, 'stroke-width': 4, opacity: 0.9 }, fib);
-        }
-        el('rect', { x: 150, y: 58, width: 60, height: 140, fill: 'none', stroke: WALL, 'stroke-width': 2 }, svg);
-        el('rect', { x: 216, y: 58, width: 8, height: 140, rx: 3, fill: MEM }, svg);
-        text(svg, 72, 40, '細胞外', { 'font-size': 18, 'text-anchor': 'middle', fill: C.mute });
-        text(svg, 180, 40, '細胞壁', { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle', fill: WALL });
-        text(svg, 232, 40, '細胞膜', { 'font-size': 20, 'font-weight': 700, fill: MEM });
-        text(svg, 470, 40, '細胞內', { 'font-size': 18, 'text-anchor': 'middle', fill: C.mute });
-        const arrow = (x1, x2, y, c) => { el('line', { x1, y1: y, x2: x2 - 10, y2: y, stroke: c, 'stroke-width': 3, 'stroke-dasharray': '7 5' }, svg); el('path', { d: `M ${x2},${y} l -12,-7 l 0,14 Z`, fill: c }, svg); };
-        // 小分子：穿過細胞壁和細胞膜
-        el('circle', { cx: 40, cy: 98, r: 10, fill: C.water }, svg);
-        arrow(56, 300, 98, C.water);
-        el('circle', { cx: 316, cy: 98, r: 10, fill: C.water }, svg);
-        text(svg, 336, 104, '水、氧等能進入', { 'font-size': 18, fill: C.water });
-        // 大分子：通過細胞壁，被細胞膜擋住
-        const hex = (cx, cy) => { let d = ''; for (let i = 0; i < 6; i++) { const a = (i / 6) * 6.283 + 0.52; d += (i ? 'L' : 'M') + `${(cx + Math.cos(a) * 11).toFixed(1)},${(cy + Math.sin(a) * 11).toFixed(1)}`; } el('path', { d: d + 'Z', fill: 'rgba(255,207,92,0.2)', stroke: C.sugar, 'stroke-width': 3 }, svg); };
-        [28, 50, 72].forEach((x) => hex(x, 158));
-        arrow(90, 206, 158, C.sugar);
-        el('path', { d: 'M 228,146 l 22,22 M 250,146 l -22,22', stroke: BAD, 'stroke-width': 4, 'stroke-linecap': 'round' }, svg);
-        text(svg, 262, 164, '大分子被細胞膜擋住', { 'font-size': 18, fill: BAD });
-        text(svg, 50, 192, '如澱粉', { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute });
-        // 比較
-        [[10, '細胞壁', WALL, ['植物細胞有（動物沒有）', '在最外層', '主要成分：纖維素', '支持、保護細胞', '沒有選擇性']], [286, '細胞膜', MEM, ['動、植物細胞都有', '包住細胞質', '控制物質進出', '有選擇性']]].forEach(([x, h, c, L]) => {
-          el('rect', { x, y: 222, width: 264, height: 186, rx: 12, fill: c, 'fill-opacity': 0.08, stroke: c, 'stroke-width': 2 }, svg);
-          text(svg, x + 18, 254, h, { 'font-size': 22, 'font-weight': 700, fill: c });
-          L.forEach((s, i) => { const key = /選擇性|纖維素/.test(s); text(svg, x + 18, 286 + i * 26, '• ' + s, { 'font-size': 18, fill: key ? C.ink : C.ink2, 'font-weight': key ? 700 : 400 }); });
-        });
-      } },
-    { type: 'flow', title: '細胞的發現', link: ['discovery', 1],
-      nodes: [['1665 年 虎克', W('軟木塞的', '小格子，') + W('命名為', '細胞'), '#ffd166'], ['雷文霍克', W('第一次', '看到活的', '微生物'), '#9fd8ff'], [W('1838～', '1839 年'), W('許來登、', '許旺提出', '細胞學說'), '#8fd07a'], [W('（補充）', '1855 年'), W('菲爾紹：') + W('細胞由', '原來的細胞', '分裂而來'), '#c9a7ff']],
-      note: '細胞學說：生物都由細胞構成；細胞是生物體構造和功能的基本單位。' },
-    { type: 'table', title: '細胞的形狀和功能有關', cols: [['形狀', '#ffd166'], ['功能', '#62d0c0']],
-      rows: [
-        ['神經細胞', '很長、有分支', '傳遞訊息'],
-        ['人的紅血球', '雙凹圓盤狀、<br>沒有細胞核', '運送氧'],
-        ['肌肉細胞', '細長', '收縮、產生運動'],
-        ['精子', '有尾巴', '游向卵'],
-        ['保衛細胞', '兩個圍成氣孔', '控制氣孔開關'],
-        ['根毛細胞', '向外突出', '增加吸水的面積'],
-        ['葉肉細胞', '葉綠體多', '進行光合作用'],
-      ], note: '前四種是動物細胞，後三種是植物細胞。', link: ['discovery', 4] },
     { type: 'table', title: '三種常見的細胞比一比', cols: [['細胞壁', '#d9c27c'], ['葉綠體', '#6fce62'], ['染色', '#9fd8ff']],
       rows: [
         ['口腔皮膜細胞<br><small>動物</small>', '沒有', '沒有', '亞甲藍液'],
         ['洋蔥表皮細胞<br><small>植物</small>', '<b>有</b>', '沒有', '碘液'],
         ['保衛細胞<br><small>植物</small>', '<b>有</b>', '<b>有</b>', '—'],
       ], note: '三種細胞都有細胞膜、細胞質、細胞核。保衛細胞兩個圍成氣孔，可以從鴨跖草的下表皮觀察。', link: ['cell', 8] },
-    { type: 'svg', title: '細胞有多大？', w: 600, h: 404, link: ['discovery', 6],
-      note: '＊約略值，依種類和個體而不同。橫軸每往右一大格，長度變成 1000 倍。肉眼大約只能看到 0.1 mm 以上的東西。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const X = (um) => 150 + Math.log10(um) * (430 / 6), Y0 = 76, DY = 52, YB = Y0 + DY * 5 + 30;
-        [[1, '1 μm', 'start'], [1000, '1 mm', 'middle'], [1e6, '1 m', 'end']].forEach(([v, s, a]) => {
-          el('line', { x1: X(v), y1: 46, x2: X(v), y2: YB, stroke: '#2b4252', 'stroke-width': 1.5 }, svg);
-          text(svg, X(v), 36, s, { 'font-size': 17, 'text-anchor': a, fill: C.mute });
-        });
-        el('line', { x1: X(100), y1: 46, x2: X(100), y2: YB, stroke: C.hi, 'stroke-width': 2, 'stroke-dasharray': '6 5' }, svg);
-        text(svg, X(100), 36, '0.1 mm', { 'font-size': 17, 'text-anchor': 'middle', fill: C.hi });
-        const R = [['細菌', '約 1～數 μm', 2, '#8fd07a'], ['人的紅血球', '約 8 μm', 8, '#ff5f74'], ['口腔皮膜細胞', '約 60 μm', 60, '#a796ff'], ['洋蔥表皮細胞', '約 0.3 mm', 300, C.wall], ['雞蛋的蛋黃', '約 3 cm', 30000, C.hi], ['坐骨神經細胞', '可長達約 1 m', 1e6, '#62d0c0']];
-        R.forEach(([n, v, um, c], i) => {
-          const y = Y0 + i * DY;
-          text(svg, 14, y + 2, n, { 'font-size': 18, 'font-weight': 700, fill: c });
-          text(svg, 14, y + 24, v + '＊', { 'font-size': 17, fill: C.mute });
-          el('rect', { x: 150, y: y - 6, width: Math.max(8, X(um) - 150), height: 18, rx: 9, fill: c, 'fill-opacity': 0.85 }, svg);
-        });
-        text(svg, X(100) - 8, YB + 26, '← 要用顯微鏡', { 'font-size': 17, 'text-anchor': 'end', fill: C.ink2 });
-        text(svg, X(100) + 8, YB + 26, '肉眼看得到 →', { 'font-size': 17, fill: C.ink2 });
-      } },
     // ===== 2-2 =====
     { type: 'table', title: '擴散 vs 滲透', cols: [['擴散', '#9fd8ff'], ['滲透', '#62d0c0']],
       rows: [
@@ -347,32 +269,6 @@
         [W('方向'), W('濃度高 →') + ' ' + W('濃度低'), W('水往比較濃') + W('（水比較少）') + W('的一邊', '移動得', '比較多')],
         [W('例子'), W('肺泡和血液', '交換氧與', '二氧化碳；') + W('墨水', '在水中散開'), W('根毛從', '土壤吸水；') + W('鹽醃、', '糖漬', '保存食物；') + W('紅血球', '在清水中', '脹破')],
       ], note: '滲透是水通過半透膜的擴散。溫度高，擴散比較快。', link: ['transport', 4] },
-    { type: 'svg', title: '滲透：水往哪一邊移動？', w: 580, h: 300, link: ['transport', 4],
-      note: '＊示意。半透膜只讓水通過，蔗糖過不去。水兩個方向都會通過，但進入蔗糖水那一邊的比較多，所以那一邊的水位上升。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const hex = (cx, cy) => { let d = ''; for (let i = 0; i < 6; i++) { const a = (i / 6) * 6.283 + 0.52; d += (i ? 'L' : 'M') + `${(cx + Math.cos(a) * 9).toFixed(1)},${(cy + Math.sin(a) * 9).toFixed(1)}`; } el('path', { d: d + 'Z', fill: 'rgba(255,207,92,0.25)', stroke: C.sugar, 'stroke-width': 2.5 }, svg); };
-        const arrow = (x1, x2, y, w, c) => { const dir = Math.sign(x2 - x1); el('line', { x1, y1: y, x2: x2 - dir * 10, y2: y, stroke: c, 'stroke-width': w }, svg); el('path', { d: `M ${x2},${y} l ${-dir * (8 + w * 2)},${-(5 + w)} l 0,${2 * (5 + w)} Z`, fill: c }, svg); };
-        [[20, '開始', 130, 130], [310, '一段時間後＊', 104, 156]].forEach(([x, t, hL, hR], k) => {
-          const B = 250, M = x + 125;
-          text(svg, M, 30, t, { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink });
-          el('rect', { x, y: hL, width: 125, height: B - hL, fill: C.water, 'fill-opacity': 0.3 }, svg);
-          el('rect', { x: M, y: hR, width: 125, height: B - hR, fill: C.water, 'fill-opacity': 0.3 }, svg);
-          el('path', { d: `M ${x},70 L ${x},${B} L ${x + 250},${B} L ${x + 250},70`, fill: 'none', stroke: '#8aa1ae', 'stroke-width': 3 }, svg);
-          el('line', { x1: M, y1: 70, x2: M, y2: B, stroke: C.membrane, 'stroke-width': 3, 'stroke-dasharray': '6 5' }, svg);
-          text(svg, M, 62, '半透膜', { 'font-size': 17, 'font-weight': 700, 'text-anchor': 'middle', fill: C.membrane });
-          [[x + 28, 168], [x + 70, 190], [x + 40, 226], [x + 96, 220], [x + 92, 160]].forEach(([hx, hy]) => hex(hx, hy));
-          text(svg, x + 62, 278, '蔗糖水', { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: C.sugar });
-          text(svg, M + 62, 278, '清水', { 'font-size': 18, 'font-weight': 700, 'text-anchor': 'middle', fill: C.water });
-          if (!k) {
-            arrow(M + 52, M - 52, 196, 5, C.water);
-            arrow(M - 36, M + 36, 230, 2, C.water);
-          } else {
-            text(svg, x + 62, 94, '水位上升', { 'font-size': 17, 'font-weight': 700, 'text-anchor': 'middle', fill: C.hi });
-            text(svg, M + 62, 146, '水位下降', { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute });
-          }
-        });
-      } },
     { type: 'table', title: '細胞放進不同的溶液', cols: [['清水<br><small>' + W('比細胞內稀') + '</small>', '#9fd8ff'], ['一樣濃<br><small>' + W('和細胞內', '相同') + '</small>', '#8fd07a'], ['濃鹽水<br><small>' + W('比細胞內濃') + '</small>', '#ff9a8a']],
       rows: [
         ['水', '<b>進入</b>細胞', W('進出', '一樣多'), '<b>離開</b>細胞'],
@@ -380,70 +276,14 @@
         [W('植物細胞'), W('變飽滿，', '不會破') + '<br><small>' + W('細胞壁', '撐住') + '</small>', '大致維持原狀', W('細胞膜和', '細胞壁', '分開')],
       ], note: '打點滴用的生理食鹽水約 0.9%。青菜撒鹽變軟、鹽醃糖漬保存食物，都是水離開細胞。', link: ['lab-cells'] },
     // ===== 2-3 =====
-    { type: 'svg', title: '人體的組成物質（質量）', w: 560, h: 210, link: ['matter', 2],
-      note: '＊約略值：水約占 60～70%，會因年齡、體型而不同；含量很少的物質併入「醣類等」。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const COMP = [['水', 60, '#5fb8ff'], ['礦物質', 6, '#c9d6dc'], ['蛋白質', 17, '#ff8f8f'], ['脂質', 15, '#ffb35c'], ['醣類等', 2, '#ffcf5c']];
-        const BX = 20, BW = 520, BY = 30, BH = 56, X = (p) => BX + (p / 100) * BW;
-        let acc = 0;
-        COMP.forEach(([n, v, c], i) => {
-          el('rect', { x: X(acc), y: BY, width: (v / 100) * BW - 2, height: BH, fill: c }, svg);
-          const cx = X(acc + v / 2);
-          if (v >= 10) {
-            text(svg, cx, BY + 25, n, { 'font-size': 19, 'font-weight': 700, 'text-anchor': 'middle', fill: '#0d1822' });
-            text(svg, cx, BY + 47, `約 ${v}%＊`, { 'font-size': 17, 'text-anchor': 'middle', fill: '#0d1822' });
-          } else {
-            el('line', { x1: cx, y1: BY + BH, x2: cx, y2: BY + BH + 16, stroke: C.ink2, 'stroke-width': 2 }, svg);
-            text(svg, i === 4 ? BX + BW + 4 : cx, BY + BH + 36, `${n} 約 ${v}%`, { 'font-size': 17, 'text-anchor': i === 4 ? 'end' : 'middle', fill: C.ink });
-          }
-          acc += v;
-        });
-        const brace = (p0, p1, label, sub) => {
-          const a = X(p0) + 2, b = X(p1) - 4, y = 140;
-          el('path', { d: `M ${a},${y - 8} L ${a},${y} L ${b},${y} L ${b},${y - 8}`, fill: 'none', stroke: C.ink2, 'stroke-width': 2 }, svg);
-          text(svg, (a + b) / 2, y + 28, label, { 'font-size': 20, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink });
-          if (sub) text(svg, (a + b) / 2, y + 52, sub, { 'font-size': 17, 'text-anchor': 'middle', fill: C.mute });
-        };
-        brace(0, 66, '無機物', '水最多');
-        brace(66, 100, '有機物', '大多含碳');
-      } },
-    { type: 'svg', title: '生物體的組成層次：動物 vs 植物', w: 520, h: 470, link: ['levels', 6],
-      note: '植物沒有器官系統；單細胞生物只有一個細胞，就是一個個體。',
-      draw(svg) {
-        const { el, text, C } = S;
-        const L = [['個體', '#c9a7ff', '人', '一株植物'], ['器官系統', '#7fb8ff', '消化系統', null], ['器官', '#62d0c0', '胃', '葉'], ['組織', '#ff9a8a', '肌肉組織', '表皮組織'], ['細胞', '#ffd166', '肌肉細胞', '表皮細胞']];
-        [['動物', 140], ['植物', 380]].forEach(([h, cx], col) => {
-          text(svg, cx, 34, h, { 'font-size': 26, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink });
-          L.forEach(([n, c, a, b], i) => {
-            const y = 95 + i * 80, ex = col ? b : a;
-            if (ex === null) {
-              el('rect', { x: cx - 100, y: y - 29, width: 200, height: 58, rx: 12, fill: 'none', stroke: '#5a7080', 'stroke-width': 2, 'stroke-dasharray': '7 6' }, svg);
-              text(svg, cx, y + 8, '沒有器官系統', { 'font-size': 21, 'text-anchor': 'middle', fill: C.mute });
-            } else {
-              el('rect', { x: cx - 100, y: y - 29, width: 200, height: 58, rx: 12, fill: c, 'fill-opacity': 0.16, stroke: c, 'stroke-width': 2 }, svg);
-              text(svg, cx, y - 2, n, { 'font-size': 22, 'font-weight': 700, 'text-anchor': 'middle', fill: c });
-              text(svg, cx, y + 21, '例：' + ex, { 'font-size': 17, 'text-anchor': 'middle', fill: C.ink2 });
-            }
-            if (i < 4) el('path', { d: `M ${cx},${y + 49} L ${cx},${y + 35} M ${cx - 6},${y + 41} L ${cx},${y + 34} L ${cx + 6},${y + 41}`, fill: 'none', stroke: C.mute, 'stroke-width': 2.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, svg);
-          });
-        });
-      } },
-    { type: 'table', title: '動物的四大類組織', cols: [['功能', '#62d0c0'], ['例子', '#ffd166']],
-      rows: [
-        [W('上皮組織'), '保護、分泌', W('胃的內壁', '分泌胃液')],
-        [W('肌肉組織'), '收縮、運動', W('胃壁收縮，', '攪拌食物')],
-        [W('神經組織'), '傳遞訊息', '調控胃的活動'],
-        [W('結締組織'), W('連接、', '支持、', '運輸等'), '骨骼、血液'],
-      ], note: '胃由好幾種組織組成，能完成消化的功能，所以是器官。', link: ['levels', 2] },
     { type: 'table', title: '組成層次怎麼判斷？', cols: [['動物的例子', '#ff9a8a'], ['植物的例子', '#8fd07a']],
       rows: [
         ['細胞', W('口腔皮膜細胞、', '肌肉細胞'), W('洋蔥', '表皮細胞、', '保衛細胞')],
-        ['組織', W('上皮組織、', '肌肉組織') + '<br><small>血液是結締組織</small>', '表皮組織<br><small>例：葉的下表皮</small>'],
-        ['器官', '皮膚、胃、心臟<br><small>由多種組織組成</small>', '根、莖、葉、花、果實、種子<br><small>例：芭樂是果實</small>'],
+        ['組織', W('上皮', '（保護、分泌）、') + W('肌肉', '（收縮、運動）、') + W('神經', '（傳遞訊息）、') + W('結締', '（連接、支持、', '運輸等）') + '<br><small>' + W('骨骼、血液', '是結締組織') + '</small>', '表皮組織<br><small>例：葉的下表皮</small>'],
+        ['器官', '皮膚、胃、心臟<br><small>' + W('由多種組織組成：') + W('胃的上皮組織', '分泌胃液、') + W('肌肉組織', '收縮攪拌、') + W('神經組織', '調控') + '</small>', '根、莖、葉、花、果實、種子<br><small>例：芭樂是果實</small>'],
         ['器官系統', '消化系統<br><small>消化管＋消化腺</small>', '<small>植物沒有</small>'],
         ['個體', '一個人', '一株植物'],
-      ], note: '開花還沒結果的植物，有根、莖、葉、花四種器官。只有消化管，還不算完整的消化系統。', link: ['levels', 3] },
+      ], note: '動物：細胞 → 組織 → 器官 → 器官系統 → 個體；植物沒有器官系統。單細胞生物只有一個細胞，就是一個個體。開花還沒結果的植物，有根、莖、葉、花四種器官。只有消化管，還不算完整的消化系統。', link: ['levels', 3] },
     { type: 'table', title: '尺度：從人到 DNA', cols: [['大小約＊', '#ffd166'], ['用什麼看', '#62d0c0']],
       rows: [
         ['人<br><small>個體</small>', '身高 1.6 m', '肉眼'],
